@@ -10,7 +10,9 @@ const orderRepository = new OrderRepository(prisma);
 const orderService = new OrderService(orderRepository);
 const orderController = new OrderController(orderService);
 
-// 주문 완료 API
+// 주문 요청 API
+
+// 주문 취소 API
 
 // 주문 내역 목록 조회 API
 
