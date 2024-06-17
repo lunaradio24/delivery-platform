@@ -14,6 +14,10 @@ const reviewController = new ReviewController(reviewService);
 
 // 리뷰 목록 조회 API
 
+// 내가 작성한 리뷰 목록 조회 API
+
+// 리뷰 상세 조회 API
+
 // 리뷰 수정 API
 
 // 리뷰 삭제 API
