@@ -1,5 +1,5 @@
 import express from 'express';
-import { prisma } from '../utils/prisma.util';
+import { prisma } from '../utils/prisma.util.js';
 import { AuthRepository } from '../repositories/auth.repository.js';
 import { UserRepository } from '../repositories/user.repository.js';
 import { AuthService } from '../services/auth.service.js';

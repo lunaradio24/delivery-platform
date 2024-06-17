@@ -7,8 +7,8 @@ import { menuRouter } from './menu.router.js';
 import { reviewRouter } from './review.router.js';
 import { likeRouter } from './like.router.js';
 import { cartRouter } from './cart.router.js';
-import { requireAccessToken } from '../middlewares/require-access-token.middleware.js';
-import { requireRoles } from '../middlewares/require-roles.middleware.js';
+// import { requireAccessToken } from '../middlewares/require-access-token.middleware.js';
+// import { requireRoles } from '../middlewares/require-roles.middleware.js';
 
 const apiRouter = express.Router();
 
