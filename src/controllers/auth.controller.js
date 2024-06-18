@@ -62,4 +62,23 @@ export class AuthController {
       next(error);
     }
   };
+
+  /** 로그아웃 */
+  signOut = async (req, res, next) => {
+    try {
+      // userId 가져오기
+      const userId = req.user.id
+      await this.authService.signOut(userId);
+
+      // 성공 메세지 반환
+      res.status(HTTP_STATUS.OK).json({
+        status: HTTP_STATUS.OK,
+        message: MESSAGES.AUTH.SIGN_OUT.SUCCEED,
+        data: { userId },
+      });
+
+    } catch (error) {
+      next (error);
+    };
+  }
 }

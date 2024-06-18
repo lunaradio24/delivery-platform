@@ -1,8 +1,7 @@
 import { HttpError } from '../errors/http.error.js';
 import { MESSAGES } from '../constants/message.constant.js';
-import { hash, compareWithHashed, generateAccessToken, generateRefreshToken } from '../utils/auth.util.js';
+import { hash, compareWithHashed, generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/auth.util.js';
 import { AuthRepository } from '../repositories/auth.repository.js';
-import bcrypt from 'bcrypt'
 
 const authRepository = new AuthRepository();
 
@@ -75,5 +74,17 @@ export class AuthService {
     const refreshToken = generateRefreshToken(user);
 
     return { accessToken, refreshToken };
-  }
+  };
+
+  /** 로그아웃 */
+  signOut = async (userId) => {
+    // user 찾기
+    const existedUser = await this.userRepository.findById(userId);
+    if (!existedUser) {
+      throw new HttpError.Unauthorized(MESSAGES.AUTH.COMMON.UNAUTHORIZED);
+    };
+
+    // 토큰 삭제
+    await this.authRepository.invalidateToken(userId);
+  };
 }

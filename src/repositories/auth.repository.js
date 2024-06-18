@@ -44,4 +44,23 @@ export class AuthRepository {
     const { password: _password, ...withoutPasswordUser } = user;
     return withoutPasswordUser;
   };
+
+  /** 로그아웃 */
+  // user 찾기
+  findById = async (userId) => {
+    const user = await prisma.user.findUnique({
+      where: { userId },
+    });
+    return user;
+  }
+
+  // 토큰 삭제
+  invalidateToken = async (userId) => {
+    await this.prisma.auth.update({
+      where: { userId },
+      data: {
+        refreshToken: null,
+        },
+    });
+  };
 }

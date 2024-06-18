@@ -22,6 +22,7 @@ authRouter.post('/sign-up', signUpValidator, authController.signUp);
 authRouter.post('/sign-in', signInValidator, authController.signIn);
 
 /** 로그아웃 API */
+authRouter.post('/sign-out', requireRefreshToken, authController.signOut);
 
 /** 토큰 재발급 API */
 
