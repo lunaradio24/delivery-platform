@@ -21,7 +21,7 @@ apiRouter.use('/menu', menuRouter);
 apiRouter.use('/carts', cartRouter);
 apiRouter.use('/orders', orderRouter);
 apiRouter.use('/reviews', reviewRouter);
-apiRouter.use('/likes', likeRouter);
+apiRouter.use('/likes', requireAccessToken, requireRoles(['CUSTOMER']), likeRouter);
 apiRouter.use('/transaction-logs', transactionLogRouter);
 
 export { apiRouter };

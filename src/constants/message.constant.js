@@ -179,8 +179,16 @@ export const MESSAGES = {
     },
   },
   LIKES: {
-    CREATE: {
-      SUCCEED: '',
+    LIKE: {
+      SUCCEED: '찜 목록에 추가되었습니다.',
+      DUPLICATED: '이미 찜 목록에 추가된 가게입니다.',
+    },
+    UNLIKE: {
+      SUCCEED: '찜 목록에서 삭제되었습니다.',
+      DUPLICATED: '이미 찜 목록에 없는 가게입니다.',
+    },
+    READ_LIST: {
+      SUCCEED: '찜 목록 조회에 성공했습니다.',
     },
   },
 };
