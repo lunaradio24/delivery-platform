@@ -14,4 +14,13 @@ export class UserService {
     }
     return user;
   };
+
+  // userId에 맞는 user정보 수정
+  updateMyInfo = async ({ userId, nickname, address, image, contactNumber }) => {
+    const existedUser = await this.userRepository.findById(userId);
+    if (!existedUser) {
+      throw new HttpError.NotFound(MESSAGES.USERS.NOT_FOUND);
+    }
+    return await this.userRepository.update({ userId, nickname, address, image, contactNumber });
+  };
 }

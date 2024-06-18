@@ -15,5 +15,6 @@ const userController = new UserController(userService);
 userRouter.get('/me', requireAccessToken, userController.getMyInfo);
 
 /** 프로필 수정 API */
+userRouter.patch('/me', requireAccessToken, userController.patchMyInfo);
 
 export { userRouter };

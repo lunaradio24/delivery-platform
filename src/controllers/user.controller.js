@@ -23,4 +23,25 @@ export class UserController {
       next (error);
     };
   };
+
+  /** 프로필 수정 */
+  patchMyInfo = async (req, res, next) => {
+    try {
+      // userId 가져오기
+      const userId = req.user.id;
+      const { nickname, addraee, image, contactNumber } = req.body;
+      const updatedProfile = await this.userService.updateMyInfo({
+        userId, nickname, addraee, image, contactNumber
+      });
+
+      // 성공 메세지 반환
+      return res.status(HTTP_STATUS.OK).json({
+        status: HTTP_STATUS.OK,
+        message: MESSAGES.USERS.UPDATE_ME.SUCCEED,
+        data: updatedProfile,
+      });
+    } catch (error) {
+      next (error);
+    };
+  }
 }
