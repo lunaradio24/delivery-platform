@@ -1,5 +1,6 @@
 import { prisma } from '../utils/prisma.util.js';
 import { ORDER_STATUS } from '../constants/order.constant.js';
+import { ROLES } from '../constants/auth.constant.js';
 
 export class OrderRepository {
   // constructor(prisma) {
@@ -7,34 +8,61 @@ export class OrderRepository {
   // }
 
   //  주문 요청 API
-  createOrder = async (userId, userWallet, storeId, menuId, quantity) => {
-    const createOrder = await prisma.order.create({
-      data: {}, //Order 데이터 생성
-    });
-    await prisma.orderItem.create({
-      data: {}, //OrderItem 데이터 생성
-    });
-    await prisma.transactionLog.create({
-      data: {}, //transactionLogs 데이터 생성
+  createdOrder = async (userId, storeId, orderItems, totalPrice, userCartId) => {
+    const transactionCreatedOrder = await prisma.$transaction(async (tx) => {
+      const createdOrder = await tx.order.create({
+        //Order 데이터 생성
+        data: {
+          storeId: storeId,
+          customerId: userId,
+          orderItem: {
+            create: orderItems.map((item) => ({
+              menuId: item.menuId, // 메뉴 ID
+              quantity: item.quantity, // 수량
+            })),
+          },
+          totalPrice: totalPrice,
+        },
+        include: {
+          orderItem: true,
+        },
+      });
+
+      if (userCartId) {
+        await tx.cartItem.delete({
+          where: { id: userCartId }, //cart 데이터 삭제
+        });
+      }
+
+      // 고객의 잔액 업데이트
+      await tx.user.update({
+        where: { id: userId },
+        data: { wallet: { decrement: createdOrder.totalPrice } }, //고객의 잔액을 totalPrice만큼 증가
+      });
+
+      // admin 잔액 차감
+      const adminId = 1;
+      await tx.user.update({
+        where: { id: adminId },
+        data: { wallet: { increment: createdOrder.totalPrice } },
+      });
+
+      let data = {
+        orderId: createdOrder.id,
+        storeName: createdOrder.store.name,
+        userId: createdOrder.customerId,
+        menu: createdOrder.orderItem.map((item) => ({
+          menuId: item.menuId, // 메뉴 ID
+          quantity: item.quantity, // 수량
+        })),
+        address: createdOrder.customer.address,
+        totalPrice: createdOrder.totalPrice,
+        createdAt: createdOrder.createdAt,
+      };
+      return data;
     });
 
-    await prisma.cartItem.delete({
-      where: {}, //cart 데이터 삭제
-    });
-
-    //반환 : orderId, storeName, userId, menuName,price,quantity,useraddress,sumPrice,ordercreated
-    return createOrder;
-  };
-
-  //  주문 취소 API
-  checkOrder = async (userId, id) => {
-    const checkOrder = await prisma.order.findUnique({
-      where: { id, customerId: userId }, //반환 : orderId
-    });
-
-    if (!checkOrder) {
-      return checkOrder;
-    }
+    return transactionCreatedOrder;
   };
 
   cancelOrder = async (userId, id) => {
@@ -66,7 +94,7 @@ export class OrderRepository {
       const adminId = 1;
       await tx.user.update({
         where: { id: adminId },
-        data: { money: { decrement: checkOrder.totalPrice } },
+        data: { wallet: { decrement: checkOrder.totalPrice } },
       });
 
       return cancelUpdateOrder;
@@ -238,13 +266,53 @@ export class OrderRepository {
   };
 
   //  주문 상태 변경 API
-  statusUpdateOrder = async () => {
-    const statusUpdateOrder = await prisma.order.update({
-      where: {},
-    });
-    //배달 상태 취소면 admin 잔액이 고객에게
-    //배달 완료면
+  statusUpdateOrder = async (user, id, status) => {
+    const statusUpdate = await prisma.$transaction(async (tx) => {
+      const checkOrder = await tx.order.findUnique({
+        where: { id: id },
+      });
 
-    return statusUpdateOrder;
+      if (!checkOrder) {
+        return checkOrder;
+      }
+
+      if (checkOrder.status === status) {
+        return checkOrder;
+      }
+
+      const updateOrder = await tx.order.update({
+        where: { id: id },
+        data: { status: status },
+      });
+
+      if (updateOrder.status === ORDER_STATUS[3]) {
+        // 배달 완료 시 사장 잔액 업데이트
+        await tx.user.update({
+          where: { id: user.id },
+          data: { wallet: { increment: checkOrder.totalPrice } }, //고객의 잔액을 totalPrice만큼 증가
+        });
+
+        // admin 잔액 차감
+        const adminId = 1;
+        await tx.user.update({
+          where: { id: adminId },
+          data: { wallet: { decrement: checkOrder.totalPrice } },
+        });
+      }
+
+      return updateOrder;
+    });
+
+    return statusUpdate;
+  };
+
+  //메뉴 가격 함수
+  getMenuPrice = async (menuId) => {
+    const menu = await prisma.menu.findUnique({
+      where: { id: menuId },
+      select: { price: true },
+    });
+
+    return menu.price;
   };
 }

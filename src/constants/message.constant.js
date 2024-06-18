@@ -73,5 +73,6 @@ export const MESSAGES = {
       SUCCEED: '주문 상태가 변경되었습니다.',
       STATUS_SAME: '현재 상태와 동일합니다.',
     },
+    NO_WALLET: '잔액이 부족합니다.',
   },
 };

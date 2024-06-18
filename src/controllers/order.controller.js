@@ -14,12 +14,20 @@ export class OrderController {
   // +ordersTable + ordersItems 데이터 생성 + cartItems 데이터 삭제
   createOrder = async (req, res, next) => {
     try {
-      const { user } = req.user;
+      const user = req.user;
       const userId = user.id;
-      const userWallet = user.userWallet;
-      const { storeId, menuId, quantity } = req.body;
+      const userWallet = user.wallet;
+      const userCartId = user.cart.id;
+      const { storeId, orderItems } = req.body;
 
-      const createOrder = await this.orderService.createOrder(userId, userWallet, storeId, menuId, quantity);
+      if (!storeId || !menuId || !quantity) {
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({
+          status: HTTP_STATUS.BAD_REQUEST,
+          message: MESSAGES.ORDER.NOORDER,
+        });
+      }
+
+      const createOrder = await this.orderService.createOrder(userId, userWallet, storeId, orderItems, userCartId);
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
@@ -144,7 +152,7 @@ export class OrderController {
         });
       }
 
-      const statusUpdateOrder = await this.orderService.statusUpdateOrder(id, status);
+      const statusUpdateOrder = await this.orderService.statusUpdateOrder(user, id, status);
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
