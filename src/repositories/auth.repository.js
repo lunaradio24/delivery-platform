@@ -63,4 +63,17 @@ export class AuthRepository {
         },
     });
   };
+
+  /** 토큰 재발급 */
+  upsertRefreshToken = async (userId, refreshToken) => {
+    await this.prisma.user.upsert({
+      where: { userId },
+      update: {
+        refreshToken,
+      },
+      create: {
+        refreshToken,
+      },
+    });
+  };
 }

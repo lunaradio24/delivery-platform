@@ -69,7 +69,7 @@ export class AuthService {
       throw new HttpError.Unauthorized(MESSAGES.AUTH.COMMON.UNAUTHORIZED);
     };
 
-    // accessToken 발급
+    // accessToken, refreshToken 발급
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
@@ -87,4 +87,17 @@ export class AuthService {
     // 토큰 삭제
     await this.authRepository.invalidateToken(userId);
   };
+
+  /** 토큰 재발급 */
+  renewTokens = async (user) => {
+    const payload = { userId: user.id };
+
+    // accessToken, refreshToken 발급
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    await this.authRepository.upsertRefreshToken(user.id, refreshToken);
+
+    return { accessToken, refreshToken };
+  }
 }

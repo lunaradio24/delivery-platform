@@ -25,6 +25,7 @@ authRouter.post('/sign-in', signInValidator, authController.signIn);
 authRouter.post('/sign-out', requireRefreshToken, authController.signOut);
 
 /** 토큰 재발급 API */
+authRouter.post('/renew-tokens', requireRefreshToken, authController.renewTokens);
 
 /** 네이버 로그인 API */
 

@@ -80,5 +80,24 @@ export class AuthController {
     } catch (error) {
       next (error);
     };
-  }
+  };
+
+  /** 토큰 재발급 */
+  renewTokens = async (req, res, next) => {
+    try {
+      // user 가져오기
+      const user = req.user;
+      const tokens = await this.authService.renewTokens(user);
+
+      // 성공 메세지 반환
+      res.status(HTTP_STATUS.OK).json({
+        status: HTTP_STATUS.OK,
+        message: MESSAGES.AUTH.RENEW_TOKENS.SUCCEED,
+        data: tokens,
+      });
+
+    } catch (error) {
+      next (error);
+    };
+  };
 }

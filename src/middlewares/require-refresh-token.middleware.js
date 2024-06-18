@@ -31,7 +31,8 @@ export const requireRefreshToken = async (req, res, next) => {
     const { token: savedRefreshToken } = await authRepository.findRefreshTokenByUserId(userId);
 
     // 사용자가 가지고 있는 Refresh Token과 비교
-    if (refreshToken !== savedRefreshToken) throw new HttpError.Unauthorized(MESSAGES.AUTH.COMMON.JWT.INVALID);;
+    const isPasswordMatched = await compareWithHashed(refreshToken, savedRefreshToken);
+    if (!isPasswordMatched) throw new HttpError.Unauthorized(MESSAGES.AUTH.COMMON.JWT.INVALID);
 
     // req.user에 사용자 정보 넣어서 넘겨줌
     req.user = user;
