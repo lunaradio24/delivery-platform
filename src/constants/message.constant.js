@@ -18,6 +18,7 @@ export const MESSAGES = {
       },
       NICKNAME: {
         REQUIRED: '닉네임을 입력해 주세요.',
+        DUPLICATED: '이미 등록된 닉네임입니다.',
       },
       CONTACT_NUMBER: {
         REQUIRED: '휴대폰 번호를 입력해 주세요',
@@ -32,6 +33,8 @@ export const MESSAGES = {
         INVALID: '인증 정보가 유효하지 않습니다.',
       },
       ROLE: {
+        REQUIRED: '회원 구분을 선택 해 주세요.',
+        INVALID_ROLE: '회원 구분이 유효하지 않습니다.',
         NO_ACCESS_RIGHT: '접근 권한이 없습니다.',
       },
     },
