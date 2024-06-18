@@ -22,7 +22,7 @@
     "passport": "^0.7.0",
     "passport-kakao": "^1.0.1",
     "passport-naver": "^1.0.6",
-    "prisma": "^5.15.0",
+    "prisma": "^5.15.1",
     "winston": "^3.13.0"
   },
   "devDependencies": {

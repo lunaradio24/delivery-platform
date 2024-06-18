@@ -6,9 +6,12 @@ export class UserService {
     this.userRepository = userRepository;
   }
 
-  getMyInfo = async () => {
-    // 내용 채워주시면 됩니다.
+  // userId로 user 찾기
+  getMyInfo = async (userId) => {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new HttpError.NotFound(MESSAGES.USERS.NOT_FOUND);
+    }
+    return user;
   };
-
-  // method 작성해주시면 됩니다.
 }
