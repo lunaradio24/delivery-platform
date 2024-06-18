@@ -1,5 +1,5 @@
 import express from 'express';
-import { prisma } from '../utils/prisma.util';
+import { prisma } from '../utils/prisma.util.js';
 import { TransactionLogRepository } from '../repositories/transaction-log.repository.js';
 import { TransactionLogService } from '../services/transaction-log.service.js';
 import { TransactionLogController } from '../controllers/transaction-log.controller.js';

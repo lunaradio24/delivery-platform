@@ -61,6 +61,7 @@ export const MESSAGES = {
     },
     CANCEL: {
       SUCCEED: '주문 취소 요청 되었습니다.',
+      CANCEL_SAME: '이미 취소된 주문입니다.',
     },
     LIST: {
       SUCCEED: '주문내역 조회에 성공하였습니다.',

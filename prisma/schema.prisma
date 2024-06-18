@@ -32,12 +32,12 @@ model User {
   createdAt     DateTime      @default(now()) @map("created_at")
   updatedAt     DateTime      @updatedAt @map("updated_at")
 
-  refreshToken  Auth?
-  store         Store?
-  cart          CartItem[]
-  order         Order[]
-  review        Review[]
-  like          Like[]
+  refreshToken     Auth?
+  store            Store?
+  cart             CartItem[]
+  order            Order[]
+  review           Review[]
+  like             Like[]
 
   @@map("users")
 }
