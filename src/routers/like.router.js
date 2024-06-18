@@ -10,6 +10,8 @@ const likeRepository = new LikeRepository(prisma);
 const likeService = new LikeService(likeRepository);
 const likeController = new LikeController(likeService);
 
-// 가게 좋아요/취소 API
+// 가게 찜하기/취소 API
+
+// 내가 찜한 음식점 목록 API
 
 export { likeRouter };

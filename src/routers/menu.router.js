@@ -14,8 +14,6 @@ const menuController = new MenuController(menuService);
 
 // 메뉴 목록 조회 API
 
-// 메뉴 상세 조회 API
-
 // 메뉴 수정 API
 
 // 메뉴 삭제 API

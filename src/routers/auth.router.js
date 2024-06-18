@@ -23,4 +23,8 @@ const authController = new AuthController(authService);
 
 // 토큰 재발급 API
 
+// 네이버 로그인 API
+
+// 카카오 로그인 API
+
 export { authRouter };
