@@ -52,5 +52,97 @@ export const MESSAGES = {
     READ_ME: {
       SUCCEED: '내 정보 조회에 성공했습니다.',
     },
+    UPDATE: {
+      SUCCEED: '내 정보 수정에 성공했습니다.',
+    },
+  },
+  STORES: {
+    CREATED: {
+      SUCCEED: '가게 등록에 성공했습니다.',
+    },
+    READ_LIST: {
+      SUCCEED: '가게 목록 조회에 성공했습니다.',
+    },
+    READ_DETAIL: {
+      SUCCEED: '가게 상세 조회에 성공했습니다.',
+    },
+    UPDATE: {
+      SUCCEED: '가게 정보 수정에 성공했습니다.',
+    },
+    DELETE: {
+      SUCCEED: '가게 정보 삭제에 성공했습니다.',
+    },
+  },
+  MENUS: {
+    CREATED: {
+      SUCCEED: '메뉴 생성에 성공했습니다.',
+    },
+    READ_LIST: {
+      SUCCEED: '메뉴 목록 조회에 성공했습니다.',
+    },
+    UPDATE: {
+      SUCCEED: '메뉴 수정에 성공했습니다.',
+    },
+    DELETE: {
+      SUCCEED: '메뉴 삭제에 성공했습니다.',
+    },
+  },
+  CARTS: {
+    CREATED: {
+      SUCCEED: '장바구니에 담기를 성공했습니다.',
+    },
+    READ_LIST: {
+      SUCCEED: '장바구니 목록 조회에 성공했습니다.',
+    },
+    UPDATE: {
+      SUCCEED: '장바구니 아이템 정보 수정에 성공했습니다.',
+    },
+    DELETE: {
+      SUCCEED: '장바구니 아이템 삭제에 성공했습니다.',
+    },
+  },
+  ORDERS: {
+    CREATED: {
+      SUCCEED: '주문 요청에 성공했습니다.',
+    },
+    READ_LIST: {
+      SUCCEED: '주문 내역 목록 조회에 성공했습니다.',
+    },
+    READ_DETAIL: {
+      SUCCEED: '주문 내역 상세 조회에 성공했습니다.',
+    },
+    UPDATE_STATUS: {
+      SUCCEED: '주문 상태 변경에 성공했습니다.',
+    },
+    CANCEL: {
+      SUCCEED: '주문 취소에 성공했습니다.',
+    },
+  },
+  REVIEWS: {
+    CREATED: {
+      SUCCEED: '리뷰 생성에 성공했습니다.',
+      NO_BODY_DATA: '작성 할 정보를 입력해 주세요.',
+    },
+    READ_LIST: {
+      SUCCEED: '리뷰 목록 조회에 성공했습니다.',
+    },
+    READ_MY: {
+      SUCCEED: '내 리뷰 목록 조회에 성공했습니다.',
+    },
+    READ_DETAIL: {
+      SUCCEED: '리뷰 상세 조회에 성공했습니다.',
+    },
+    UPDATE: {
+      SUCCEED: '리뷰 수정에 성공했습니다.',
+      NO_BODY_DATA: '수정 할 정보를 입력해 주세요.',
+    },
+    DELETE: {
+      SUCCEED: '리뷰 삭제에 성공했습니다.',
+    },
+  },
+  LIKES: {
+    CREATED: {
+      SUCCEED: '',
+    },
   },
 };
