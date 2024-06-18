@@ -19,6 +19,7 @@ const authController = new AuthController(authService);
 authRouter.post('/sign-up', signUpValidator, authController.signUp);
 
 /** 로그인 API */
+authRouter.post('/sign-in', signInValidator, authController.signIn);
 
 /** 로그아웃 API */
 

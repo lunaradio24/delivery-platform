@@ -1,7 +1,6 @@
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
 import { AuthService } from '../services/auth.service.js';
-import { prisma } from '../utils/prisma.util.js';
 
 const authService = new AuthService();
 
@@ -29,7 +28,7 @@ export class AuthController {
       });
 
       // 성공 메세지 반환
-      res.status(200).json({
+      res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.CREATED,
         message: MESSAGES.AUTH.SIGN_UP.SUCCEED,
         data: user,
@@ -38,5 +37,29 @@ export class AuthController {
       next(error);
     }
     return;
+  };
+
+  /** 로그인 */
+  signIn = async (req, res, next) => {
+    try {
+      // 작성 정보 받아오기
+      const { email, password } = req.body;
+
+      // user 찾아오기
+      const user = await this.authService.signIn({
+        email,
+        password,
+      });
+
+      // 성공 메세지 반환
+      res.status(HTTP_STATUS.OK).json({
+        status: HTTP_STATUS.OK,
+        message: MESSAGES.AUTH.SIGN_IN.SUCCEED,
+        data: user,
+      });
+
+    } catch (error) {
+      next(error);
+    }
   };
 }

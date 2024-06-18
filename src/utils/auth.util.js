@@ -25,10 +25,10 @@ export const verifyRefreshToken = (token) => {
 
 // string을 bcrypt로 Hashing 하는 함수
 export const hash = async (string) => {
-  return await bcrypt.hash(string, SALT_ROUNDS);
+  return bcrypt.hashSync(string, SALT_ROUNDS);
 };
 
 // original string과 bcrypt로 Hashed 된 string을 비교하는 함수
 export const compareWithHashed = async (string, hashedString) => {
-  return await bcrypt.compare(string, hashedString);
+  return bcrypt.compareSync(string, hashedString);
 };

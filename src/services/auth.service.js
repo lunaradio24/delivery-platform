@@ -1,9 +1,8 @@
 import { HttpError } from '../errors/http.error.js';
 import { MESSAGES } from '../constants/message.constant.js';
 import { hash, compareWithHashed, generateAccessToken, generateRefreshToken } from '../utils/auth.util.js';
-import { prisma } from '../utils/prisma.util.js';
-import { SALT_ROUNDS } from '../constants/auth.constant.js';
 import { AuthRepository } from '../repositories/auth.repository.js';
+import bcrypt from 'bcrypt'
 
 const authRepository = new AuthRepository();
 
@@ -28,8 +27,8 @@ export class AuthService {
     }
 
     // 비밀번호 암호화
-    const hashedPassword = await hash(password, SALT_ROUNDS);
-
+    const hashedPassword = await hash(password);
+    console.log(hashedPassword)
     // user 생성하기
     const user = await this.authRepository.create({
       email,
@@ -44,4 +43,37 @@ export class AuthService {
     const { password: _password, ...withoutPasswordUser } = user;
     return withoutPasswordUser;
   };
+
+  /** 로그인 */
+  signIn = async ({ email, password }) => {
+    // email로 찾기
+    const user = await this.authRepository.getByEmail(email);
+
+    if (!user) {
+      throw new HttpError.Unauthorized(MESSAGES.AUTH.COMMON.UNAUTHORIZED);
+    };
+
+    // const isMachedPassword = 
+    // user && await compareWithHashed(password, user.password);
+    // const correctPassword = await bcrypt.hash(password, user.password);
+    // console.log(password)
+    // console.log(user.password)
+    // console.log(correctPassword)
+
+    // 비밀번호 일치여부
+    const comparePassword = compareWithHashed(password, user.password);
+    console.log(password)
+    console.log(user)
+    console.log(user.password)
+    console.log(comparePassword)
+    if (!comparePassword) {
+      throw new HttpError.Unauthorized(MESSAGES.AUTH.COMMON.UNAUTHORIZED);
+    };
+
+    // accessToken 발급
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    return { accessToken, refreshToken };
+  }
 }
