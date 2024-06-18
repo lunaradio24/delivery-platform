@@ -7,14 +7,15 @@ export class ReviewController {
   }
 
   // 리뷰 작성
-  createReview = async (req, res, next) => {
+  create = async (req, res, next) => {
     try {
+      const { userId } = req.user;
       const { storeId, orderId, rating, content, image } = req.body;
-      const createdReview = await this.reviewService(storeId, orderId, rating, content, image);
+      const createdReview = await this.reviewService.create(userId, storeId, orderId, rating, content, image);
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
-        message: MESSAGES.REVIEWS.CREATED.SUCCEED,
+        message: MESSAGES.REVIEWS.CREATE.SUCCEED,
         data: createdReview,
       });
     } catch (error) {
@@ -23,10 +24,10 @@ export class ReviewController {
   };
 
   // 리뷰 목록 조회
-  getReviewList = async (req, res, next) => {
+  readList = async (req, res, next) => {
     try {
-      const { storeId, menuId, sort, filter } = req.query;
-      const reviewList = await this.reviewService(storeId, menuId, sort, filter);
+      const { storeId, menuId, orderBy, sort } = req.query;
+      const reviewList = await this.reviewService.readList(storeId, menuId, orderBy, sort);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
@@ -39,10 +40,10 @@ export class ReviewController {
   };
 
   // 내가 작성한 리뷰 목록 조회
-  getMyReviewList = async (req, res, next) => {
+  readMyList = async (req, res, next) => {
     try {
       const { userId } = req.user;
-      const myReviews = await this.reviewService(userId);
+      const myReviews = await this.reviewService.readListByUserId(userId);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
@@ -55,10 +56,10 @@ export class ReviewController {
   };
 
   // 리뷰 상세 조회
-  getReviewDetail = async (req, res, next) => {
+  readDetail = async (req, res, next) => {
     try {
       const { reviewId } = req.params;
-      const review = await this.reviewService(reviewId);
+      const review = await this.reviewService.readDetail(reviewId);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
@@ -71,11 +72,12 @@ export class ReviewController {
   };
 
   // 리뷰 수정
-  updateReview = async (req, res, next) => {
+  update = async (req, res, next) => {
     try {
+      const { userId } = req.user;
       const { reviewId } = req.params;
       const { rating, content, image } = req.body;
-      const updatedReview = await this.reviewService(reviewId, rating, content, image);
+      const updatedReview = await this.reviewService.update(userId, reviewId, rating, content, image);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
@@ -88,10 +90,11 @@ export class ReviewController {
   };
 
   // 리뷰 삭제
-  deleteReview = async (req, res, next) => {
+  delete = async (req, res, next) => {
     try {
+      const { userId } = req.user;
       const { reviewId } = req.params;
-      await this.reviewService(reviewId);
+      await this.reviewService.delete(userId, reviewId);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,

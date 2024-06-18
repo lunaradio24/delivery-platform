@@ -1,4 +1,5 @@
 import { MIN_PASSWORD_LENGTH } from './auth.constant.js';
+import { MAX_REVIEW_LENGTH } from './review.constant.js';
 
 export const MESSAGES = {
   AUTH: {
@@ -49,6 +50,10 @@ export const MESSAGES = {
     },
   },
   USERS: {
+    COMMON: {
+      NOT_FOUND: '해당 사용자가 존재하지 않습니다.',
+      NO_ACCESS_RIGHT: '접근 권한이 없습니다.',
+    },
     READ_ME: {
       SUCCEED: '내 정보 조회에 성공했습니다.',
     },
@@ -57,7 +62,11 @@ export const MESSAGES = {
     },
   },
   STORES: {
-    CREATED: {
+    COMMON: {
+      NOT_FOUND: '해당 가게가 존재하지 않습니다.',
+      NO_ACCESS_RIGHT: '접근 권한이 없습니다.',
+    },
+    CREATE: {
       SUCCEED: '가게 등록에 성공했습니다.',
     },
     READ_LIST: {
@@ -74,7 +83,11 @@ export const MESSAGES = {
     },
   },
   MENUS: {
-    CREATED: {
+    COMMON: {
+      NOT_FOUND: '해당 메뉴가 존재하지 않습니다.',
+      NO_ACCESS_RIGHT: '접근 권한이 없습니다.',
+    },
+    CREATE: {
       SUCCEED: '메뉴 생성에 성공했습니다.',
     },
     READ_LIST: {
@@ -88,7 +101,11 @@ export const MESSAGES = {
     },
   },
   CARTS: {
-    CREATED: {
+    COMMON: {
+      NOT_FOUND: '해당 장바구니가 존재하지 않습니다.',
+      NO_ACCESS_RIGHT: '접근 권한이 없습니다.',
+    },
+    CREATE: {
       SUCCEED: '장바구니에 담기를 성공했습니다.',
     },
     READ_LIST: {
@@ -102,7 +119,11 @@ export const MESSAGES = {
     },
   },
   ORDERS: {
-    CREATED: {
+    COMMON: {
+      NOT_FOUND: '해당 주문이 존재하지 않습니다.',
+      NO_ACCESS_RIGHT: '접근 권한이 없습니다.',
+    },
+    CREATE: {
       SUCCEED: '주문 요청에 성공했습니다.',
     },
     READ_LIST: {
@@ -119,9 +140,26 @@ export const MESSAGES = {
     },
   },
   REVIEWS: {
-    CREATED: {
+    COMMON: {
+      STORE_ID: {
+        REQUIRED: '가게 ID를 입력해주세요',
+      },
+      ORDER_ID: {
+        REQUIRED: '주문 ID를 입력해주세요',
+      },
+      RATING: {
+        REQUIRED: '별점을 입력해주세요',
+      },
+      CONTENT: {
+        MAX_LENGTH: `리뷰 내용은 최대 ${MAX_REVIEW_LENGTH}자 까지 작성가능합니다.`,
+      },
+      NOT_FOUND: '해당 리뷰가 존재하지 않습니다.',
+      NO_ACCESS_RIGHT: '접근 권한이 없습니다.',
+    },
+    CREATE: {
       SUCCEED: '리뷰 생성에 성공했습니다.',
       NO_BODY_DATA: '작성 할 정보를 입력해 주세요.',
+      DUPLICATED: '이미 리뷰가 작성 된 주문입니다.',
     },
     READ_LIST: {
       SUCCEED: '리뷰 목록 조회에 성공했습니다.',
@@ -141,7 +179,7 @@ export const MESSAGES = {
     },
   },
   LIKES: {
-    CREATED: {
+    CREATE: {
       SUCCEED: '',
     },
   },
