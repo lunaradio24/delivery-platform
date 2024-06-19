@@ -1,7 +1,7 @@
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
 
-export class UserController {
+class UserController {
   constructor(userService) {
     this.userService = userService;
   }
@@ -20,8 +20,8 @@ export class UserController {
         data: profile,
       });
     } catch (error) {
-      next (error);
-    };
+      next(error);
+    }
   };
 
   /** 프로필 수정 */
@@ -31,7 +31,11 @@ export class UserController {
       const userId = req.user.id;
       const { nickname, address, image, contactNumber } = req.body;
       const updatedProfile = await this.userService.updateMyInfo({
-        userId, nickname, address, image, contactNumber
+        userId,
+        nickname,
+        address,
+        image,
+        contactNumber,
       });
 
       // 성공 메세지 반환
@@ -41,7 +45,9 @@ export class UserController {
         data: updatedProfile,
       });
     } catch (error) {
-      next (error);
-    };
-  }
+      next(error);
+    }
+  };
 }
+
+export default UserController;

@@ -1,10 +1,9 @@
 import { HttpError } from '../errors/http.error.js';
 import { MESSAGES } from '../constants/message.constant.js';
 
-export class LikeService {
-  constructor(likeRepository, storeRepository) {
+class LikeService {
+  constructor(likeRepository) {
     this.likeRepository = likeRepository;
-    this.storeRepository = storeRepository;
   }
 
   likeOrUnlike = async (userId, storeId, isLike) => {
@@ -39,3 +38,5 @@ export class LikeService {
     return likedStores;
   };
 }
+
+export default LikeService;

@@ -1,14 +1,13 @@
 import { ORDER_STATUS } from '../constants/order.constant.js';
 import { ROLES } from '../constants/auth.constant.js';
 
-export class OrderRepository {
+class OrderRepository {
   constructor(prisma) {
     this.prisma = prisma;
   }
-
   //  주문 요청 API
   createdOrder = async (userId, storeId, orderItems, totalPrice, userCartId) => {
-    const transactionCreatedOrder = await prisma.$transaction(async (tx) => {
+    const transactionCreatedOrder = await this.prisma.$transaction(async (tx) => {
       const createdOrder = await tx.order.create({
         //Order 데이터 생성
         data: {
@@ -65,7 +64,7 @@ export class OrderRepository {
   };
 
   cancelOrder = async (userId, id) => {
-    const cancelOrder = await prisma.$transaction(async (tx) => {
+    const cancelOrder = await this.prisma.$transaction(async (tx) => {
       const checkOrder = await tx.order.findUnique({
         where: { id, customerId: userId }, //반환 : orderId
       });
@@ -105,7 +104,7 @@ export class OrderRepository {
   //  주문 내역 목록 조회 API
   //Admin 주문내역 전체
   getAdminOrders = async () => {
-    let getAllOrders = await prisma.order.findMany({
+    let getAllOrders = await this.prisma.order.findMany({
       include: {
         store: true,
         customer: true,
@@ -121,7 +120,7 @@ export class OrderRepository {
 
   //Owner 주문내역 전체
   getOwnerOrders = async (storeId) => {
-    let getOwnerOrders = await prisma.order.findMany({
+    let getOwnerOrders = await this.prisma.order.findMany({
       where: { storeId: storeId },
       include: {
         store: true,
@@ -156,7 +155,7 @@ export class OrderRepository {
 
   //User 주문내역 전체
   getUserOrders = async (id) => {
-    let getUserOrders = await prisma.order.findMany({
+    let getUserOrders = await this.prisma.order.findMany({
       where: { id: id },
       include: {
         store: true,
@@ -189,7 +188,7 @@ export class OrderRepository {
 
   //Owner 주문 내역 상세 조회
   getOwnerDetailOrders = async (storeId, id) => {
-    let getOwnerDetailOrders = await prisma.order.findUnique({
+    let getOwnerDetailOrders = await this.prisma.order.findUnique({
       where: {
         id: id,
         storeId: storeId,
@@ -231,7 +230,7 @@ export class OrderRepository {
 
   //User 주문 내역 상세 조회
   getUserDetailOrders = async (userId, id) => {
-    const getUserOrders = await prisma.order.findUnique({
+    const getUserOrders = await this.prisma.order.findUnique({
       where: { id, customerId: userId },
       include: {
         store: true,
@@ -266,7 +265,7 @@ export class OrderRepository {
 
   //  주문 상태 변경 API
   statusUpdateOrder = async (user, id, status) => {
-    const statusUpdate = await prisma.$transaction(async (tx) => {
+    const statusUpdate = await this.prisma.$transaction(async (tx) => {
       const checkOrder = await tx.order.findUnique({
         where: { id: id },
       });
@@ -307,7 +306,7 @@ export class OrderRepository {
 
   //메뉴 가격 함수
   getMenuPrice = async (menuId) => {
-    const menu = await prisma.menu.findUnique({
+    const menu = await this.prisma.menu.findUnique({
       where: { id: menuId },
       select: { price: true },
     });
@@ -315,3 +314,5 @@ export class OrderRepository {
     return menu.price;
   };
 }
+
+export default OrderRepository;

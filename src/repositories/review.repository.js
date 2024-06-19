@@ -1,6 +1,6 @@
-import { BaseRepository } from './base.repository.js';
+import BaseRepository from './base.repository.js';
 
-export class ReviewRepository extends BaseRepository {
+class ReviewRepository extends BaseRepository {
   create = async (userId, storeId, orderId, rating, content, image, { tx }) => {
     const orm = tx || this.prisma;
     const createdReview = await orm.review.create({
@@ -44,3 +44,5 @@ export class ReviewRepository extends BaseRepository {
     await orm.review.delete({ where: { id: reviewId } });
   };
 }
+
+export default ReviewRepository;

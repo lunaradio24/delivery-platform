@@ -2,14 +2,13 @@ import { HttpError } from '../errors/http.error.js';
 import { MESSAGES } from '../constants/message.constant.js';
 import { hash, compareWithHashed, generateAccessToken, generateRefreshToken } from '../utils/auth.util.js';
 
-export class AuthService {
+class AuthService {
   constructor(authRepository, userRepository) {
     this.authRepository = authRepository;
     this.userRepository = userRepository;
   }
-
   /** 회원가입 */
-  signUp = async ({ email, password, nickname, role, contactNumber, address, image }) => {
+  signUp = async (email, password, nickname, role, contactNumber, address, image) => {
     // email 중복확인
     const existingEmail = await this.authRepository.getByEmail(email);
     if (existingEmail) {
@@ -41,7 +40,7 @@ export class AuthService {
   };
 
   /** 로그인 */
-  signIn = async ({ email, password }) => {
+  signIn = async (email, password) => {
     // email로 찾기
     const user = await this.authRepository.getByEmail(email);
 
@@ -59,6 +58,11 @@ export class AuthService {
     // accessToken, refreshToken 발급
     const accessToken = generateAccessToken(payload);
     const refreshToken = generateRefreshToken(payload);
+
+    // refresh Token hash 후 DB에 저장
+    const hashedRefreshToken = await hash(refreshToken);
+    console.log(hashedRefreshToken);
+    await this.authRepository.upsertRefreshToken(user.id, hashedRefreshToken);
 
     return { accessToken, refreshToken };
   };
@@ -80,11 +84,15 @@ export class AuthService {
     const payload = { userId: user.id };
 
     // accessToken, refreshToken 발급
-    const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user);
+    const accessToken = generateAccessToken(payload);
+    const refreshToken = generateRefreshToken(payload);
 
-    await this.authRepository.upsertRefreshToken(user.id, refreshToken);
+    // refresh Token hash 후 DB에 저장
+    const hashedRefreshToken = await hash(refreshToken);
+    await this.authRepository.upsertRefreshToken(user.id, hashedRefreshToken);
 
     return { accessToken, refreshToken };
   };
 }
+
+export default AuthService;
