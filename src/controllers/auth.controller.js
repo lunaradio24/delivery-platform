@@ -10,7 +10,8 @@ export class AuthController {
   signUp = async (req, res, next) => {
     try {
       // 작성 정보 받아오기
-      const { email, password, passwordConfirm, nickname, role, contactNumber, address, image } = req.body;
+      const { email, password, nickname, role, contactNumber, address, image } = req.body;
+      console.log(email, password, nickname, role, contactNumber, address, image);
 
       // user 생성하기
       const user = await this.authService.signUp({

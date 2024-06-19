@@ -41,10 +41,15 @@ class OrderService {
     });
 
     // 고객의 잔액 차감
-    const updatedUser = await this.userRepository.메소드이름(userId, createdOrder.totalPrice);
+    let userWalletDecrement = await this.userRepository.deductionWallet(userId, totalPrice, {
+      tx,
+    });
 
     // admin 잔액 증가
-    const updatedAdmin = await this.userRepository.메소드이름(ADMIN_ID, createdOrder.totalPrice);
+    const adminId = 1;
+    let adminWalletAdd = await this.userRepository.addWallet(adminId, totalPrice, {
+      tx,
+    });
 
     // 수정 필요
     const data = {
@@ -56,7 +61,7 @@ class OrderService {
         quantity: item.quantity, // 수량
       })),
       address: createdOrder.customer.address,
-      totalPrice: createdOrder.totalPrice,
+      totalPrice: updatedUser,
       createdAt: createdOrder.createdAt,
     };
 
@@ -64,51 +69,53 @@ class OrderService {
   };
 
   //  주문 취소 API
-  cancelOrder = async (userId, id) => {
-    const cancelOrder = await this.orderRepository.cancelOrder(userId, id);
+  cancelOrder = async (userId, orderId) => {
+    const checkOrder = await this.orderRepository.getUserDetailOrder(userId, orderId);
 
     //주문이 없거나, 해당 유저의 주문이 아니라면 오류 반환
-    if (!cancelOrder) {
+    if (!checkOrder) {
       throw new HttpError.NotFound(MESSAGES.ORDERS.NO_DATA);
     }
 
     //주문이 있지만 이미 취소 상태라면 오류 반환
-    if (cancelOrder.status === ORDER_STATUS[4]) {
+    if (checkOrder.status === 4) {
       throw new HttpError.BadRequest(MESSAGES.ORDERS.CANCEL.CANCEL_SAME);
     }
 
-    return cancelledOrder; // 취소된 주문 객체 반환
+    const cancelOrder = await this.orderRepository.cancelOrder(userId, orderId);
+
+    return cancelOrder; // 취소된 주문 객체 반환
   };
 
   //  주문 내역 목록 조회 API
-
   getOrders = async (user) => {
+    const id = user.id;
     let getOrder;
-    if (user.role === ROLES[1]) {
-      const storeId = user.store.id;
-      getOrder = await this.orderService.getOwnerOrders(storeId); // owner
-    } else if (user.role === ROLES[2]) {
-      const id = user.id;
-      getOrder = await this.orderService.getUserOrders(id); // user
+    if (user.role === 1) {
+      const getStoreId = await this.userRepository.findeStoreId(id);
+      getOrder = await this.orderRepository.getOwnerOrders(getStoreId.store.id); // owner
+    } else if (user.role === 2) {
+      getOrder = await this.orderRepository.getUserOrders(id); // user
     }
 
     return getOrder;
   };
 
   //  주문 내역 상세 조회 API
-  getDetailOrder = async (user, id) => {
+  getDetailOrder = async (user, orderId) => {
+    const userId = user.id;
     let getOrder;
 
-    if (user.role === ROLES[1]) {
-      const storeId = user.store.id;
-      getOrder = await this.orderRepository.getOwnerDetailOrders(storeId, orderId); // owner
-    } else if (user.role === ROLES[2]) {
-      const userId = user.id;
-      getOrder = await this.orderRepository.getUserDetailOrders(userId, orderId); // user
+    if (user.role === 1) {
+      const getStoreId = await this.userRepository.findeStoreId(userId);
+      const storeId = getStoreId.store.id;
+      getOrder = await this.orderRepository.getOwnerDetailOrder(storeId, orderId); // owner
+    } else if (user.role === 2) {
+      getOrder = await this.orderRepository.getUserDetailOrder(userId, orderId); // user
     }
 
     if (!getOrder) {
-      throw new HttpError.NotFound(MESSAGES.ORDERS.NODATA);
+      throw new HttpError.NotFound(MESSAGES.ORDERS.NO_DATA);
     }
     return getOrder;
   };
