@@ -1,4 +1,5 @@
 import { MIN_PASSWORD_LENGTH } from './auth.constant.js';
+import { MAX_REVIEW_LENGTH } from './review.constant.js';
 
 export const MESSAGES = {
   AUTH: {
@@ -18,6 +19,7 @@ export const MESSAGES = {
       },
       NICKNAME: {
         REQUIRED: '닉네임을 입력해 주세요.',
+        DUPLICATED: '이미 등록된 닉네임입니다.',
       },
       CONTACT_NUMBER: {
         REQUIRED: '휴대폰 번호를 입력해 주세요',
@@ -32,6 +34,8 @@ export const MESSAGES = {
         INVALID: '인증 정보가 유효하지 않습니다.',
       },
       ROLE: {
+        REQUIRED: '회원 구분을 선택 해 주세요.',
+        INVALID_ROLE: '회원 구분이 유효하지 않습니다.',
         NO_ACCESS_RIGHT: '접근 권한이 없습니다.',
       },
     },
@@ -49,8 +53,139 @@ export const MESSAGES = {
     },
   },
   USERS: {
+    COMMON: {
+      NOT_FOUND: '해당 사용자가 존재하지 않습니다.',
+      NO_ACCESS_RIGHT: '접근 권한이 없습니다.',
+    },
     READ_ME: {
       SUCCEED: '내 정보 조회에 성공했습니다.',
+    },
+    UPDATE_ME: {
+      SUCCEED: '내 정보 수정에 성공했습니다.',
+    },
+    NOT_FOUND: '일치하는 사용자가 없습니다.',
+  },
+  STORES: {
+    COMMON: {
+      NOT_FOUND: '해당 가게가 존재하지 않습니다.',
+      NO_ACCESS_RIGHT: '접근 권한이 없습니다.',
+    },
+    CREATE: {
+      SUCCEED: '가게 등록에 성공했습니다.',
+    },
+    READ_LIST: {
+      SUCCEED: '가게 목록 조회에 성공했습니다.',
+    },
+    READ_DETAIL: {
+      SUCCEED: '가게 상세 조회에 성공했습니다.',
+    },
+    UPDATE: {
+      SUCCEED: '가게 정보 수정에 성공했습니다.',
+    },
+    DELETE: {
+      SUCCEED: '가게 정보 삭제에 성공했습니다.',
+    },
+  },
+  MENUS: {
+    COMMON: {
+      NOT_FOUND: '해당 메뉴가 존재하지 않습니다.',
+      NO_ACCESS_RIGHT: '접근 권한이 없습니다.',
+    },
+    CREATE: {
+      SUCCEED: '메뉴 생성에 성공했습니다.',
+    },
+    READ_LIST: {
+      SUCCEED: '메뉴 목록 조회에 성공했습니다.',
+    },
+    UPDATE: {
+      SUCCEED: '메뉴 수정에 성공했습니다.',
+    },
+    DELETE: {
+      SUCCEED: '메뉴 삭제에 성공했습니다.',
+    },
+  },
+  CARTS: {
+    COMMON: {
+      NOT_FOUND: '해당 장바구니가 존재하지 않습니다.',
+      NO_ACCESS_RIGHT: '접근 권한이 없습니다.',
+    },
+    CREATE: {
+      SUCCEED: '장바구니에 담기를 성공했습니다.',
+    },
+    READ_LIST: {
+      SUCCEED: '장바구니 목록 조회에 성공했습니다.',
+    },
+    UPDATE: {
+      SUCCEED: '장바구니 아이템 정보 수정에 성공했습니다.',
+    },
+    DELETE: {
+      SUCCEED: '장바구니 아이템 삭제에 성공했습니다.',
+    },
+  },
+  ORDERS: {
+    NODATA: '주문이 존재하지 않습니다',
+    CREATED: {
+      SUCCEED: '주문이 접수되었습니다.',
+      NOORDER: '메뉴는 1개 이상 주문해주세요.',
+    },
+    CANCEL: {
+      SUCCEED: '주문 취소 요청 되었습니다.',
+      CANCEL_SAME: '이미 취소된 주문입니다.',
+    },
+    LIST: {
+      SUCCEED: '주문내역 조회에 성공하였습니다.',
+    },
+    DETAIL: {
+      SUCCEED: '주문내역 상세 조회에 성공하였습니다.',
+    },
+    STATUS_UPDATE: {
+      SUCCEED: '주문 상태가 변경되었습니다.',
+      STATUS_SAME: '현재 상태와 동일합니다.',
+    },
+    NO_WALLET: '잔액이 부족합니다.',
+  },
+  REVIEWS: {
+    COMMON: {
+      STORE_ID: {
+        REQUIRED: '가게 ID를 입력해주세요',
+      },
+      ORDER_ID: {
+        REQUIRED: '주문 ID를 입력해주세요',
+      },
+      RATING: {
+        REQUIRED: '별점을 입력해주세요',
+      },
+      CONTENT: {
+        MAX_LENGTH: `리뷰 내용은 최대 ${MAX_REVIEW_LENGTH}자 까지 작성가능합니다.`,
+      },
+      NOT_FOUND: '해당 리뷰가 존재하지 않습니다.',
+      NO_ACCESS_RIGHT: '접근 권한이 없습니다.',
+    },
+    CREATE: {
+      SUCCEED: '리뷰 생성에 성공했습니다.',
+      NO_BODY_DATA: '작성 할 정보를 입력해 주세요.',
+      DUPLICATED: '이미 리뷰가 작성 된 주문입니다.',
+    },
+    READ_LIST: {
+      SUCCEED: '리뷰 목록 조회에 성공했습니다.',
+    },
+    READ_MY: {
+      SUCCEED: '내 리뷰 목록 조회에 성공했습니다.',
+    },
+    READ_DETAIL: {
+      SUCCEED: '리뷰 상세 조회에 성공했습니다.',
+    },
+    UPDATE: {
+      SUCCEED: '리뷰 수정에 성공했습니다.',
+      NO_BODY_DATA: '수정 할 정보를 입력해 주세요.',
+    },
+    DELETE: {
+      SUCCEED: '리뷰 삭제에 성공했습니다.',
+    },
+  },
+  LIKES: {
+    CREATE: {
+      SUCCEED: '',
     },
   },
   CARTS: {
