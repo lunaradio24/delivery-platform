@@ -76,8 +76,8 @@ export class AuthService {
   /** 로그아웃 */
   signOut = async (userId) => {
     // user 찾기
-    const existedUser = await this.userRepository.findById(userId);
-    if (!existedUser) {
+    const existingUser = await this.userRepository.findById(userId);
+    if (!existingUser) {
       throw new HttpError.Unauthorized(MESSAGES.AUTH.COMMON.UNAUTHORIZED);
     };
 
