@@ -4,15 +4,15 @@ import { cartController } from '../di/dependency-injected-instances.js';
 const cartRouter = express.Router();
 
 // 장바구니에 담기 API
-cartRouter.post('/carts', cartController.createCart);
+cartRouter.post('/', cartController.createCart);
 
 // 장바구니 조회 API
-cartRouter.get('/users/me/carts/:cartId', cartController.readCart);
+cartRouter.get('/:cartId', cartController.readCart);
 
 // 장바구니 수정 API
-cartRouter.patch('/users/me/carts/:cartId', cartController.updateCart);
+cartRouter.patch('/:cartId', cartController.updateCart);
 
 // 장바구니에서 삭제 API
-cartRouter.delete('/users/me/carts/:cartId', cartController.deleteCart);
+cartRouter.delete('/:cartId', cartController.deleteCart);
 
 export { cartRouter };

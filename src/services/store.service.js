@@ -1,19 +1,16 @@
+import { MESSAGES } from '../constants/message.constant.js';
+import { HttpError } from '../errors/http.error.js';
+
 class StoreService {
   constructor(storeRepository) {
     this.storeRepository = storeRepository;
   }
 
-  createStore = async (
-    category,
-    name,
-    image,
-    address,
-    contactNumber,
-    description,
-    openingHours,
-    ownerId
-  ) => {
-    const createStore = await this.storeRepository.createStore( 
+  createStore = async (ownerId, category, name, image, address, contactNumber, description, openingHours) => {
+    const existingStore = await this.storeRepository.getStoreByOwnerId(ownerId);
+    if (existingStore) throw new HttpError.Conflict(MESSAGES.STORES.CREATE.DUPLICATED);
+    const createdStore = await this.storeRepository.createStore(
+      ownerId,
       category,
       name,
       image,
@@ -21,23 +18,13 @@ class StoreService {
       contactNumber,
       description,
       openingHours,
-      ownerId
-    )
-    
-    return createStore
-  }
-  
-  updateStore = async (
-    storeId,
-    category,
-    name,
-    image,
-    address,
-    contactNumber,
-    description,
-    openingHours
-  ) => {
-    const updateStore = await this.storeRepository.updateStore(
+    );
+
+    return createdStore;
+  };
+
+  updateStore = async (storeId, category, name, image, address, contactNumber, description, openingHours) => {
+    const updatedStore = await this.storeRepository.updateStore(
       storeId,
       category,
       name,
@@ -45,19 +32,16 @@ class StoreService {
       address,
       contactNumber,
       description,
-      openingHours
-    )
-    
-    return updateStore
-  }
+      openingHours,
+    );
 
-  deleteStore = async ( storeId ) => {
-    const deleteStore = await this.storeRepository.deleteStore(
-      storeId
-    )
-    return deleteStore.id
-  }
+    return updatedStore;
+  };
 
+  deleteStore = async (storeId) => {
+    const deletedStore = await this.storeRepository.deleteStore(storeId);
+    return deletedStore.id;
+  };
 }
 
 export default StoreService;

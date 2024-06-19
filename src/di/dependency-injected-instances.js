@@ -66,7 +66,7 @@ export const transactionLogService = new TransactionLogService(transactionLogRep
 // controller instances
 export const authController = new AuthController(authService);
 export const userController = new UserController(userService);
-export const storeController = new StoreController(storeService);
+export const storeController = new StoreController(storeService, storeRepository);
 export const menuController = new MenuController(menuService);
 export const cartController = new CartController(cartService);
 export const orderController = new OrderController(orderService);

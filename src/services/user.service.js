@@ -16,12 +16,12 @@ class UserService {
   };
 
   // userId에 맞는 user정보 수정
-  updateMyInfo = async ({ userId, nickname, address, image, contactNumber }) => {
+  updateMyInfo = async (userId, nickname, address, image, contactNumber) => {
     const existingUser = await this.userRepository.findById(userId);
     if (!existingUser) {
       throw new HttpError.NotFound(MESSAGES.USERS.NOT_FOUND);
     }
-    return await this.userRepository.update({ userId, nickname, address, image, contactNumber });
+    return await this.userRepository.update(userId, nickname, address, image, contactNumber);
   };
 }
 
