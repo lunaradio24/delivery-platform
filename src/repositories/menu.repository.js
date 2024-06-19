@@ -6,6 +6,7 @@ class MenuRepository {
   }
 
   createMenu = async ({
+    storeId,
     name,
     price,
     image,
@@ -13,6 +14,7 @@ class MenuRepository {
   }) => {
     const createMenu = await prisma.menu.create({
       data: {
+        storeId,
         name,
         price,
         image,
@@ -45,20 +47,29 @@ class MenuRepository {
 
 
   // 메뉴 수정
-  updateMenu = async ( menuId ) => {
+  updateMenu = async ( 
+    menuId, 
+    name,
+    image,
+    description,
+    price,
+    ) => {
     const updateMenu = await prisma.menu.update({
       where: { id : menuId },
       data: {
-
+          ...(name && { name }),
+          ...(image && { image }),
+          ...(price && { price }),
+          ...(description && { description }),
       }
     })
     return updateMenu
   }
 
   // 메뉴 삭제
-  deleteMenu = async ( menuId ) => {
+  deleteMenu = async ( menuId, ownerId ) => {
     const deleteMenu = await prisma.menu.delete({
-      where: { id: +menuId }
+      where: { id: +menuId, ownerId },
     })
 
     return deleteMenu;

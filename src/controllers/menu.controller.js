@@ -1,19 +1,27 @@
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
-import { MenuRepository } from '../repositories/menu.repository.js';
-import { MenuService } from '../services/menu.service.js';
+import menuRepository from '../repositories/menu.repository.js';
+import menuService from '../services/menu.service.js';
 
-const menuService = new MenuService()
-const menuRepository = new MenuRepository()
 
-export class MenuController {
+class MenuController {
   createMenu = async (req, res, next) => {
     try{
       const storeId = req.params
-      const data = req.body
+      const { 
+        name,
+        price,
+        image,
+        description
+       } = req.body
 
-
-      const createMenu = await menuService.createMenu( storeId, data )
+      const createMenu = await menuService.createMenu( 
+        storeId,
+        name,
+        price,
+        image,
+        description
+      )
 
 
       return res.status(HTTP_STATUS.OK).json({
@@ -78,3 +86,6 @@ export class MenuController {
   }
   }
 }
+
+const menuController = new MenuController()
+export default menuController

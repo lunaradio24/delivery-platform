@@ -8,159 +8,172 @@ datasource db {
 }
 
 model Auth {
-  id            Int           @id @default(autoincrement())
-  userId        Int           @unique @map("user_id")
-  refreshToken  String?       @map("refresh_token")
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt  @map("updated_at")
+  id           Int      @id @default(autoincrement())
+  userId       Int      @unique @map("user_id")
+  refreshToken String?  @map("refresh_token")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("auth")
 }
 
 model User {
-  id            Int           @id @default(autoincrement())
-  email         String        @unique
-  password      String        
-  nickname      String        @unique
-  role          Int           @default(2)
-  wallet        Int           @default(1000000)
-  contactNumber String        @map("contact_number")
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  password      String
+  nickname      String   @unique
+  role          Int      @default(2)
+  wallet        Int      @default(1000000)
+  contactNumber String   @map("contact_number")
   address       String?
-  image         String?       @map("image")
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt @map("updated_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  image         String?  @map("image")
 
-  refreshToken     Auth?
-  store            Store?
-  cart             CartItem[]
-  order            Order[]
-  review           Review[]
-  like             Like[]
+  refreshToken Auth?
+  store        Store?
+  cart         CartItem[]
+  order        Order[]
+  review       Review[]
+  like         Like[]
 
   @@map("users")
 }
 
 model Store {
-  id                  Int                 @id @default(autoincrement())
-  ownerId             Int                 @unique @map("owner_id")
-  name                String
-  address             String
-  contactNumber       Int                 @map("contact_number")
-  category            Int
-  openingHours        DateTime            @map("opening_hours")
-  image               String
-  totalSales          Int                 @default(0) @map("total_sales")
-  totalReviews        Int                 @default(0) @map("total_reviews")
-  totalLikes          Int                 @default(0) @map("total_likes")
-  averageRating       Float?              @map("average_rating")
-  createdAt           DateTime            @default(now()) @map("created_at")
-  updatedAt           DateTime            @updatedAt @map("updated_at")
+  id            Int      @id @default(autoincrement())
+  ownerId       Int      @unique @map("owner_id")
+  name          String
+  address       String
+  contactNumber Int      @map("contact_number")
+  category      Int
+  openingHours  DateTime @map("opening_hours")
+  image         String
+  totalSales    Int      @default(0) @map("total_sales")
+  totalReviews  Int      @default(0) @map("total_reviews")
+  totalLikes    Int      @default(0) @map("total_likes")
+  averageRating Float?   @map("average_rating")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
 
-  owner               User                @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  menu                Menu[]
-  cart                CartItem[]
-  order               Order[]
-  review              Review[]
-  like                Like[]
+  owner  User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  menu   Menu[]
+  cart   CartItem[]
+  order  Order[]
+  review Review[]
+  like   Like[]
 
   @@map("stores")
 }
 
 model Menu {
-  id                Int                 @id @default(autoincrement())
-  storeId           Int                 @map("store_id")
-  name              String              
-  description       String
-  price             Int
-  image             String
-  totalReviews      Int                 @default(0) @map("total_reviews")
-  averageRating     Float?              @map("average_rating")
-  createdAt         DateTime            @default(now()) @map("created_at")
-  updatedAt         DateTime            @updatedAt @map("updated_at")
+  id            Int      @id @default(autoincrement())
+  storeId       Int      @map("store_id")
+  name          String
+  description   String
+  price         Int
+  image         String
+  totalReviews  Int      @default(0) @map("total_reviews")
+  averageRating Float?   @map("average_rating")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
 
-  store             Store               @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  cartItem          CartItem[]
-  orderItem         OrderItem[]
+  store      Store        @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  cartItem   CartItem[]
+  orderItem  OrderItem[]
+  reviewMenu ReviewMenu[]
 
   @@unique([storeId, name])
   @@map("menus")
 }
 
 model CartItem {
-  id                Int                 @id @default(autoincrement())
-  customerId        Int                 @map("customer_id")
-  storeId           Int                 @map("store_id")
-  menuId            Int                 @map("menu_id")
-  quantity          Int                 @default(1)
-  createdAt         DateTime            @default(now()) @map("created_at")
-  updatedAt         DateTime            @updatedAt @map("updated_at")
+  id         Int      @id @default(autoincrement())
+  customerId Int      @map("customer_id")
+  storeId    Int      @map("store_id")
+  menuId     Int      @map("menu_id")
+  quantity   Int      @default(1)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
-  customer          User                @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  store             Store               @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  menu              Menu                @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  customer User  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  store    Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  menu     Menu  @relation(fields: [menuId], references: [id], onDelete: Cascade)
 
   @@map("cart_items")
 }
 
 model Order {
-  id                Int                 @id @default(autoincrement())
-  storeId           Int                 @map("store_id")
-  customerId        Int                 @map("customer_id")
-  totalPrice        Int                 @map("total_price")
-  status            Int                 @default(0)
-  createdAt         DateTime            @default(now()) @map("created_at")
-  updatedAt         DateTime            @updatedAt @map("updated_at")
+  id         Int      @id @default(autoincrement())
+  storeId    Int      @map("store_id")
+  customerId Int      @map("customer_id")
+  totalPrice Int      @map("total_price")
+  status     Int      @default(0)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
-  store             Store               @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  customer          User                @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  orderItem         OrderItem[]
-  review            Review[]
+  store     Store       @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  customer  User        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  orderItem OrderItem[]
+  review    Review[]
 
   @@map("orders")
 }
 
 model OrderItem {
-  id                Int                 @id @default(autoincrement())
-  orderId           Int                 @map("order_id")
-  menuId            Int                 @map("menu_id")
-  quantity          Int                 
-  createdAt         DateTime            @default(now()) @map("created_at")
+  id        Int      @id @default(autoincrement())
+  orderId   Int      @map("order_id")
+  menuId    Int      @map("menu_id")
+  quantity  Int
+  createdAt DateTime @default(now()) @map("created_at")
 
-  order             Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  menu              Menu                @relation(fields: [menuId], references: [id], onDelete: Cascade)  
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menu  Menu  @relation(fields: [menuId], references: [id], onDelete: Cascade)
 
   @@map("order_items")
 }
 
 model Review {
-  id                Int                 @id @default(autoincrement())
-  customerId        Int                 @map("customer_id")
-  storeId           Int                 @map("store_id")
-  orderId           Int                 @unique @map("order_id")
-  rating            Int           
-  content           String?             @db.Text
-  image             String?             
-  createdAt         DateTime            @default(now()) @map("created_at")
-  updatedAt         DateTime            @updatedAt @map("updated_at")
+  id         Int      @id @default(autoincrement())
+  customerId Int      @map("customer_id")
+  storeId    Int      @map("store_id")
+  orderId    Int      @unique @map("order_id")
+  rating     Int
+  content    String?  @db.Text
+  image      String?
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
-  customer          User                @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  store             Store               @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  order             Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  customer   User         @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  store      Store        @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  order      Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  reviewMenu ReviewMenu[]
 
   @@map("reviews")
 }
 
-model Like {
-  id                Int                 @id @default(autoincrement())
-  customerId        Int                 @map("customer_id")
-  storeId           Int                 @map("store_id")
-  createdAt         DateTime            @default(now()) @map("created_at")
-  updatedAt         DateTime            @updatedAt @map("updated_at")
+model ReviewMenu {
+  id       Int @id @default(autoincrement())
+  reviewId Int @map("review_id")
+  menuId   Int @map("menu_id")
 
-  customer          User                @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  store             Store               @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  menu   Menu   @relation(fields: [menuId], references: [id], onDelete: Cascade)
+
+  @@map("review_menus")
+}
+
+model Like {
+  id         Int      @id @default(autoincrement())
+  customerId Int      @map("customer_id")
+  storeId    Int      @map("store_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  customer User  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  store    Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
 
   @@map("likes")
 }

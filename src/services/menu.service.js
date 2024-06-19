@@ -1,26 +1,48 @@
-import { MenuRepository } from '../repositories/menu.repository.js';
+import menuRepository from '../repositories/menu.repository.js';
 
-const menuRepository = new MenuRepository()
 
 
 class MenuService {
   constructor(menuRepository) {
     this.menuRepository = menuRepository;
   }
-    createMenu = async () => {
-      const createMenu = await menuRepository.createMenu()
-
+    createMenu = async (
+      storeId,
+      name,
+      price,
+      image,
+      description
+    ) => {
+      const createMenu = await menuRepository.createMenu(
+        storeId,
+        name,
+        price,
+        image,
+        description
+      )
+        
       return createMenu
     }
 
-    updateMenu = async () => {
-      const updateMenu = await menuRepository.updateMenu()
+    updateMenu = async (
+      menuId, 
+      name,
+      image,
+      description,
+      price) => {
+      const updateMenu = await menuRepository.updateMenu(
+          menuId,
+          name,
+          image,
+          description,
+          price
+      )
 
       return updateMenu
     }
 
-    deleteMenu = async () => {
-      const deleteMenu = await menuRepository.deleteMenu()
+    deleteMenu = async (menuId, ownerId) => {
+      const deleteMenu = await menuRepository.deleteMenu(menuId, ownerId)
 
       return deleteMenu
     }

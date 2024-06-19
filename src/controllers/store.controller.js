@@ -1,7 +1,8 @@
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
-import StoreService from '../services/store.service.js';
-import StoreRepository from '../repositories/store.repository.js';
+import storeRepository from '../repositories/store.repository.js'
+import storeService from '../services/store.service.js'
+
 
 
 
@@ -26,24 +27,16 @@ class StoreController {
     const ownerId = user.id
     const userRole = user.role
 
-    const data = { 
+    const createStore = await storeService.createStore(
       category,
       name,
       image,
       address,
       contactNumber,
       description,
-      openingHours
-    }
-
-    if(userRole != 1){
-      return res.status(HTTP_STATUS.UNAUTHORIZED).json({
-        status: HTTP_STATUS.UNAUTHORIZED,
-        message: MESSAGES,
-      })
-    }
-
-    const createStore = await storeService.createStore( data, ownerId )
+      openingHours,
+      ownerId
+    )
 
     return res.status(HTTP_STATUS.OK).json({
       status: HTTP_STATUS.OK,
@@ -58,12 +51,14 @@ class StoreController {
   getStore = async (req, res, next) => {
     try{
       const url = req.query
-      const categoryId = URLSearchParams.values(url)
+      console.log(url)
+      const categoryId = url.category
+      console.log(categoryId)
       const getStore = await storeRepository.getStore( categoryId )
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
-        message: MESSAGES,
+        message: MESSAGES.STORES.READ_LIST.SUCCEED,
         getStore
       })
 
@@ -80,7 +75,7 @@ class StoreController {
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
-        message: MESSAGES,
+        message: MESSAGES.STORES.READ_DETAIL.SUCCEED,
         getStoreOne
       })
     }catch(error){
@@ -96,7 +91,7 @@ class StoreController {
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
-        message: MESSAGES,
+        message: MESSAGES.STORES.UPDATE.SUCCEED,
         updateStore
       })
 

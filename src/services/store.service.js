@@ -1,15 +1,31 @@
-import StoreRepository from '../repositories/store.repository.js';
+import storeRepository from '../repositories/store.repository.js';
 
-const storeRepository = new StoreRepository()
+
 
 class StoreService {
   constructor(storeRepository) {
     this.storeRepository = storeRepository;
   }
   createStore = async (
-    data, ownerId
+    category,
+    name,
+    image,
+    address,
+    contactNumber,
+    description,
+    openingHours,
+    ownerId
   ) => {
-    const createStore = await storeRepository.createStore( data, ownerId )
+    const createStore = await storeRepository.createStore( 
+      category,
+      name,
+      image,
+      address,
+      contactNumber,
+      description,
+      openingHours,
+      ownerId
+    )
     
     return createStore
   }
@@ -38,6 +54,8 @@ class StoreService {
     return updateStore
   }
 
+
+
   deleteStore = async ( storeId ) => {
     const deleteStore = await storeRepository.deleteStore(
       storeId
@@ -46,5 +64,4 @@ class StoreService {
   }
 
 }
-
 export default StoreService;
