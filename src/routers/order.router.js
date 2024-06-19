@@ -1,16 +1,15 @@
 import express from 'express';
-<<<<<<< HEAD
 import { prisma } from '../utils/prisma.util.js';
 import { OrderRepository } from '../repositories/order.repository.js';
 import { OrderService } from '../services/order.service.js';
 import { OrderController } from '../controllers/order.controller.js';
 import { requireRoles } from '../middlewares/requirer-roles.middleware.js';
 import { createOrderValidator } from '../middlewares/validators/create-order-validator.middleware.js';
-=======
-import { orderController } from '../di/dependency-injected-instances.js';
-
->>>>>>> dd8136aa3b12121e9c5fff87a4506e2080245c11
 const orderRouter = express.Router();
+
+const orderRepository = new OrderRepository(prisma);
+const orderService = new OrderService(orderRepository);
+const orderController = new OrderController(orderService);
 
 // 주문 요청 API
 orderRouter.post('/orders', createOrderValidator, orderController.createOrder); // create joi 미들웨어 필요

@@ -13,17 +13,6 @@ class OrderController {
       const { id: userId, wallet: userWallet } = req.user;
       const { cartId, storeId, orderItems } = req.body;
 
-<<<<<<< HEAD
-=======
-      if (!storeId || !orderItems.menuId || !orderItems.quantity) {
-        // throw new HttpError.BadRequest(MESSAGE.)
-        return res.status(HTTP_STATUS.BAD_REQUEST).json({
-          status: HTTP_STATUS.BAD_REQUEST,
-          message: MESSAGES.ORDERS.NO_ORDER,
-        });
-      }
-
->>>>>>> dd8136aa3b12121e9c5fff87a4506e2080245c11
       const createdOrder = await this.orderService.createOrder(userId, userWallet, storeId, orderItems, cartId);
 
       return res.status(HTTP_STATUS.CREATED).json({
@@ -61,17 +50,12 @@ class OrderController {
       const user = req.user;
 
       //in service file,
-      const getOrders = await this.storeRepository.getOrders(user);
+      const getOrders = await this.orderService.getOrders(user);
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
-<<<<<<< HEAD
-        message: MESSAGES.ORDER.LIST.SUCCEED,
-        getOrders,
-=======
         message: MESSAGES.ORDERS.LIST.SUCCEED,
-        getOrder,
->>>>>>> dd8136aa3b12121e9c5fff87a4506e2080245c11
+        getOrders,
       });
     } catch (err) {
       next(err);
@@ -84,7 +68,7 @@ class OrderController {
       const user = req.user;
       const { orderId } = req.params;
 
-      const getDetailOrder = await this.storeRepository.getDetailOrder(user, orderId);
+      const getDetailOrder = await this.orderService.getDetailOrder(user, orderId);
 
       if (!getDetailOrder) {
         return res.status(HTTP_STATUS.NOT_FOUND).json({
