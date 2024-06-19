@@ -1,5 +1,5 @@
 import express from 'express';
-import { prisma } from '../utils/prisma.util';
+import { prisma } from '../utils/prisma.util.js';
 import { AuthRepository } from '../repositories/auth.repository.js';
 import { UserRepository } from '../repositories/user.repository.js';
 import { AuthService } from '../services/auth.service.js';
@@ -15,16 +15,20 @@ const userRepository = new UserRepository(prisma);
 const authService = new AuthService(authRepository, userRepository);
 const authController = new AuthController(authService);
 
-// 회원가입 API
+/** 회원가입 API */
+authRouter.post('/sign-up', signUpValidator, authController.signUp);
 
-// 로그인 API
+/** 로그인 API */
+authRouter.post('/sign-in', signInValidator, authController.signIn);
 
-// 로그아웃 API
+/** 로그아웃 API */
+authRouter.post('/sign-out', requireRefreshToken, authController.signOut);
 
-// 토큰 재발급 API
+/** 토큰 재발급 API */
+authRouter.post('/renew-tokens', requireRefreshToken, authController.renewTokens);
 
-// 네이버 로그인 API
+/** 네이버 로그인 API */
 
-// 카카오 로그인 API
+/** 카카오 로그인 API */
 
 export { authRouter };
