@@ -53,4 +53,24 @@ export const MESSAGES = {
       SUCCEED: '내 정보 조회에 성공했습니다.',
     },
   },
+  CARTS: {
+    CREATE: {
+      SUCCEED: '장바구니 생성에 성공했습니다.',
+      NO_MENUS: '장바구니에 담긴 메뉴가 없습니다.',
+      DOUBLE_STORES: '장바구니에는 같은 가게의 메뉴만 담을 수 있습니다.',
+    },
+    READ: {
+      SUCCEED: '장바구니 조회에 성공했습니다.',
+    },
+    UPDATE: {
+      SUCCEED: '장바구니 수정에 성공했습니다.',
+      NO_MENUS: '장바구니에 담긴 메뉴가 없습니다.',
+      DOUBLE_STORES: '장바구니에는 같은 가게의 메뉴만 담을 수 있습니다.',
+      DELETED_MENU: '이미 삭제된 메뉴입니다.',
+    },
+    DELETE: {
+      SUCCEED: '장바구니 삭제에 성공했습니다.',
+      DELETED_CART: '삭제할 장바구니가 없습니다.',
+    },
+  },
 };
