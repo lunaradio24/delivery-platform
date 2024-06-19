@@ -1,7 +1,7 @@
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
 
-class AuthController {
+export class AuthController {
   constructor(authService) {
     this.authService = authService;
   }
@@ -10,10 +10,18 @@ class AuthController {
   signUp = async (req, res, next) => {
     try {
       // 작성 정보 받아오기
-      const { email, password, nickname, role, contactNumber, address, image } = req.body;
+      const { email, password, passwordConfirm, nickname, role, contactNumber, address, image } = req.body;
 
       // user 생성하기
-      const user = await this.authService.signUp(email, password, nickname, role, contactNumber, address, image);
+      const user = await this.authService.signUp({
+        email,
+        password,
+        nickname,
+        address,
+        role,
+        image,
+        contactNumber,
+      });
 
       // 성공 메세지 반환
       res.status(HTTP_STATUS.OK).json({
@@ -34,7 +42,10 @@ class AuthController {
       const { email, password } = req.body;
 
       // user 찾아오기
-      const user = await this.authService.signIn(email, password);
+      const user = await this.authService.signIn(
+        email,
+        password,
+      );
 
       // 성공 메세지 반환
       res.status(HTTP_STATUS.OK).json({
@@ -70,8 +81,8 @@ class AuthController {
   renewTokens = async (req, res, next) => {
     try {
       // user 가져오기
-      const user = req.user;
-      const tokens = await this.authService.renewTokens(user);
+      const { id: userId } = req.user;
+      const tokens = await this.authService.renewTokens(userId);
 
       // 성공 메세지 반환
       res.status(HTTP_STATUS.OK).json({

@@ -30,13 +30,13 @@ class UserController {
       // userId 가져오기
       const userId = req.user.id;
       const { nickname, address, image, contactNumber } = req.body;
-      const updatedProfile = await this.userService.updateMyInfo({
+      const updatedProfile = await this.userService.updateMyInfo(
         userId,
         nickname,
         address,
         image,
         contactNumber,
-      });
+      );
 
       // 성공 메세지 반환
       return res.status(HTTP_STATUS.OK).json({
