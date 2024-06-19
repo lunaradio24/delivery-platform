@@ -15,9 +15,9 @@ const apiRouter = express.Router();
 
 // TODO: 미들웨어 삽입 필요
 apiRouter.use('/auth', authRouter);
-apiRouter.use('/users', userRouter);
+apiRouter.use('/users', requireAccessToken, userRouter);
 apiRouter.use('/stores', storeRouter);
-apiRouter.use('/menu', menuRouter);
+apiRouter.use('/stores/:store/menus', menuRouter);
 apiRouter.use('/carts', requireAccessToken, cartRouter);
 apiRouter.use('/orders', requireAccessToken, orderRouter);
 apiRouter.use('/reviews', reviewRouter);

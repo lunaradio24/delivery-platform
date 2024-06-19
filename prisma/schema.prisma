@@ -43,20 +43,20 @@ model User {
 }
 
 model Store {
-  id                  Int                 @id @default(autoincrement())
-  ownerId             Int                 @unique @map("owner_id")
-  name                String
-  address             String
-  contactNumber       Int                 @map("contact_number")
-  category            Int
-  openingHours        DateTime            @map("opening_hours")
-  image               String
-  totalSales          Int                 @default(0) @map("total_sales")
-  totalReviews        Int                 @default(0) @map("total_reviews")
-  totalLikes          Int                 @default(0) @map("total_likes")
-  averageRating       Float?              @map("average_rating")
-  createdAt           DateTime            @default(now()) @map("created_at")
-  updatedAt           DateTime            @updatedAt @map("updated_at")
+  id            Int      @id @default(autoincrement())
+  ownerId       Int      @unique @map("owner_id")
+  name          String
+  address       String
+  contactNumber Int      @map("contact_number")
+  category      Int
+  openingHours  String   @map("opening_hours")
+  image         String
+  totalSales    Int      @default(0) @map("total_sales")
+  totalReviews  Int      @default(0) @map("total_reviews")
+  totalLikes    Int      @default(0) @map("total_likes")
+  averageRating Float?   @map("average_rating")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
 
   owner               User                @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   menu                Menu[]

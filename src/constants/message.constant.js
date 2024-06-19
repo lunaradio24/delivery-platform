@@ -72,6 +72,7 @@ export const MESSAGES = {
     },
     CREATE: {
       SUCCEED: '가게 등록에 성공했습니다.',
+      DUPLICATED: '가게는 하나만 등록할 수 있습니다.',
     },
     READ_LIST: {
       SUCCEED: '가게 목록 조회에 성공했습니다.',
@@ -127,6 +128,10 @@ export const MESSAGES = {
     CREATED: {
       SUCCEED: '주문이 접수되었습니다.',
       NO_ORDER: '메뉴는 1개 이상 주문해주세요.',
+      NO_CART: '카트가 비어있습니다.',
+      NO_STORE: '주문 가게를 입력해주세요.',
+      NO_ITEM_ID: '주문할 메뉴 id를 입력해주세요.',
+      NO_QUANTITY: '주문할 메뉴 수량을 입력해주세요.',
     },
     CANCEL: {
       SUCCEED: '주문 취소 요청 되었습니다.',
@@ -194,26 +199,6 @@ export const MESSAGES = {
     },
     READ_LIST: {
       SUCCEED: '찜 목록 조회에 성공했습니다.',
-    },
-  },
-  CARTS: {
-    CREATE: {
-      SUCCEED: '장바구니 생성에 성공했습니다.',
-      NO_MENUS: '장바구니에 담긴 메뉴가 없습니다.',
-      DOUBLE_STORES: '장바구니에는 같은 가게의 메뉴만 담을 수 있습니다.',
-    },
-    READ: {
-      SUCCEED: '장바구니 조회에 성공했습니다.',
-    },
-    UPDATE: {
-      SUCCEED: '장바구니 수정에 성공했습니다.',
-      NO_MENUS: '장바구니에 담긴 메뉴가 없습니다.',
-      DOUBLE_STORES: '장바구니에는 같은 가게의 메뉴만 담을 수 있습니다.',
-      DELETED_MENU: '이미 삭제된 메뉴입니다.',
-    },
-    DELETE: {
-      SUCCEED: '장바구니 삭제에 성공했습니다.',
-      DELETED_CART: '삭제할 장바구니가 없습니다.',
     },
   },
 };

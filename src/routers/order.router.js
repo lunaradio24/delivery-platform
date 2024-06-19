@@ -6,8 +6,10 @@ import { createOrderValidator } from '../middlewares/validators/create-order-val
 const orderRouter = express.Router();
 
 // 주문 요청 API
+orderRouter.post('/', createOrderValidator, requireRoles(['CUSTOMER']), orderController.createOrder); // create joi 미들웨어 필요
 
 // 주문 취소 API
+orderRouter.patch('/:orderId', requireRoles(['CUSTOMER']), orderController.cancelOrder); // update joi 미들웨어 필요
 
 // 주문 내역 목록 조회 API
 
