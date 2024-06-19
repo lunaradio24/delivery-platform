@@ -10,7 +10,7 @@ class LikeController {
     try {
       const { userId } = req.user;
       const { storeId, isLike } = req.body;
-      await this.likeService.likeOrUnlike(userId, storeId, isLike);
+      await likeService.likeOrUnlike(userId, storeId, isLike);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
@@ -24,7 +24,7 @@ class LikeController {
   readLikedStores = async (req, res, next) => {
     try {
       const { userId } = req.user;
-      const likedStores = await this.likeService.readLikedStores(userId);
+      const likedStores = await likeService.readLikedStores(userId);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
