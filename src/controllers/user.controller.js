@@ -29,9 +29,9 @@ export class UserController {
     try {
       // userId 가져오기
       const userId = req.user.id;
-      const { nickname, addraee, image, contactNumber } = req.body;
+      const { nickname, address, image, contactNumber } = req.body;
       const updatedProfile = await this.userService.updateMyInfo({
-        userId, nickname, addraee, image, contactNumber
+        userId, nickname, address, image, contactNumber
       });
 
       // 성공 메세지 반환
