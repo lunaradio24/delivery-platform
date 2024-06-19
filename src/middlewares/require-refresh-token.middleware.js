@@ -1,8 +1,7 @@
 import { HttpError } from '../errors/http.error.js';
 import { MESSAGES } from '../constants/message.constant.js';
 import { verifyRefreshToken, compareWithHashed } from '../utils/auth.util.js';
-import { UserService } from '../services/user.service.js';
-import { AuthRepository } from '../repositories/auth.repository.js';
+import { userRepository, authRepository } from '../di/dependency-injected-instances.js';
 
 export const requireRefreshToken = async (req, res, next) => {
   try {
@@ -20,18 +19,16 @@ export const requireRefreshToken = async (req, res, next) => {
     // payload에 담긴 사용자 ID를 이용하여 사용자 정보 조회
     const payload = verifyRefreshToken(refreshToken);
     const { userId } = payload;
-    const userService = new UserService();
-    const user = await userService.getMyInfo(userId);
+    const user = await userRepository.findById(userId);
 
     // payload에 담긴 사용자 ID와 일치하는 사용자가 없는 경우
     if (!user) throw new HttpError.Unauthorized(MESSAGES.AUTH.COMMON.JWT.NO_USER);
 
     // DB에 저장된 Refresh Token 조회
-    const authRepository = new AuthRepository();
-    const { token: savedRefreshToken } = await authRepository.findRefreshTokenByUserId(userId);
+    const savedRefreshToken = await authRepository.findRefreshTokenByUserId(userId);
 
     // 사용자가 가지고 있는 Refresh Token과 비교
-    const isPasswordMatched = await compareWithHashed(refreshToken, savedRefreshToken);
+    const isPasswordMatched = savedRefreshToken ? await compareWithHashed(refreshToken, savedRefreshToken) : null;
     if (!isPasswordMatched) throw new HttpError.Unauthorized(MESSAGES.AUTH.COMMON.JWT.INVALID);
 
     // req.user에 사용자 정보 넣어서 넘겨줌

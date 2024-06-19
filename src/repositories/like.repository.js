@@ -1,6 +1,6 @@
-import { BaseRepository } from './base.repository.js';
+import BaseRepository from './base.repository.js';
 
-export class LikeRepository extends BaseRepository {
+class LikeRepository extends BaseRepository {
   like = async (storeId, { tx }) => {
     const orm = tx || this.prisma;
     await orm.like.create({ data: { storeId } });
@@ -25,3 +25,5 @@ export class LikeRepository extends BaseRepository {
     return likedStores;
   };
 }
+
+export default LikeRepository;

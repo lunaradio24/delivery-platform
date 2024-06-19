@@ -1,7 +1,7 @@
 import { HttpError } from '../errors/http.error.js';
 import { MESSAGES } from '../constants/message.constant.js';
 
-export class ReviewService {
+class ReviewService {
   constructor(reviewRepository, orderRepository, orderItemRepository, storeRepository, menuRepository) {
     this.reviewRepository = reviewRepository;
     this.orderRepository = orderRepository;
@@ -146,3 +146,5 @@ export class ReviewService {
     }
   };
 }
+
+export default ReviewService;

@@ -1,7 +1,7 @@
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
 
-export class LikeController {
+class LikeController {
   constructor(likeService) {
     this.likeService = likeService;
   }
@@ -10,7 +10,7 @@ export class LikeController {
     try {
       const { userId } = req.user;
       const { storeId, isLike } = req.body;
-      await this.likeService.likeOrUnlike(userId, storeId, isLike);
+      await likeService.likeOrUnlike(userId, storeId, isLike);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
@@ -24,7 +24,7 @@ export class LikeController {
   readLikedStores = async (req, res, next) => {
     try {
       const { userId } = req.user;
-      const likedStores = await this.likeService.readLikedStores(userId);
+      const likedStores = await likeService.readLikedStores(userId);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
@@ -36,3 +36,5 @@ export class LikeController {
     }
   };
 }
+
+export default LikeController;

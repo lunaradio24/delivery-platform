@@ -1,14 +1,7 @@
 import express from 'express';
-import { prisma } from '../utils/prisma.util.js';
-import { OrderRepository } from '../repositories/order.repository.js';
-import { OrderService } from '../services/order.service.js';
-import { OrderController } from '../controllers/order.controller.js';
+import { orderController } from '../di/dependency-injected-instances.js';
 
 const orderRouter = express.Router();
-
-const orderRepository = new OrderRepository(prisma);
-const orderService = new OrderService(orderRepository);
-const orderController = new OrderController(orderService);
 
 // 주문 요청 API
 
