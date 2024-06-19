@@ -2,6 +2,7 @@ import { HttpError } from '../errors/http.error.js';
 import { MESSAGES } from '../constants/message.constant.js';
 import { ROLES } from '../constants/auth.constant.js';
 import { ORDER_STATUS } from '../constants/order.constant.js';
+import { ADMIN_ID } from '../constants/user.constant.js';
 
 class OrderService {
   constructor(orderRepository, menuRepository, userRepository) {
@@ -43,8 +44,7 @@ class OrderService {
     const updatedUser = await this.userRepository.메소드이름(userId, createdOrder.totalPrice);
 
     // admin 잔액 증가
-    const adminId = 1;
-    const updatedAdmin = await this.userRepository.메소드이름(adminId, createdOrder.totalPrice);
+    const updatedAdmin = await this.userRepository.메소드이름(ADMIN_ID, createdOrder.totalPrice);
 
     // 수정 필요
     const data = {
