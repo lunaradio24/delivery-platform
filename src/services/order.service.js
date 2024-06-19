@@ -1,11 +1,13 @@
 import { HttpError } from '../errors/http.error.js';
 import { MESSAGES } from '../constants/message.constant.js';
+import { ROLES } from '../constants/auth.constant.js';
 import { ORDER_STATUS } from '../constants/order.constant.js';
 
 class OrderService {
   constructor(orderRepository) {
     this.orderRepository = orderRepository;
   }
+
   //  주문 요청 API
   // 인증 후 주문 > userwallet 잔액 확인하여 메뉴 금액만큼 차감 진행 + tradeHistory 데이터 생성
   // +ordersTable + ordersItems 데이터 생성 + cartItems 데이터 삭제
@@ -27,7 +29,7 @@ class OrderService {
       throw new HttpError.BadRequest(MESSAGES.ORDERS.NO_WALLET);
     }
 
-    const createResume = await this.orderRepository.createdOrder(userId, storeId, orderItems, totalPrice, userCartId);
+    const createResume = await this.orderRepository.createOrder(userId, storeId, orderItems, totalPrice, userCartId);
 
     return createResume;
   };
@@ -50,38 +52,41 @@ class OrderService {
   };
 
   //  주문 내역 목록 조회 API
-  getAdminOrders = async () => {
-    let getAdminOrders = await this.orderRepository.getAdminOrders();
-    return getAdminOrders;
-  };
-  getOwnerOrders = async (id) => {
-    let getOwnerOrders = await this.orderRepository.getOwnerOrders(id);
-    return getOwnerOrders;
-  };
-  getUserOrders = async (id) => {
-    let getUserOrders = await this.orderRepository.getUserOrders(id);
-    return getUserOrders;
+
+  getOrders = async (user) => {
+    let getOrder;
+    if (user.role === ROLES[1]) {
+      const storeId = user.store.id;
+      getOrder = await this.orderService.getOwnerOrders(storeId); // owner
+    } else if (user.role === ROLES[2]) {
+      const id = user.id;
+      getOrder = await this.orderService.getUserOrders(id); // user
+    }
+
+    return getOrder;
   };
 
   //  주문 내역 상세 조회 API
-  getOwnerDetailOrders = async (user, id) => {
-    let getOwnerDetailOrders = await this.orderRepository.getOwnerDetailOrders(user, id);
-    if (!getOwnerDetailOrders) {
-      throw new HttpError.NotFound(MESSAGES.ORDERS.NO_DATA);
+  getDetailOrder = async (user, id) => {
+    let getOrder;
+
+    if (user.role === ROLES[1]) {
+      const storeId = user.store.id;
+      getOrder = await this.orderRepository.getOwnerDetailOrders(storeId, orderId); // owner
+    } else if (user.role === ROLES[2]) {
+      const userId = user.id;
+      getOrder = await this.orderRepository.getUserDetailOrders(userId, orderId); // user
     }
-    return getOwnerDetailOrders;
-  };
-  getUserDetailOrders = async (user, id) => {
-    let getUserDetailOrders = await this.orderRepository.getUserDetailOrders(user, id);
-    if (!getUserDetailOrders) {
-      throw new HttpError.NotFound(MESSAGES.ORDERS.NO_DATA);
+
+    if (!getOrder) {
+      throw new HttpError.NotFound(MESSAGES.ORDERS.NODATA);
     }
-    return getUserDetailOrders;
+    return getOrder;
   };
 
   //  주문 상태 변경 API
-  statusUpdateOrder = async (user, id, status) => {
-    const statusUpdateOrder = await this.orderRepository.statusUpdateOrder(user, id, status);
+  statusUpdateOrder = async (user, orderId, status) => {
+    const statusUpdateOrder = await this.orderRepository.statusUpdateOrder(user, orderId, status);
 
     if (!statusUpdateOrder) {
       throw new HttpError.NotFound(MESSAGES.ORDERS.NO_DATA);

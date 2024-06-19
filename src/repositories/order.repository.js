@@ -1,5 +1,4 @@
 import { ORDER_STATUS } from '../constants/order.constant.js';
-import { ROLES } from '../constants/auth.constant.js';
 
 class OrderRepository {
   constructor(prisma) {
@@ -32,13 +31,13 @@ class OrderRepository {
         });
       }
 
-      // 고객의 잔액 업데이트
+      // 고객의 잔액 차감
       await tx.user.update({
         where: { id: userId },
         data: { wallet: { decrement: createdOrder.totalPrice } }, //고객의 잔액을 totalPrice만큼 증가
       });
 
-      // admin 잔액 차감
+      // admin 잔액 증가
       const adminId = 1;
       await tx.user.update({
         where: { id: adminId },

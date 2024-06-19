@@ -127,6 +127,8 @@ export const MESSAGES = {
     CREATED: {
       SUCCEED: '주문이 접수되었습니다.',
       NO_ORDER: '메뉴는 1개 이상 주문해주세요.',
+      NO_CART: '카트가 비어있습니다.',
+      NO_STORE: '주문 가게를 입력해주세요.',
     },
     CANCEL: {
       SUCCEED: '주문 취소 요청 되었습니다.',
