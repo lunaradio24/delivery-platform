@@ -1,38 +1,35 @@
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
+// import {HttpError} from ''
 import { MESSAGES } from '../constants/message.constant.js';
-import { OrderService } from '../services/order.service.js';
 import { ROLES } from '../constants/auth.constant.js';
 
 export class OrderController {
-  // constructor(orderService) {
-  //   this.orderService = orderService;
-  // } 이 코드 사용법을 몰라서 대기
-  orderService = new OrderService();
+  constructor(orderService) {
+    this.orderService = orderService;
+  }
 
   //  주문 요청 API
   // 인증 후 주문 > userwallet 잔액 확인하여 메뉴 금액만큼 차감 진행 + tradeHistory 데이터 생성
   // +ordersTable + ordersItems 데이터 생성 + cartItems 데이터 삭제
   createOrder = async (req, res, next) => {
     try {
-      const user = req.user;
-      const userId = user.id;
-      const userWallet = user.wallet;
-      const userCartId = user.cart.id;
-      const { storeId, orderItems } = req.body;
+      const { id: userId, wallet: userWallet,  } = req.user;
+      const { cartId, storeId, orderItems } = req.body;
 
-      if (!storeId || !menuId || !quantity) {
+      if (!storeId || !orderItems.menuId || !orderItems.quantity) {
+        // throw new HttpError.BadRequest(MESSAGE.)
         return res.status(HTTP_STATUS.BAD_REQUEST).json({
           status: HTTP_STATUS.BAD_REQUEST,
           message: MESSAGES.ORDER.NOORDER,
         });
       }
 
-      const createOrder = await this.orderService.createOrder(userId, userWallet, storeId, orderItems, userCartId);
+      const createdOrder = await this.orderService.createOrder(userId, userWallet, storeId, orderItems, cartId);
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
         message: MESSAGES.ORDER.CREATED.SUCCEED,
-        createOrder,
+        createdOrder,
       });
     } catch (err) {
       next(err);
@@ -42,10 +39,10 @@ export class OrderController {
   //  주문 취소 API
   cancelOrder = async (req, res, next) => {
     try {
-      const userId = req.user.id;
-      const { id } = req.params;
+      const { id: userId } = req.user;
+      const { orderId } = req.params;
 
-      const cancelOrder = await this.orderService.cancelOrder(userId, id);
+      const cancelOrder = await this.orderService.cancelOrder(userId, orderId);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
@@ -58,10 +55,11 @@ export class OrderController {
   };
 
   //  주문 내역 목록 조회 API
+  // getOrderList
   getOrder = async (req, res, next) => {
     try {
       const user = req.user;
-      const { adminStoreId, adminUserId } = req.query;
+      const { storeId, adminUserId } = req.query;
 
       let getOrder;
 
@@ -75,6 +73,8 @@ export class OrderController {
           getOrder = await this.orderService.getUserOrders(adminUserId);
         }
       } else if (user.role === ROLES[1]) {
+        //in service file,
+        //cosnt storeId = await this.storeRepository.findStoreByOwnerId(userId);
         const storeId = user.store.id;
         getOrder = await this.orderService.getOwnerOrders(storeId); // owner
       } else if (user.role === ROLES[2]) {
@@ -96,7 +96,7 @@ export class OrderController {
   getDetailOrder = async (req, res, next) => {
     try {
       const user = req.user;
-      const { id } = req.params;
+      const { orderId } = req.params;
       const { adminStoreId, adminUserId } = req.query;
 
       let getDetailOrder;
@@ -142,10 +142,11 @@ export class OrderController {
   statusUpdateOrder = async (req, res, next) => {
     try {
       const user = req.user;
-      const { id } = req.params;
+      const { orderId } = req.params;
       const { status } = req.body;
 
-      if (user.role !== ROLES[0] || user.role !== ROLES[1]) {
+      // 이 부분은 역할인증미들웨어로 라우터에서 걸러주면 됩니다.
+      if (user.role !== ROLES[0] && user.role !== ROLES[1]) {
         res.status(HTTP_STATUS.FORBIDDEN).json({
           status: HTTP_STATUS.FORBIDDEN,
           message: MESSAGES.AUTH.COMMON.ROLE.NO_ACCESS_RIGHT,
