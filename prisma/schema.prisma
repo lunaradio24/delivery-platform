@@ -49,7 +49,7 @@ model Store {
   address       String
   contactNumber Int      @map("contact_number")
   category      Int
-  openingHours  DateTime @map("opening_hours")
+  openingHours  String   @map("opening_hours")
   image         String
   totalSales    Int      @default(0) @map("total_sales")
   totalReviews  Int      @default(0) @map("total_reviews")

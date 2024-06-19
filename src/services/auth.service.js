@@ -35,7 +35,7 @@ class AuthService {
       image,
     });
     // password 제외하기
-    const { password: _password, ...withoutPasswordUser } = user;
+    const { password: _, ...withoutPasswordUser } = user;
     return withoutPasswordUser;
   };
 
@@ -61,7 +61,6 @@ class AuthService {
 
     // refresh Token hash 후 DB에 저장
     const hashedRefreshToken = await hash(refreshToken);
-    console.log(hashedRefreshToken);
     await this.authRepository.upsertRefreshToken(user.id, hashedRefreshToken);
 
     return { accessToken, refreshToken };
