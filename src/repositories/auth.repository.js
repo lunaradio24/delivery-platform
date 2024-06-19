@@ -7,7 +7,6 @@ class AuthRepository {
     const auth = await this.prisma.auth.findUnique({
       where: { userId },
     });
-    console.log(auth);
     return auth.refreshToken;
   };
 
@@ -28,7 +27,7 @@ class AuthRepository {
     return user;
   };
 
-  create = async ({ email, password, passwordConfirm, nickname, role, contactNumber, address, image }) => {
+  create = async (email, password, nickname, role, contactNumber, address, image) => {
     // user 생성하기
     const user = await this.prisma.user.create({
       data: {
@@ -42,7 +41,7 @@ class AuthRepository {
       },
     });
     // password 제외하기
-    const { password: _password, ...withoutPasswordUser } = user;
+    const { password: _, ...withoutPasswordUser } = user;
     return withoutPasswordUser;
   };
 
