@@ -28,7 +28,7 @@ model User {
   wallet        Int           @default(1000000)
   contactNumber String        @map("contact_number")
   address       String?
-  Image         String?       @map("image")
+  image         String?       @map("image")
   createdAt     DateTime      @default(now()) @map("created_at")
   updatedAt     DateTime      @updatedAt @map("updated_at")
 
@@ -83,7 +83,6 @@ model Menu {
   store             Store               @relation(fields: [storeId], references: [id], onDelete: Cascade)
   cartItem          CartItem[]
   orderItem         OrderItem[]
-  reviewMenu        ReviewMenu[]
 
   @@unique([storeId, name])
   @@map("menus")
@@ -149,20 +148,8 @@ model Review {
   customer          User                @relation(fields: [customerId], references: [id], onDelete: Cascade)
   store             Store               @relation(fields: [storeId], references: [id], onDelete: Cascade)
   order             Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  reviewMenu        ReviewMenu[]
 
   @@map("reviews")
-}
-
-model ReviewMenu {
-  id                Int                 @id @default(autoincrement())
-  reviewId          Int                 @map("review_id")
-  menuId            Int                 @map("menu_id")
-  
-  review            Review              @relation(fields: [reviewId], references: [id], onDelete: Cascade)
-  menu              Menu                @relation(fields: [menuId], references: [id], onDelete: Cascade)
-
-  @@map("review_menus")
 }
 
 model Like {

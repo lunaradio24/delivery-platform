@@ -1,7 +1,15 @@
-export class AuthRepository {
+class AuthRepository {
   constructor(prisma) {
     this.prisma = prisma;
   }
+
+  findRefreshTokenByUserId = async (userId) => {
+    const auth = await this.prisma.auth.findUnique({
+      where: { userId },
+    });
+    console.log(auth);
+    return auth.refreshToken;
+  };
 
   /** 회원가입 */
   // email 확인하기
@@ -39,13 +47,6 @@ export class AuthRepository {
   };
 
   /** 로그아웃 */
-  // user 찾기
-  findById = async (userId) => {
-    const user = await this.prisma.user.findUnique({
-      where: { userId },
-    });
-    return user;
-  };
 
   // 토큰 삭제
   invalidateToken = async (userId) => {
@@ -65,8 +66,11 @@ export class AuthRepository {
         refreshToken,
       },
       create: {
+        userId,
         refreshToken,
       },
     });
   };
 }
+
+export default AuthRepository;

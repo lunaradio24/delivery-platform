@@ -2,7 +2,11 @@ import { MenuRepository } from '../repositories/menu.repository.js';
 
 const menuRepository = new MenuRepository()
 
-export class MenuService {
+
+class MenuService {
+  constructor(menuRepository) {
+    this.menuRepository = menuRepository;
+  }
     createMenu = async () => {
       const createMenu = await menuRepository.createMenu()
 
@@ -23,4 +27,7 @@ export class MenuService {
   }
 
 
+
+
+export default MenuService;
 

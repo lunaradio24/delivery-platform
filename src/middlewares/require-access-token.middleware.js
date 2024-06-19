@@ -1,7 +1,7 @@
 import { HttpError } from '../errors/http.error.js';
 import { MESSAGES } from '../constants/message.constant.js';
 import { verifyAccessToken } from '../utils/auth.util.js';
-// import { UserService } from '../services/users.service.js';
+import { userService } from '../di/dependency-injected-instances.js';
 
 export const requireAccessToken = async (req, res, next) => {
   try {
@@ -21,7 +21,6 @@ export const requireAccessToken = async (req, res, next) => {
 
     const payload = verifyAccessToken(accessToken);
     const { userId } = payload;
-    const userService = new UserService();
     const user = await userService.getMyInfo(userId);
 
     // Payload에 담긴 사용자 ID와 일치하는 사용자가 없는 경우

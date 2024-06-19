@@ -1,13 +1,15 @@
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
-import { StoreService } from '../services/store.service.js';
-import { StoreRepository } from '../repositories/store.repository.js';
+import StoreService from '../services/store.service.js';
+import StoreRepository from '../repositories/store.repository.js';
 
-const storeService = new StoreService()
-const storeRepository = new StoreRepository()
 
-export class StoreController {
 
+class StoreController {
+  constructor(storeService, storeRepository) {
+    this.storeService = storeService
+    this.storeRepository = storeRepository
+  }
   createStore = async (req, res, next) => {
     try{
     const { 
@@ -120,3 +122,4 @@ export class StoreController {
     }
   }
 }
+export default StoreController;

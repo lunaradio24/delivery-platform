@@ -1,7 +1,10 @@
 import { prisma } from '../utils/prisma.util.js'
 
 
-export class StoreRepository {
+class StoreRepository {
+  constructor(prisma) {
+    this.prisma = prisma;
+  }
 
   // 음식점 생성
   createStore = async (
@@ -108,3 +111,5 @@ export class StoreRepository {
     return { data: updateRating.averageRating }
   }
 }
+
+export default StoreRepository;

@@ -1,7 +1,7 @@
 import { HttpError } from '../errors/http.error.js';
 import { MESSAGES } from '../constants/message.constant.js';
 
-export class UserService {
+class UserService {
   constructor(userRepository) {
     this.userRepository = userRepository;
   }
@@ -24,3 +24,5 @@ export class UserService {
     return await this.userRepository.update({ userId, nickname, address, image, contactNumber });
   };
 }
+
+export default UserService;

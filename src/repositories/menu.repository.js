@@ -1,6 +1,9 @@
 import { prisma } from '../utils/prisma.util.js'
 
-export class MenuRepository {
+class MenuRepository {
+  constructor(prisma) {
+    this.prisma = prisma;
+  }
 
   createMenu = async ({
     name,
@@ -73,6 +76,5 @@ export class MenuRepository {
     }
   }
 
-
-
+export default MenuRepository;
 

@@ -1,8 +1,11 @@
-import { StoreRepository } from '../repositories/store.repository.js';
+import StoreRepository from '../repositories/store.repository.js';
 
 const storeRepository = new StoreRepository()
 
-export class StoreService {
+class StoreService {
+  constructor(storeRepository) {
+    this.storeRepository = storeRepository;
+  }
   createStore = async (
     data, ownerId
   ) => {
@@ -41,4 +44,7 @@ export class StoreService {
     )
     return deleteStore.id
   }
+
 }
+
+export default StoreService;
