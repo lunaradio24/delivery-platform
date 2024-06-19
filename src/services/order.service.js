@@ -14,7 +14,7 @@ class OrderService {
   //  주문 요청 API
   // 인증 후 주문 > userwallet 잔액 확인하여 메뉴 금액만큼 차감 진행 + tradeHistory 데이터 생성
   // +ordersTable + ordersItems 데이터 생성 + cartItems 데이터 삭제
-  createOrder = async (userId, userWallet, storeId, orderItems, cartId) => {
+  createOrder = async (userId, userWallet, storeId, orderItems) => {
     // 메뉴 가격 구하기
     let totalPrice = 0;
     // orderItems 배열에서 각 메뉴의 가격을 조회하여 총 주문 금액 계산
@@ -36,7 +36,7 @@ class OrderService {
     const tx = this.orderRepository.createTransaction();
 
     // orders 테이블에 DB 생성
-    const createdOrder = await this.orderRepository.createOrder(userId, storeId, orderItems, totalPrice, cartId, {
+    const createdOrder = await this.orderRepository.createOrder(userId, storeId, orderItems, totalPrice, {
       tx,
     });
 

@@ -3,7 +3,7 @@ import { ADMIN_ID } from '../constants/user.constant.js';
 import BaseRepository from './base.repository.js';
 
 class OrderRepository extends BaseRepository {
-  //  주문 요청 API / 전달하는 변수에 cartId 추가
+  //  주문 요청 API
   createOrder = async (userId, storeId, orderItems, totalPrice, { tx }) => {
     const orm = tx || this.prisma;
     const createdOrder = await orm.order.create({
@@ -28,7 +28,7 @@ class OrderRepository extends BaseRepository {
 
     // 장바구니에서 주문한 메뉴 삭제
     // await tx.cartItem.deleteMany({
-    //   where: { : cartId }, //cart 데이터 삭제
+    //   where: { :  },
     // });
 
     // transaction log 생성
