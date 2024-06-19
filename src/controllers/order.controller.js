@@ -18,9 +18,10 @@ class OrderController {
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
         message: MESSAGES.ORDERS.CREATED.SUCCEED,
-        createdOrder,
+        data: createdOrder,
       });
     } catch (err) {
+      console.log(err);
       next(err);
     }
   };
@@ -55,7 +56,7 @@ class OrderController {
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
         message: MESSAGES.ORDERS.LIST.SUCCEED,
-        getOrders,
+        data: getOrders,
       });
     } catch (err) {
       next(err);
@@ -80,7 +81,7 @@ class OrderController {
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
         message: MESSAGES.ORDERS.DETAIL.SUCCEED,
-        getDetailOrder,
+        data: getDetailOrder,
       });
     } catch (err) {
       next(err);
