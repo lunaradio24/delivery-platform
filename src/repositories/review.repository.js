@@ -3,7 +3,7 @@ import { BaseRepository } from './base.repository.js';
 export class ReviewRepository extends BaseRepository {
   create = async (userId, storeId, orderId, rating, content, image, { tx }) => {
     const orm = tx || this.prisma;
-    const createdReview = await orm.create({
+    const createdReview = await orm.review.create({
       data: { customerId: userId, storeId, orderId, rating, content, image },
     });
 
@@ -11,27 +11,27 @@ export class ReviewRepository extends BaseRepository {
   };
 
   findByStoreIdAndMenuId = async (storeId, menuId, orderOption) => {
-    await this.prisma.findMany({
+    await this.prisma.review.findMany({
       where: { storeId, menuId },
       orderBy: orderOption,
     });
   };
 
   findByReviewId = async (reviewId) => {
-    await this.prisma.findUnique({ where: { id: reviewId } });
+    await this.prisma.review.findUnique({ where: { id: reviewId } });
   };
 
   findByOrderId = async (orderId) => {
-    await this.prisma.findUnique({ where: { orderId } });
+    await this.prisma.review.findUnique({ where: { orderId } });
   };
 
   findByUserId = async (userId) => {
-    await this.prisma.findMany({ where: { customerId: userId } });
+    await this.prisma.review.findMany({ where: { customerId: userId } });
   };
 
   update = async (reviewId, rating, content, image, { tx }) => {
     const orm = tx || this.prisma;
-    const updatedReview = await orm.update({
+    const updatedReview = await orm.review.update({
       where: { id: reviewId },
       data: { rating, content, image },
     });
@@ -41,6 +41,6 @@ export class ReviewRepository extends BaseRepository {
 
   delete = async (reviewId, { tx }) => {
     const orm = tx || this.prisma;
-    await orm.delete({ where: { id: reviewId } });
+    await orm.review.delete({ where: { id: reviewId } });
   };
 }
