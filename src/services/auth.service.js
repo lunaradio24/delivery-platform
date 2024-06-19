@@ -61,7 +61,6 @@ class AuthService {
 
     // refresh Token hash 후 DB에 저장
     const hashedRefreshToken = await hash(refreshToken);
-    console.log(hashedRefreshToken);
     await this.authRepository.upsertRefreshToken(user.id, hashedRefreshToken);
 
     return { accessToken, refreshToken };

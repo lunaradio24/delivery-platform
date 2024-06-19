@@ -30,6 +30,7 @@ class UserService {
     // password 제외하기
     const { password: _, ...withoutPasswordUser } = updatingUser;
     return withoutPasswordUser;
+
   };
 }
 

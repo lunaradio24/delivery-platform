@@ -3,15 +3,13 @@ class AuthRepository {
     this.prisma = prisma;
   }
 
+  // 토큰 찾기
   findRefreshTokenByUserId = async (userId) => {
     const auth = await this.prisma.auth.findUnique({
       where: { userId },
     });
     return auth.refreshToken;
   };
-
-
-  /** 로그아웃 */
 
   // 토큰 삭제
   deleteRefreshToken = async (userId) => {
@@ -23,7 +21,7 @@ class AuthRepository {
     });
   };
 
-  /** 토큰 재발급 */
+  // 토큰 재발급
   upsertRefreshToken = async (userId, refreshToken) => {
     await this.prisma.auth.upsert({
       where: { userId },

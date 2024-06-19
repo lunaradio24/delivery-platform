@@ -30,6 +30,7 @@ class UserController {
       // userId 가져오기
       const userId = req.user.id;
       const { nickname, address, image, contactNumber } = req.body;
+
       const updatedProfile = await this.userService.updateMyInfo(
         userId,
         nickname,
@@ -45,6 +46,7 @@ class UserController {
         data: updatedProfile,
       });
     } catch (error) {
+      console.log(error);
       next(error);
     }
   };

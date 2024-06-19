@@ -59,6 +59,19 @@ export class UserRepository {
       }
     });
   };
+
+  // 고객 잔액 차감 메소드
+  // await tx.user.update({
+  //   where: { id: userId },
+  //   data: { wallet: { decrement: createdOrder.totalPrice } }, //고객의 잔액을 totalPrice만큼 차감
+  // });
+
+  // ADMIN 잔액 증가 메소드
+  // const adminId = 1;
+  // await tx.user.update({
+  //   where: { id: adminId },
+  //   data: { wallet: { increment: createdOrder.totalPrice } },
+  // });
 }
 
 export default UserRepository;
