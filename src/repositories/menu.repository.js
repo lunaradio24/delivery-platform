@@ -10,7 +10,7 @@ class MenuRepository {
     image,
     description
   }) => {
-    const createMenu = await prisma.menu.create({
+    const createMenu = await this.prisma.menu.create({
       data: {
         storeId,
         name,
@@ -24,7 +24,7 @@ class MenuRepository {
   
   // 메뉴 목록 조회
   getMenu = async ( storeId ) => {
-    let data = await prisma.menu.findMany({
+    let data = await this.prisma.menu.findMany({
       where: { id: +storeId }
     })
 
@@ -53,7 +53,7 @@ class MenuRepository {
     description,
     price,
     ) => {
-    const updateMenu = await prisma.menu.update({
+    const updateMenu = await this.prisma.menu.update({
       where: { id : menuId },
       data: {
           ...(name && { name }),
@@ -67,7 +67,7 @@ class MenuRepository {
 
   // 메뉴 삭제
   deleteMenu = async ( menuId, ownerId ) => {
-    const deleteMenu = await prisma.menu.delete({
+    const deleteMenu = await this.prisma.menu.delete({
       where: { id: +menuId, ownerId },
     })
 
@@ -75,7 +75,7 @@ class MenuRepository {
   }
 
   updateRating = async ( menuId, averageRating, totalReviews ) => {
-    const updateRating = await prisma.menu.update({
+    const updateRating = await this.prisma.menu.update({
       where: { id: menuId },
       data: {
         ...( averageRating && { averageRating }),

@@ -17,7 +17,7 @@ const apiRouter = express.Router();
 apiRouter.use('/auth', authRouter);
 apiRouter.use('/users', userRouter);
 apiRouter.use('/stores', storeRouter);
-apiRouter.use('/menu', menuRouter);
+apiRouter.use('/stores/:store/menu', menuRouter);
 apiRouter.use('/carts', requireAccessToken, cartRouter);
 apiRouter.use('/orders', requireAccessToken, orderRouter);
 apiRouter.use('/reviews', reviewRouter);

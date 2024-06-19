@@ -14,7 +14,7 @@ class StoreRepository {
         description,
         openingHours
   ) => {
-    const createStore = await prisma.store.create({
+    const createStore = await this.prisma.store.create({
       data: {
         ownerId,
         category,
@@ -31,7 +31,7 @@ class StoreRepository {
   
   // 음식점 목록 조회
   getStore = async ( categoryId ) => {
-    let data = await prisma.store.findMany({
+    let data = await this.prisma.store.findMany({
       where: { category: +categoryId }
   })
 
@@ -55,7 +55,7 @@ class StoreRepository {
 
   // 음식점 상세 조회
   getStoreOne = async ( storeId ) => {
-    let data = await prisma.store.findUnique({
+    let data = await this.prisma.store.findUnique({
       where: { id: +storeId } })
     
     return data
@@ -72,7 +72,7 @@ class StoreRepository {
     description,
     openingHours,
     ) => {
-    const updateStore = await prisma.store.update(
+    const updateStore = await this.prisma.store.update(
       { where: {id: storeId},
         data: {
           ...(category && { category }),
@@ -89,7 +89,7 @@ class StoreRepository {
 
   // 음식점 삭제
   deleteStore = async ( storeId ) => {
-    const deleteStore = await prisma.store.delete({
+    const deleteStore = await this.prisma.store.delete({
       where: { id: +storeId }
     })
 
@@ -98,7 +98,7 @@ class StoreRepository {
 
   // 수신한 rating, totalReviews 만 업데이트
   updateRating = async ( storeId, averageRating, totalReviews) => {
-    const updateRating = await prisma.store.update({
+    const updateRating = await this.prisma.store.update({
       where: { id: storeId },
       data: {
         ...( averageRating && { averageRating }),

@@ -13,7 +13,7 @@ class StoreService {
     openingHours,
     ownerId
   ) => {
-    const createStore = await storeRepository.createStore( 
+    const createStore = await this.storeRepository.createStore( 
       category,
       name,
       image,
@@ -37,7 +37,7 @@ class StoreService {
     description,
     openingHours
   ) => {
-    const updateStore = await storeRepository.updateStore(
+    const updateStore = await this.storeRepository.updateStore(
       storeId,
       category,
       name,
@@ -52,7 +52,7 @@ class StoreService {
   }
 
   deleteStore = async ( storeId ) => {
-    const deleteStore = await storeRepository.deleteStore(
+    const deleteStore = await this.storeRepository.deleteStore(
       storeId
     )
     return deleteStore.id

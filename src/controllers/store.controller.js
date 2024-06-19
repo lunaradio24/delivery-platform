@@ -21,9 +21,8 @@ class StoreController {
 
     const user = req.user
     const ownerId = user.id
-    const userRole = user.role
 
-    const createStore = await storeService.createStore(
+    const createStore = await this.storeService.createStore(
       category,
       name,
       image,
@@ -47,10 +46,8 @@ class StoreController {
   getStore = async (req, res, next) => {
     try{
       const url = req.query
-      console.log(url)
       const categoryId = url.category
-      console.log(categoryId)
-      const getStore = await storeRepository.getStore( categoryId )
+      const getStore = await this.storeRepository.getStore( categoryId )
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
@@ -67,7 +64,7 @@ class StoreController {
     try{
       const storeId = req.params
       
-      const getStoreOne = await storeRepository.getStoreOne( storeId )
+      const getStoreOne = await this.storeRepository.getStoreOne( storeId )
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
@@ -81,9 +78,25 @@ class StoreController {
 
   updateStore = async (req, res, next) => {
     try{
-      const user = req.user
-      const authorId = user.id
-      const updateStore = await storeService.updateStore( authorId )
+      const storeId = req.params
+      const {
+        category,
+        name,
+        image,
+        address,
+        contactNumber,
+        description,
+        openingHours
+      } = req.body
+      const updateStore = await this.storeService.updateStore( 
+        storeId,
+        category,
+        name,
+        image,
+        address,
+        contactNumber,
+        description,
+        openingHours )
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
@@ -100,7 +113,7 @@ class StoreController {
     try{
       const user = req.user
       const authorId = user.id
-      const deleteStore = await storeService.deleteStore( authorId )
+      const deleteStore = await this.storeService.deleteStore( authorId )
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,

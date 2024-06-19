@@ -1,19 +1,20 @@
 import express from 'express';
-import { verifyAccessToken } from '../utils/auth.util.js';
 import { menuController } from '../di/dependency-injected-instances.js';
+import { requireRoles } from '../middlewares/require-roles.middleware.js';
+import { requireRefreshToken } from '../middlewares/require-refresh-token.middleware.js';
 
 const menuRouter = express.Router();
 
 // 메뉴 생성 API
-menuRouter.post('/', menuController.createMenu)
+menuRouter.post('/', requireRoles(['OWNER']), requireRefreshToken, menuController.createMenu)
 
 // 메뉴 목록 조회 API
 menuRouter.get('/', menuController.getMenu)
 
 // 메뉴 수정 API
-menuRouter.patch('/:menuId', verifyAccessToken, menuController.updateMenu)
+menuRouter.patch('/:menuId', requireRoles(['OWNER']), requireRefreshToken, menuController.updateMenu)
 
 // 메뉴 삭제 API
-menuRouter.delete('/:menuId', verifyAccessToken, menuController.deleteMenu)
+menuRouter.delete('/:menuId', requireRoles(['OWNER']), requireRefreshToken, menuController.deleteMenu)
 
 export { menuRouter };
