@@ -12,7 +12,10 @@ class UserService {
     if (!user) {
       throw new HttpError.NotFound(MESSAGES.USERS.NOT_FOUND);
     }
-    return user;
+
+    // password 제외하기
+    const { password: _, ...withoutPasswordUser } = user;
+    return withoutPasswordUser;
   };
 
   // userId에 맞는 user정보 수정
@@ -21,7 +24,13 @@ class UserService {
     if (!existingUser) {
       throw new HttpError.NotFound(MESSAGES.USERS.NOT_FOUND);
     }
-    return await this.userRepository.update(userId, nickname, address, image, contactNumber);
+
+    const updatingUser =  await this.userRepository.update(userId, nickname, address, image, contactNumber);
+
+    // password 제외하기
+    const { password: _, ...withoutPasswordUser } = updatingUser;
+    return withoutPasswordUser;
+
   };
 }
 
