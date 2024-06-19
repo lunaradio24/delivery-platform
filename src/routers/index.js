@@ -8,8 +8,8 @@ import { orderRouter } from './order.router.js';
 import { reviewRouter } from './review.router.js';
 import { likeRouter } from './like.router.js';
 import { transactionLogRouter } from './transaction-log.router.js';
-// import { requireAccessToken } from '../middlewares/require-access-token.middleware.js';
-// import { requireRoles } from '../middlewares/require-roles.middleware.js';
+import { requireAccessToken } from '../middlewares/require-access-token.middleware.js';
+import { requireRoles } from '../middlewares/require-roles.middleware.js';
 
 const apiRouter = express.Router();
 
