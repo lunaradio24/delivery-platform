@@ -1,7 +1,7 @@
 import { HttpError } from '../errors/http.error.js';
 import { MESSAGES } from '../constants/message.constant.js';
 import { verifyAccessToken } from '../utils/auth.util.js';
-import { UserService } from '../services/users.service.js';
+// import { UserService } from '../services/users.service.js';
 
 export const requireAccessToken = async (req, res, next) => {
   try {

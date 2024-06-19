@@ -55,5 +55,9 @@ export const MESSAGES = {
     READ_ME: {
       SUCCEED: '내 정보 조회에 성공했습니다.',
     },
+    UPDATE_ME: {
+      SUCCEED: '내 정보 수정에 성공했습니다.',
+    },
+    NOT_FOUND: '일치하는 사용자가 없습니다.',
   },
 };

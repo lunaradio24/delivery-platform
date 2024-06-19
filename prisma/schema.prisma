@@ -28,7 +28,7 @@ model User {
   wallet        Int           @default(1000000)
   contactNumber String        @map("contact_number")
   address       String?
-  image         String?       @map("image")
+  Image         String?       @map("image")
   createdAt     DateTime      @default(now()) @map("created_at")
   updatedAt     DateTime      @updatedAt @map("updated_at")
 
