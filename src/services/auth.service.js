@@ -1,9 +1,6 @@
 import { HttpError } from '../errors/http.error.js';
 import { MESSAGES } from '../constants/message.constant.js';
 import { hash, compareWithHashed, generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/auth.util.js';
-import { AuthRepository } from '../repositories/auth.repository.js';
-
-const authRepository = new AuthRepository();
 
 export class AuthService {
   constructor(authRepository, userRepository) {
@@ -14,14 +11,14 @@ export class AuthService {
   /** 회원가입 */
   signUp = async ({ email, password, passwordConfirm, nickname, role, contactNumber, address, image }) => {
     // email 중복확인
-    const existedEmail = await this.authRepository.getByEmail(email);
-    if (existedEmail) {
+    const existingEmail = await this.authRepository.getByEmail(email);
+    if (existingEmail) {
       throw new HttpError.Conflict(MESSAGES.AUTH.COMMON.EMAIL.DUPLICATED);
     }
 
     // nickname 중복확인
-    const existedNickname = await this.authRepository.getByNickname(nickname);
-    if (existedNickname) {
+    const existingNickname = await this.authRepository.getByNickname(nickname);
+    if (existingNickname) {
       throw new HttpError.Conflict(MESSAGES.AUTH.COMMON.NICKNAME.DUPLICATED);
     }
 
