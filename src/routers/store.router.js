@@ -1,5 +1,5 @@
 import express from 'express';
-import { prisma } from '../utils/prisma.util';
+import { prisma } from '../utils/prisma.util.js';
 import { StoreRepository } from '../repositories/store.repository.js';
 import { StoreService } from '../services/store.service.js';
 import { StoreController } from '../controllers/store.controller.js';
