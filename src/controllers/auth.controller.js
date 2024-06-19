@@ -1,8 +1,5 @@
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
-import { AuthService } from '../services/auth.service.js';
-
-const authService = new AuthService();
 
 export class AuthController {
   constructor(authService) {
