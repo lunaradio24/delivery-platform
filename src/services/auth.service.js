@@ -1,6 +1,6 @@
 import { HttpError } from '../errors/http.error.js';
 import { MESSAGES } from '../constants/message.constant.js';
-import { hash, compareWithHashed, generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/auth.util.js';
+import { hash, compareWithHashed, generateAccessToken, generateRefreshToken } from '../utils/auth.util.js';
 
 export class AuthService {
   constructor(authRepository, userRepository) {
@@ -9,7 +9,7 @@ export class AuthService {
   }
 
   /** 회원가입 */
-  signUp = async ({ email, password, passwordConfirm, nickname, role, contactNumber, address, image }) => {
+  signUp = async ({ email, password, nickname, role, contactNumber, address, image }) => {
     // email 중복확인
     const existingEmail = await this.authRepository.getByEmail(email);
     if (existingEmail) {
@@ -24,7 +24,7 @@ export class AuthService {
 
     // 비밀번호 암호화
     const hashedPassword = await hash(password);
-    console.log(hashedPassword)
+
     // user 생성하기
     const user = await this.authRepository.create({
       email,
@@ -47,28 +47,18 @@ export class AuthService {
 
     if (!user) {
       throw new HttpError.Unauthorized(MESSAGES.AUTH.COMMON.UNAUTHORIZED);
-    };
-
-    // const isMachedPassword = 
-    // user && await compareWithHashed(password, user.password);
-    // const correctPassword = await bcrypt.hash(password, user.password);
-    // console.log(password)
-    // console.log(user.password)
-    // console.log(correctPassword)
+    }
 
     // 비밀번호 일치여부
-    const comparePassword = compareWithHashed(password, user.password);
-    console.log(password)
-    console.log(user)
-    console.log(user.password)
-    console.log(comparePassword)
+    const comparePassword = await compareWithHashed(password, user.password);
     if (!comparePassword) {
       throw new HttpError.Unauthorized(MESSAGES.AUTH.COMMON.UNAUTHORIZED);
-    };
+    }
+    const payload = { userId: user.id };
 
     // accessToken, refreshToken 발급
-    const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user);
+    const accessToken = generateAccessToken(payload);
+    const refreshToken = generateRefreshToken(payload);
 
     return { accessToken, refreshToken };
   };
@@ -79,7 +69,7 @@ export class AuthService {
     const existingUser = await this.userRepository.findById(userId);
     if (!existingUser) {
       throw new HttpError.Unauthorized(MESSAGES.AUTH.COMMON.UNAUTHORIZED);
-    };
+    }
 
     // 토큰 삭제
     await this.authRepository.invalidateToken(userId);
@@ -96,5 +86,5 @@ export class AuthService {
     await this.authRepository.upsertRefreshToken(user.id, refreshToken);
 
     return { accessToken, refreshToken };
-  }
+  };
 }

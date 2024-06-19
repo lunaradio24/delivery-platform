@@ -1,5 +1,3 @@
-import { hash, compareWithHashed, generateAccessToken, generateRefreshToken } from '../utils/auth.util.js';
-
 export class AuthRepository {
   constructor(prisma) {
     this.prisma = prisma;
@@ -8,7 +6,7 @@ export class AuthRepository {
   /** 회원가입 */
   // email 확인하기
   getByEmail = async (email) => {
-    const user = await prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { email },
     });
     return user;
@@ -16,7 +14,7 @@ export class AuthRepository {
 
   // nickname 확인하기
   getByNickname = async (nickname) => {
-    const user = await prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { nickname },
     });
     return user;
@@ -43,11 +41,11 @@ export class AuthRepository {
   /** 로그아웃 */
   // user 찾기
   findById = async (userId) => {
-    const user = await prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { userId },
     });
     return user;
-  }
+  };
 
   // 토큰 삭제
   invalidateToken = async (userId) => {
@@ -55,7 +53,7 @@ export class AuthRepository {
       where: { userId },
       data: {
         refreshToken: null,
-        },
+      },
     });
   };
 
