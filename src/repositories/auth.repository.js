@@ -1,6 +1,4 @@
-import { prisma } from '../utils/prisma.util.js';
 import { hash, compareWithHashed, generateAccessToken, generateRefreshToken } from '../utils/auth.util.js';
-import { SALT_ROUNDS } from '../constants/auth.constant.js';
 
 export class AuthRepository {
   constructor(prisma) {
@@ -26,7 +24,7 @@ export class AuthRepository {
 
   create = async ({ email, password, passwordConfirm, nickname, role, contactNumber, address, image }) => {
     // 비밀번호 암호화
-    const hashedPassword = await hash(password, SALT_ROUNDS);
+    const hashedPassword = await hash(password);
 
     // user 생성하기
     const user = await this.prisma.user.create({
@@ -66,7 +64,7 @@ export class AuthRepository {
 
   /** 토큰 재발급 */
   upsertRefreshToken = async (userId, refreshToken) => {
-    await this.prisma.user.upsert({
+    await this.prisma.auth.upsert({
       where: { userId },
       update: {
         refreshToken,
