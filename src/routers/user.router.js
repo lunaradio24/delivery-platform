@@ -1,5 +1,6 @@
 import express from 'express';
 import { userController } from '../di/dependency-injected-instances.js';
+import { profileValidator } from '../middlewares/validators/profile-validator.middleware.js';
 
 const userRouter = express.Router();
 
@@ -7,6 +8,6 @@ const userRouter = express.Router();
 userRouter.get('/me', userController.getMyInfo);
 
 /** 프로필 수정 API */
-userRouter.patch('/me', userController.patchMyInfo);
+userRouter.patch('/me', profileValidator, userController.patchMyInfo);
 
 export { userRouter };

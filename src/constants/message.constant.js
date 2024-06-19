@@ -62,6 +62,7 @@ export const MESSAGES = {
     },
     UPDATE_ME: {
       SUCCEED: '내 정보 수정에 성공했습니다.',
+      AT_LEAST: '수정할 내용을 한 가지 이상 작성해주세요'
     },
     NOT_FOUND: '일치하는 사용자가 없습니다.',
   },
