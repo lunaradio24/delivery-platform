@@ -20,9 +20,23 @@ export class MenuRepository {
   }
   // 메뉴 목록 조회
   getMenu = async ( storeId ) => {
-    const data = await prisma.menu.findMany({
-      where: { id: storeId },
+    let data = await prisma.menu.findMany({
+      where: { id: +storeId }
     })
+
+    data = data.map((menu) =>{
+      return {
+        id: menu.id,
+        name: menu.name,
+        description: menu.description,
+        price: menu.price,
+        image: menu.image,
+        totalReviews: menu.totalReviews,
+        averageRating: menu.averageRating,
+    }
+      
+  })
+
     return data
   }
 
@@ -41,18 +55,24 @@ export class MenuRepository {
   // 메뉴 삭제
   deleteMenu = async ( menuId ) => {
     const deleteMenu = await prisma.menu.delete({
-      where: { id: menuId }
+      where: { id: +menuId }
     })
 
     return deleteMenu;
   }
 
-  updateRating = async ( menuId, rating ) => {
+  updateRating = async ( menuId, averageRating, totalReviews ) => {
     const updateRating = await prisma.menu.update({
-      
+      where: { id: menuId },
+      data: {
+        ...( averageRating && { averageRating }),
+        ...( totalReviews && { totalReviews })
+      }
     })
+    return { data: updateRating.averageRating }
+    }
   }
-}
+
 
 
 

@@ -1,10 +1,26 @@
-import { HttpError } from '../errors/http.error.js';
-import { MESSAGES } from '../constants/message.constant.js';
 import { MenuRepository } from '../repositories/menu.repository.js';
 
+const menuRepository = new MenuRepository()
+
 export class MenuService {
-    menuRepository = new MenuRepository()
+    createMenu = async () => {
+      const createMenu = await menuRepository.createMenu()
+
+      return createMenu
+    }
+
+    updateMenu = async () => {
+      const updateMenu = await menuRepository.updateMenu()
+
+      return updateMenu
+    }
+
+    deleteMenu = async () => {
+      const deleteMenu = await menuRepository.deleteMenu()
+
+      return deleteMenu
+    }
   }
 
-  // method 작성해주시면 됩니다.
+
 

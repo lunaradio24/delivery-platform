@@ -21,7 +21,6 @@ export class StoreService {
     description,
     openingHours
   ) => {
-
     const updateStore = await storeRepository.updateStore(
       storeId,
       category,
