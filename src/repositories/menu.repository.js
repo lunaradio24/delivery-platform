@@ -3,6 +3,7 @@ class MenuRepository {
     this.prisma = prisma;
   }
 
+
   createMenu = async (
       storeId,
       name,
@@ -10,7 +11,6 @@ class MenuRepository {
       image,
       description
   ) => {
-  
     const createMenu = await this.prisma.menu.create({
       data: {
         storeId,
@@ -18,18 +18,20 @@ class MenuRepository {
         price,
         image,
         description,
-      }
-    })
+
+      },
+    });
     return createMenu;
-  }
-  
+  };
+
   // 메뉴 목록 조회
   getMenu = async ( storeId ) => {
     let data = await this.prisma.menu.findMany({
       where: { id: +storeId }
     })
 
-    data = data.map((menu) =>{
+
+    data = data.map((menu) => {
       return {
         id: menu.id,
         name: menu.name,
@@ -38,15 +40,22 @@ class MenuRepository {
         image: menu.image,
         totalReviews: menu.totalReviews,
         averageRating: menu.averageRating,
-    }
-      
-  })
+      };
+    });
 
-    return data
-  }
+    return data;
+  };
 
+  // 메뉴 상세 조회
+  getMenuByMenuId = async (menuId) => {
+    const menu = await this.prisma.menu.findUnique({
+      where: { id: menuId },
+    });
+    return menu;
+  };
 
   // 메뉴 수정
+
   updateMenu = async ( 
     menuId, 
     name,
@@ -72,19 +81,22 @@ class MenuRepository {
       where: { id: +menuId },
     })
 
+
     return deleteMenu;
-  }
+  };
+
 
   updateRating = async ( menuId, averageRating, totalReviews ) => {
+
     const updateRating = await this.prisma.menu.update({
       where: { id: menuId },
       data: {
-        ...( averageRating && { averageRating }),
-        ...( totalReviews && { totalReviews })
-      }
-    })
-    return { data: updateRating.averageRating }
-    }
-  }
+        ...(averageRating && { averageRating }),
+        ...(totalReviews && { totalReviews }),
+      },
+    });
+    return { data: updateRating.averageRating };
+  };
+}
 
 export default MenuRepository;

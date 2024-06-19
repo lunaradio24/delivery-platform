@@ -1,65 +1,37 @@
 import { ORDER_STATUS } from '../constants/order.constant.js';
+import BaseRepository from './base.repository.js';
 
-class OrderRepository {
-  constructor(prisma) {
-    this.prisma = prisma;
-  }
+class OrderRepository extends BaseRepository {
   //  주문 요청 API
-  createdOrder = async (userId, storeId, orderItems, totalPrice, userCartId) => {
-    const transactionCreatedOrder = await this.prisma.$transaction(async (tx) => {
-      const createdOrder = await tx.order.create({
-        //Order 데이터 생성
-        data: {
-          storeId: storeId,
-          customerId: userId,
-          orderItem: {
-            create: orderItems.map((item) => ({
-              menuId: item.menuId, // 메뉴 ID
-              quantity: item.quantity, // 수량
-            })),
-          },
-          totalPrice: totalPrice,
+  createOrder = async (userId, storeId, orderItems, totalPrice, cartId, { tx }) => {
+    const orm = tx || this.prisma;
+    const createdOrder = await orm.order.create({
+      //Order 데이터 생성
+      data: {
+        storeId: storeId,
+        customerId: userId,
+        orderItem: {
+          create: orderItems.map((item) => ({
+            menuId: item.menuId, // 메뉴 ID
+            quantity: item.quantity, // 수량
+          })),
         },
-        include: {
-          orderItem: true,
-        },
-      });
-
-      if (userCartId) {
-        await tx.cartItem.delete({
-          where: { id: userCartId }, //cart 데이터 삭제
-        });
-      }
-
-      // 고객의 잔액 차감
-      await tx.user.update({
-        where: { id: userId },
-        data: { wallet: { decrement: createdOrder.totalPrice } }, //고객의 잔액을 totalPrice만큼 증가
-      });
-
-      // admin 잔액 증가
-      const adminId = 1;
-      await tx.user.update({
-        where: { id: adminId },
-        data: { wallet: { increment: createdOrder.totalPrice } },
-      });
-
-      let data = {
-        orderId: createdOrder.id,
-        storeName: createdOrder.store.name,
-        userId: createdOrder.customerId,
-        menu: createdOrder.orderItem.map((item) => ({
-          menuId: item.menuId, // 메뉴 ID
-          quantity: item.quantity, // 수량
-        })),
-        address: createdOrder.customer.address,
-        totalPrice: createdOrder.totalPrice,
-        createdAt: createdOrder.createdAt,
-      };
-      return data;
+        totalPrice: totalPrice,
+      },
+      include: {
+        store: true,
+        customer: true,
+        orderItem: true,
+      },
     });
 
-    return transactionCreatedOrder;
+    // if (cartId) {
+    //   await tx.cartItem.delete({
+    //     where: { id: cartId }, //cart 데이터 삭제
+    //   });
+    // }
+
+    return createdOrder;
   };
 
   cancelOrder = async (userId, id) => {
@@ -145,7 +117,7 @@ class OrderRepository {
           quantity: item.quantity,
           price: item.menu.price,
         })),
-        totalPrice: order.totalPrice,
+        totalPrice: OwnerOrder.totalPrice,
       };
     });
 
