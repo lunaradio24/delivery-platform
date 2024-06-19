@@ -1,11 +1,10 @@
-import { prisma } from '../utils/prisma.util.js';
 import { ORDER_STATUS } from '../constants/order.constant.js';
 import { ROLES } from '../constants/auth.constant.js';
 
 export class OrderRepository {
-  // constructor(prisma) {
-  //   this.prisma = prisma;
-  // }
+  constructor(prisma) {
+    this.prisma = prisma;
+  }
 
   //  주문 요청 API
   createdOrder = async (userId, storeId, orderItems, totalPrice, userCartId) => {
