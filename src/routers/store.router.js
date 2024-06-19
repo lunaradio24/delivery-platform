@@ -1,9 +1,8 @@
 import express from 'express';
-import storeController from '../controllers/store.controller.js';
 import { requireRefreshToken } from '../middlewares/require-refresh-token.middleware.js';
+import { storeController } from '../di/dependency-injected-instances.js';
 
 const storeRouter = express.Router();
-
 
 // 가게 등록 API
 storeRouter.post('/', requireRefreshToken, storeController.createStore)

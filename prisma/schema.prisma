@@ -28,9 +28,9 @@ model User {
   wallet        Int      @default(1000000)
   contactNumber String   @map("contact_number")
   address       String?
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
-  image         String?  @map("image")
+  image         String?       @map("image")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
 
   refreshToken Auth?
   store        Store?
@@ -69,21 +69,20 @@ model Store {
 }
 
 model Menu {
-  id            Int      @id @default(autoincrement())
-  storeId       Int      @map("store_id")
-  name          String
-  description   String
-  price         Int
-  image         String
-  totalReviews  Int      @default(0) @map("total_reviews")
-  averageRating Float?   @map("average_rating")
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  id                Int                 @id @default(autoincrement())
+  storeId           Int                 @map("store_id")
+  name              String              
+  description       String
+  price             Int
+  image             String
+  totalReviews      Int                 @default(0) @map("total_reviews")
+  averageRating     Float?              @map("average_rating")
+  createdAt         DateTime            @default(now()) @map("created_at")
+  updatedAt         DateTime            @updatedAt @map("updated_at")
 
-  store      Store        @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  cartItem   CartItem[]
-  orderItem  OrderItem[]
-  reviewMenu ReviewMenu[]
+  store             Store               @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  cartItem          CartItem[]
+  orderItem         OrderItem[]
 
   @@unique([storeId, name])
   @@map("menus")
@@ -136,33 +135,21 @@ model OrderItem {
 }
 
 model Review {
-  id         Int      @id @default(autoincrement())
-  customerId Int      @map("customer_id")
-  storeId    Int      @map("store_id")
-  orderId    Int      @unique @map("order_id")
-  rating     Int
-  content    String?  @db.Text
-  image      String?
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
+  id                Int                 @id @default(autoincrement())
+  customerId        Int                 @map("customer_id")
+  storeId           Int                 @map("store_id")
+  orderId           Int                 @unique @map("order_id")
+  rating            Int           
+  content           String?             @db.Text
+  image             String?             
+  createdAt         DateTime            @default(now()) @map("created_at")
+  updatedAt         DateTime            @updatedAt @map("updated_at")
 
-  customer   User         @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  store      Store        @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  order      Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  reviewMenu ReviewMenu[]
+  customer          User                @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  store             Store               @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  order             Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@map("reviews")
-}
-
-model ReviewMenu {
-  id       Int @id @default(autoincrement())
-  reviewId Int @map("review_id")
-  menuId   Int @map("menu_id")
-
-  review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
-  menu   Menu   @relation(fields: [menuId], references: [id], onDelete: Cascade)
-
-  @@map("review_menus")
 }
 
 model Like {

@@ -1,11 +1,8 @@
-import menuRepository from '../repositories/menu.repository.js';
-
-
-
 class MenuService {
   constructor(menuRepository) {
     this.menuRepository = menuRepository;
   }
+
     createMenu = async (
       storeId,
       name,
@@ -47,9 +44,6 @@ class MenuService {
       return deleteMenu
     }
   }
-
-
-
 
 export default MenuService;
 

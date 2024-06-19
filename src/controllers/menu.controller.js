@@ -1,10 +1,11 @@
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
-import menuRepository from '../repositories/menu.repository.js';
-import menuService from '../services/menu.service.js';
-
 
 class MenuController {
+  constructor(menuService) {
+    this.menuService = menuService;
+  }
+  
   createMenu = async (req, res, next) => {
     try{
       const storeId = req.params
@@ -87,5 +88,4 @@ class MenuController {
   }
 }
 
-const menuController = new MenuController()
 export default menuController

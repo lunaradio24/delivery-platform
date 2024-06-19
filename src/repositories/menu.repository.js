@@ -1,5 +1,3 @@
-import { prisma } from '../utils/prisma.util.js'
-
 class MenuRepository {
   constructor(prisma) {
     this.prisma = prisma;
@@ -23,6 +21,7 @@ class MenuRepository {
     })
     return createMenu;
   }
+  
   // 메뉴 목록 조회
   getMenu = async ( storeId ) => {
     let data = await prisma.menu.findMany({
@@ -88,4 +87,3 @@ class MenuRepository {
   }
 
 export default MenuRepository;
-

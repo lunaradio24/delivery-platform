@@ -1,6 +1,3 @@
-import { prisma } from '../utils/prisma.util.js'
-
-
 class StoreRepository {
   constructor(prisma) {
     this.prisma = prisma;
@@ -31,6 +28,7 @@ class StoreRepository {
     })
     return createStore;
   }
+  
   // 음식점 목록 조회
   getStore = async ( categoryId ) => {
     let data = await prisma.store.findMany({
@@ -54,7 +52,6 @@ class StoreRepository {
     })
     return data
   }
-
 
   // 음식점 상세 조회
   getStoreOne = async ( storeId ) => {
@@ -113,3 +110,4 @@ class StoreRepository {
 }
 
 export default StoreRepository;
+
