@@ -6,9 +6,21 @@ export class UserService {
     this.userRepository = userRepository;
   }
 
-  getMyInfo = async () => {
-    // 내용 채워주시면 됩니다.
+  // userId로 user 찾기
+  getMyInfo = async (userId) => {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new HttpError.NotFound(MESSAGES.USERS.NOT_FOUND);
+    }
+    return user;
   };
 
-  // method 작성해주시면 됩니다.
+  // userId에 맞는 user정보 수정
+  updateMyInfo = async ({ userId, nickname, address, image, contactNumber }) => {
+    const existingUser = await this.userRepository.findById(userId);
+    if (!existingUser) {
+      throw new HttpError.NotFound(MESSAGES.USERS.NOT_FOUND);
+    }
+    return await this.userRepository.update({ userId, nickname, address, image, contactNumber });
+  };
 }
