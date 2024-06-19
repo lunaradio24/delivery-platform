@@ -100,11 +100,11 @@ class ReviewService {
       const newRating = rating;
       // 가게 평균 별점 수정
       const updatedStoreRating =
-        (store.averageRating * store.totalReviews - oldRating + newRating) / store.totalReviews;
-      await this.storeRepository.updateRating(storeId, updatedStoreRating, { tx });
+        (review.store.averageRating * review.store.totalReviews - oldRating + newRating) / review.store.totalReviews;
+      await this.storeRepository.updateRating(review.storeId, updatedStoreRating, { tx });
 
       // 메뉴 평균 별점 수정
-      const orderItemIds = await this.orderItemRepository.findMenuIdsByOrderId(orderId);
+      const orderItemIds = await this.orderItemRepository.findMenuIdsByOrderId(review.orderId);
       for (const menuId of orderItemIds) {
         const menu = await this.menuRepository.findMenuByMenuId(menuId);
         const updatedMenuRating = (menu.averageRating * menu.totalReviews + rating) / (menu.totalReviews + 1);
@@ -132,12 +132,13 @@ class ReviewService {
 
     // 가게 평균 별점 수정, 총 리뷰 수 수정
     const oldRating = review.rating;
-    const updatedTotalReviews = store.totalReviews - 1;
-    const updatedStoreRating = (store.averageRating * store.totalReviews - oldRating) / updatedTotalReviews;
-    await this.storeRepository.updateRating(storeId, updatedStoreRating, updatedTotalReviews, { tx });
+    const updatedTotalReviews = review.store.totalReviews - 1;
+    const updatedStoreRating =
+      (review.store.averageRating * review.store.totalReviews - oldRating) / updatedTotalReviews;
+    await this.storeRepository.updateRating(review.storeId, updatedStoreRating, updatedTotalReviews, { tx });
 
     // 메뉴 평균 별점, 총 리뷰 수 수정
-    const orderItemIds = await this.orderItemRepository.findMenuIdsByOrderId(orderId);
+    const orderItemIds = await this.orderItemRepository.findMenuIdsByOrderId(review.orderId);
     for (const menuId of orderItemIds) {
       const menu = await this.menuRepository.findMenuByMenuId(menuId);
       const updatedTotalReviews = menu.totalReviews - 1;
