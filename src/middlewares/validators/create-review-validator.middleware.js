@@ -3,10 +3,10 @@ import { MESSAGES } from '../../constants/message.constant.js';
 import { MAX_REVIEW_LENGTH } from '../../constants/review.constant.js';
 
 const schema = Joi.object({
-  storeId: Joi.number().required().message({
+  storeId: Joi.number().required().messages({
     'any.required': MESSAGES.REVIEWS.COMMON.STORE_ID.REQUIRED,
   }),
-  orderId: Joi.number().required().message({
+  orderId: Joi.number().required().messages({
     'any.required': MESSAGES.REVIEWS.COMMON.ORDER_ID.REQUIRED,
   }),
   rating: Joi.number().required().messages({

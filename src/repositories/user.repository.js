@@ -1,5 +1,3 @@
-import { prisma } from '../utils/prisma.util.js';
-
 export class UserRepository {
   constructor(prisma) {
     this.prisma = prisma;
