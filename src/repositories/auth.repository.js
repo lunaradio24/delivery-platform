@@ -23,14 +23,11 @@ export class AuthRepository {
   };
 
   create = async ({ email, password, passwordConfirm, nickname, role, contactNumber, address, image }) => {
-    // 비밀번호 암호화
-    const hashedPassword = await hash(password);
-
     // user 생성하기
     const user = await this.prisma.user.create({
       data: {
         email,
-        password: hashedPassword,
+        password,
         nickname,
         role,
         contactNumber,
