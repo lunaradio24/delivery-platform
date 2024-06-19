@@ -126,13 +126,9 @@ export const MESSAGES = {
     NO_DATA: '주문이 존재하지 않습니다',
     CREATED: {
       SUCCEED: '주문이 접수되었습니다.',
-<<<<<<< HEAD
-      NOORDER: '메뉴는 1개 이상 주문해주세요.',
-      NOCART: '카트가 비어있습니다.',
-      NOSTORE: '주문 가게를 입력해주세요.',
-=======
       NO_ORDER: '메뉴는 1개 이상 주문해주세요.',
->>>>>>> dd8136aa3b12121e9c5fff87a4506e2080245c11
+      NO_CART: '카트가 비어있습니다.',
+      NO_STORE: '주문 가게를 입력해주세요.',
     },
     CANCEL: {
       SUCCEED: '주문 취소 요청 되었습니다.',
