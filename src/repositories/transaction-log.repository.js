@@ -2,7 +2,12 @@ class TransactionLogRepository {
   constructor(prisma) {
     this.prisma = prisma;
   }
-  // method 작성하시면 됩니다.
+
+  create = async (senderId, receiverId, amount, type) => {
+    await this.prisma.transactionLog.create({
+      data: { senderId, receiverId, amount, type },
+    });
+  };
 }
 
 export default TransactionLogRepository;

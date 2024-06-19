@@ -1,4 +1,5 @@
 import { ORDER_STATUS } from '../constants/order.constant.js';
+import { ADMIN_ID } from '../constants/user.constant.js';
 import BaseRepository from './base.repository.js';
 
 class OrderRepository extends BaseRepository {
@@ -25,18 +26,27 @@ class OrderRepository extends BaseRepository {
       },
     });
 
-    // if (cartId) {
-    //   await tx.cartItem.delete({
-    //     where: { id: cartId }, //cart 데이터 삭제
-    //   });
-    // }
+    // 장바구니에서 주문한 메뉴 삭제
+    // await tx.cartItem.deleteMany({
+    //   where: { : cartId }, //cart 데이터 삭제
+    // });
+
+    // transaction log 생성
+    await orm.transactionLog.create({
+      data: {
+        senderId: userId,
+        receiverId: ADMIN_ID,
+        amount: createdOrder.totalPrice,
+        type: 1,
+      },
+    });
 
     return createdOrder;
   };
 
   cancelOrder = async (userId, orderId) => {
-    const cancelOrder = await this.prisma.$transaction(async (tx) => {
-      const cancelUpdateOrder = await tx.order.update({
+    const cancelledOrder = await this.prisma.$transaction(async (tx) => {
+      const cancelledOrder = await tx.order.update({
         where: { id: +orderId },
         data: { status: 4 },
       });
@@ -44,20 +54,28 @@ class OrderRepository extends BaseRepository {
       // 고객의 잔액 업데이트
       await tx.user.update({
         where: { id: userId },
-        data: { wallet: { increment: cancelUpdateOrder.totalPrice } }, //고객의 잔액을 totalPrice만큼 증가
+        data: { wallet: { increment: cancelledOrder.totalPrice } }, //고객의 잔액을 totalPrice만큼 증가
       });
 
       // admin 잔액 차감
-      const adminId = 1;
       await tx.user.update({
-        where: { id: adminId },
-        data: { wallet: { decrement: cancelUpdateOrder.totalPrice } },
+        where: { id: ADMIN_ID },
+        data: { wallet: { decrement: cancelledOrder.totalPrice } },
+      });
+      // transaction log 생성
+      await tx.transactionLog.create({
+        data: {
+          senderId: ADMIN_ID,
+          receiverId: userId,
+          amount: cancelledOrder.totalPrice,
+          type: 2,
+        },
       });
 
-      return cancelUpdateOrder;
+      return cancelledOrder;
     });
 
-    return cancelOrder;
+    return cancelledOrder;
   };
 
   //  주문 내역 목록 조회 API
@@ -227,10 +245,19 @@ class OrderRepository extends BaseRepository {
         });
 
         // admin 잔액 차감
-        const adminId = 1;
         await tx.user.update({
-          where: { id: adminId },
+          where: { id: ADMIN_ID },
           data: { wallet: { decrement: checkOrder.totalPrice } },
+        });
+
+        // transaction log 생성
+        await tx.transactionLog.create({
+          data: {
+            senderId: ADMIN_ID,
+            receiverId: user.id,
+            amount: checkOrder.totalPrice,
+            type: 3,
+          },
         });
       }
 
