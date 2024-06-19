@@ -18,9 +18,15 @@ const schema = Joi.object({
   nickname: Joi.string().required().messages({
     'any.required': MESSAGES.AUTH.COMMON.NICKNAME.REQUIRED,
   }),
+  address: Joi.string(),
+  role: Joi.number().required().valid(1, 2).messages({
+    'any.required': MESSAGES.AUTH.COMMON.ROLE.REQUIRED,
+    'any.only': MESSAGES.AUTH.COMMON.ROLE.INVALID_ROLE,
+  }),
+  image: Joi.string(),
   contactNumber: Joi.string().required().regex(PHONE_NUMBER_REG_EXP).messages({
     'any.required': MESSAGES.AUTH.COMMON.CONTACT_NUMBER.REQUIRED,
-    'string.regex': MESSAGES.AUTH.COMMON.CONTACT_NUMBER.INVALID_FORMAT,
+    'string.pattern.base': MESSAGES.AUTH.COMMON.CONTACT_NUMBER.INVALID_FORMAT,
   }),
 });
 

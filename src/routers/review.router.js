@@ -1,5 +1,5 @@
 import express from 'express';
-import { prisma } from '../utils/prisma.util';
+import { prisma } from '../utils/prisma.util.js';
 import { ReviewRepository } from '../repositories/review.repository.js';
 import { OrderRepository } from '../repositories/order.repository.js';
 import { OrderItemRepository } from '../repositories/order-item.repository.js';
