@@ -1,11 +1,18 @@
-import { HttpError } from '../errors/http.error.js';
-import { MESSAGES } from '../constants/message.constant.js';
 import { StoreRepository } from '../repositories/store.repository.js';
 
-export class StoreService {
-  storeRepository = new StoreRepository()
+const storeRepository = new StoreRepository()
 
+export class StoreService {
   createStore = async (
+    data, ownerId
+  ) => {
+    const createStore = await storeRepository.createStore( data, ownerId )
+    
+    return createStore
+  }
+  
+  updateStore = async (
+    storeId,
     category,
     name,
     image,
@@ -14,7 +21,9 @@ export class StoreService {
     description,
     openingHours
   ) => {
-    const createStore = await this.storeRepository.createStore(
+
+    const updateStore = await storeRepository.updateStore(
+      storeId,
       category,
       name,
       image,
@@ -23,28 +32,14 @@ export class StoreService {
       description,
       openingHours
     )
-    return createStore
-  }
-  
-  getStore = async ( categoryIndex ) => {
-    const data = await this.storeRepository.getStore(
-      categoryIndex
-    )
     
-    return data
-  }
-
-  updateStore = async () => {
-    const updateStore = await this.storeRepository.updateStore(
-      
-    )
     return updateStore
   }
 
   deleteStore = async ( storeId ) => {
-    const deleteStore = await this.storeRepository.deleteStore(
+    const deleteStore = await storeRepository.deleteStore(
       storeId
     )
-    return deleteStore
+    return deleteStore.id
   }
 }

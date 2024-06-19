@@ -5,16 +5,18 @@ export class StoreRepository {
 
   // 음식점 생성
   createStore = async (
-    category,
-    name,
-    image,
-    address,
-    contactNumber,
-    description,
-    openingHours
+        ownerId,
+        category,
+        name,
+        image,
+        address,
+        contactNumber,
+        description,
+        openingHours
   ) => {
     const createStore = await prisma.store.create({
       data: {
+        ownerId,
         category,
         name,
         image,
@@ -27,35 +29,35 @@ export class StoreRepository {
     return createStore;
   }
   // 음식점 목록 조회
-  getStore = async ( categoryIndex ) => {
-    const data = await prisma.store.findMany({
-      where: { category: categoryIndex },
+  getStore = async ( categoryId ) => {
+    let data = await prisma.store.findMany({
+      where: { category: +categoryId }
+  })
+
+    data = data.map((store) => {
+        return {
+          id: store.id,
+          name : store.name,
+          category : store.category,
+          image : store.image,
+          address : store.address,
+          contactNumber : store.contactNumber,
+          description : store.description,
+          openingHours : store.openingHours,
+          totalReview : store.totalReviews,
+          totalLikes : store.totalLikes,
+          averageRating : store.averageRating,
+        }
     })
     return data
   }
 
+
   // 음식점 상세 조회
   getStoreOne = async ( storeId ) => {
     let data = await prisma.store.findUnique({
-      where: { id: storeId },
-    })
-
-    data = data.map((stores) => {
-      return {
-        id: stores.id,
-        name : stores.name,
-        category : stores.category,
-        image : stores.image,
-        address : stores.address,
-        contactNumber : stores.contactNumber,
-        description : stores.description,
-        openingHours : stores.openingHours,
-        totalReview : stores.totalReview,
-        totalLikes : stores.totalLikes,
-        averageRating : stores.averageRatings,
-      }
-      
-    })
+      where: { id: +storeId } })
+    
     return data
   }
 
@@ -88,7 +90,7 @@ export class StoreRepository {
   // 음식점 삭제
   deleteStore = async ( storeId ) => {
     const deleteStore = await prisma.store.delete({
-      where: { id: storeId }
+      where: { id: +storeId }
     })
 
     return deleteStore;
@@ -105,5 +107,4 @@ export class StoreRepository {
     })
     return { data: updateRating.averageRating }
   }
-  
 }
