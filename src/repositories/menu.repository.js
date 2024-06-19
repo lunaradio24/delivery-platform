@@ -3,7 +3,14 @@ class MenuRepository {
     this.prisma = prisma;
   }
 
-  createMenu = async ({ storeId, name, price, image, description }) => {
+
+  createMenu = async (
+      storeId,
+      name,
+      price,
+      image,
+      description
+  ) => {
     const createMenu = await this.prisma.menu.create({
       data: {
         storeId,
@@ -11,16 +18,18 @@ class MenuRepository {
         price,
         image,
         description,
+
       },
     });
     return createMenu;
   };
 
   // 메뉴 목록 조회
-  getMenu = async (storeId) => {
+  getMenu = async ( storeId ) => {
     let data = await this.prisma.menu.findMany({
-      where: { id: +storeId },
-    });
+      where: { id: +storeId }
+    })
+
 
     data = data.map((menu) => {
       return {
@@ -46,29 +55,39 @@ class MenuRepository {
   };
 
   // 메뉴 수정
-  updateMenu = async (menuId, name, image, description, price) => {
+
+  updateMenu = async ( 
+    menuId, 
+    name,
+    price,
+    image,
+    description
+    ) => {
     const updateMenu = await this.prisma.menu.update({
-      where: { id: menuId },
+      where: { id : +menuId },
       data: {
-        ...(name && { name }),
-        ...(image && { image }),
-        ...(price && { price }),
-        ...(description && { description }),
-      },
-    });
-    return updateMenu;
-  };
+          ...(name && { name }),
+          ...(price && { price }),
+          ...(image && { image }),
+          ...(description && { description }),
+      }
+    })
+    return updateMenu
+  }
 
   // 메뉴 삭제
-  deleteMenu = async (menuId, ownerId) => {
+  deleteMenu = async ( menuId) => {
     const deleteMenu = await this.prisma.menu.delete({
-      where: { id: +menuId, ownerId },
-    });
+      where: { id: +menuId },
+    })
+
 
     return deleteMenu;
   };
 
-  updateRating = async (menuId, averageRating, totalReviews) => {
+
+  updateRating = async ( menuId, averageRating, totalReviews ) => {
+
     const updateRating = await this.prisma.menu.update({
       where: { id: menuId },
       data: {

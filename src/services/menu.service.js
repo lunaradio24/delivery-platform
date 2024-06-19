@@ -10,7 +10,7 @@ class MenuService {
       image,
       description
     ) => {
-      const createMenu = await menuRepository.createMenu(
+      const createMenu = await this.menuRepository.createMenu(
         storeId,
         name,
         price,
@@ -26,8 +26,9 @@ class MenuService {
       name,
       image,
       description,
-      price) => {
-      const updateMenu = await menuRepository.updateMenu(
+      price
+      ) => {
+      const updateMenu = await this.menuRepository.updateMenu(
           menuId,
           name,
           image,
@@ -38,8 +39,8 @@ class MenuService {
       return updateMenu
     }
 
-    deleteMenu = async (menuId, ownerId) => {
-      const deleteMenu = await menuRepository.deleteMenu(menuId, ownerId)
+    deleteMenu = async (menuId) => {
+      const deleteMenu = await this.menuRepository.deleteMenu(menuId)
 
       return deleteMenu
     }
