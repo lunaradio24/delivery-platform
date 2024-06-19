@@ -1,8 +1,8 @@
 import express from 'express';
 import { orderController } from '../di/dependency-injected-instances.js';
-import { requireRoles } from '../middlewares/requirer-roles.middleware.js';
-import { createOrderValidator } from '../middlewares/validators/create-order-validator.middleware.js';'
-  
+import { requireRoles } from '../middlewares/require-roles.middleware.js';
+import { createOrderValidator } from '../middlewares/validators/create-order-validator.middleware.js';
+
 const orderRouter = express.Router();
 
 // 주문 요청 API
