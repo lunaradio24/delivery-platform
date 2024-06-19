@@ -21,7 +21,7 @@ class OrderController {
         data: createdOrder,
       });
     } catch (err) {
-      console.log(err);
+      console.log('에러', err);
       next(err);
     }
   };
@@ -70,13 +70,6 @@ class OrderController {
       const { orderId } = req.params;
 
       const getDetailOrder = await this.orderService.getDetailOrder(user, orderId);
-
-      if (!getDetailOrder) {
-        return res.status(HTTP_STATUS.NOT_FOUND).json({
-          status: HTTP_STATUS.NOT_FOUND,
-          message: MESSAGES.ORDERS.NO_DATA,
-        });
-      }
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,

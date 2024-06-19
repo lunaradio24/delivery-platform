@@ -2,13 +2,13 @@ import { ORDER_STATUS } from '../constants/order.constant.js';
 import BaseRepository from './base.repository.js';
 
 class OrderRepository extends BaseRepository {
-  //  주문 요청 API
-  createOrder = async (userId, storeId, orderItems, totalPrice, cartId, { tx }) => {
+  //  주문 요청 API / 전달하는 변수에 cartId 추가
+  createOrder = async (userId, storeId, orderItems, totalPrice, { tx }) => {
     const orm = tx || this.prisma;
     const createdOrder = await orm.order.create({
       //Order 데이터 생성
       data: {
-        storeId: storeId,
+        storeId: +storeId,
         customerId: userId,
         orderItem: {
           create: orderItems.map((item) => ({
@@ -34,36 +34,24 @@ class OrderRepository extends BaseRepository {
     return createdOrder;
   };
 
-  cancelOrder = async (userId, id) => {
+  cancelOrder = async (userId, orderId) => {
     const cancelOrder = await this.prisma.$transaction(async (tx) => {
-      const checkOrder = await tx.order.findUnique({
-        where: { id, customerId: userId }, //반환 : orderId
-      });
-
-      if (!checkOrder) {
-        return checkOrder;
-      }
-
-      if (checkOrder.status === ORDER_STATUS[4]) {
-        return checkOrder;
-      }
-
       const cancelUpdateOrder = await tx.order.update({
-        where: { id },
-        data: { status: ORDER_STATUS[4] },
+        where: { id: +orderId },
+        data: { status: 4 },
       });
 
       // 고객의 잔액 업데이트
       await tx.user.update({
         where: { id: userId },
-        data: { wallet: { increment: checkOrder.totalPrice } }, //고객의 잔액을 totalPrice만큼 증가
+        data: { wallet: { increment: cancelUpdateOrder.totalPrice } }, //고객의 잔액을 totalPrice만큼 증가
       });
 
       // admin 잔액 차감
       const adminId = 1;
       await tx.user.update({
         where: { id: adminId },
-        data: { wallet: { decrement: checkOrder.totalPrice } },
+        data: { wallet: { decrement: cancelUpdateOrder.totalPrice } },
       });
 
       return cancelUpdateOrder;
@@ -73,22 +61,6 @@ class OrderRepository extends BaseRepository {
   };
 
   //  주문 내역 목록 조회 API
-  //Admin 주문내역 전체
-  getAdminOrders = async () => {
-    let getAllOrders = await this.prisma.order.findMany({
-      include: {
-        store: true,
-        customer: true,
-        orderItem: {
-          include: {
-            menu: true, // menu 데이터 포함
-          },
-        },
-      },
-    });
-    return getAllOrders;
-  };
-
   //Owner 주문내역 전체
   getOwnerOrders = async (storeId) => {
     let getOwnerOrders = await this.prisma.order.findMany({
@@ -104,22 +76,20 @@ class OrderRepository extends BaseRepository {
       },
     });
 
-    getOwnerOrders = getOwnerOrders.map((OwnerOrder) => {
-      return {
-        orderId: OwnerOrder.id,
-        createdAt: OwnerOrder.createdAt,
-        status: OwnerOrder.status,
-        customerId: OwnerOrder.customerId,
-        userNumber: OwnerOrder.customer.contactNumber,
-        userAddress: OwnerOrder.customer.address,
-        orderItems: OwnerOrder.orderItem.map((item) => ({
-          menu: item.menu.name,
-          quantity: item.quantity,
-          price: item.menu.price,
-        })),
-        totalPrice: OwnerOrder.totalPrice,
-      };
-    });
+    getOwnerOrders = getOwnerOrders.map((OwnerOrder) => ({
+      orderId: OwnerOrder.id,
+      createdAt: OwnerOrder.createdAt,
+      status: OwnerOrder.status,
+      customerId: OwnerOrder.customerId,
+      userNumber: OwnerOrder.customer.contactNumber,
+      userAddress: OwnerOrder.customer.address,
+      orderItems: OwnerOrder.orderItem.map((item) => ({
+        menu: item.menu.name,
+        quantity: item.quantity,
+        price: item.menu.price,
+      })),
+      totalPrice: OwnerOrder.totalPrice,
+    }));
 
     return getOwnerOrders;
   };
@@ -127,7 +97,7 @@ class OrderRepository extends BaseRepository {
   //User 주문내역 전체
   getUserOrders = async (id) => {
     let getUserOrders = await this.prisma.order.findMany({
-      where: { id: id },
+      where: { customerId: id },
       include: {
         store: true,
         orderItem: {
@@ -138,19 +108,17 @@ class OrderRepository extends BaseRepository {
       },
     });
 
-    getUserOrders = getUserOrders.map((UserOrder) => {
-      return {
-        orderId: UserOrder.id,
-        createdAt: UserOrder.createdAt,
-        storeName: UserOrder.store.name,
-        orderItems: UserOrder.orderItem.map((item) => ({
-          menu: item.menu.name,
-          quantity: item.quantity,
-          price: item.menu.price,
-        })),
-        totalPrice: UserOrder.totalPrice,
-      };
-    });
+    getUserOrders = getUserOrders.map((UserOrder) => ({
+      orderId: UserOrder.id,
+      createdAt: UserOrder.createdAt,
+      storeName: UserOrder.store.name,
+      orderItems: UserOrder.orderItem.map((item) => ({
+        menu: item.menu.name,
+        quantity: item.quantity,
+        price: item.menu.price,
+      })),
+      totalPrice: UserOrder.totalPrice,
+    }));
 
     return getUserOrders;
   };
@@ -158,11 +126,11 @@ class OrderRepository extends BaseRepository {
   //  주문 내역 상세 조회 API
 
   //Owner 주문 내역 상세 조회
-  getOwnerDetailOrders = async (storeId, id) => {
-    let getOwnerDetailOrders = await this.prisma.order.findUnique({
+  getOwnerDetailOrder = async (storeId, orderId) => {
+    let detailOrder = await this.prisma.order.findUnique({
       where: {
-        id: id,
-        storeId: storeId,
+        id: +orderId,
+        storeId: +storeId,
       },
       include: {
         store: true,
@@ -175,34 +143,32 @@ class OrderRepository extends BaseRepository {
       },
     });
 
-    if (!getOwnerDetailOrders) {
-      return getOwnerDetailOrders;
+    if (!detailOrder) {
+      return detailOrder;
     }
 
-    getOwnerDetailOrders = getOwnerDetailOrders.map((OwnerOrder) => {
-      return {
-        orderId: OwnerOrder.id,
-        createdAt: OwnerOrder.createdAt,
-        status: OwnerOrder.status,
-        customerId: OwnerOrder.customerId,
-        userNumber: OwnerOrder.customer.contactNumber,
-        userAddress: OwnerOrder.customer.address,
-        orderItems: OwnerOrder.orderItem.map((item) => ({
-          menu: item.menu.name,
-          quantity: item.quantity,
-          price: item.menu.price,
-        })),
-        totalPrice: order.totalPrice,
-      };
-    });
+    detailOrder = {
+      orderId: detailOrder.id,
+      createdAt: detailOrder.createdAt,
+      status: detailOrder.status,
+      customerId: detailOrder.customerId,
+      userNumber: detailOrder.customer.contactNumber,
+      userAddress: detailOrder.customer.address,
+      orderItems: detailOrder.orderItem.map((item) => ({
+        menu: item.menu.name,
+        quantity: item.quantity,
+        price: item.menu.price,
+      })),
+      totalPrice: detailOrder.totalPrice,
+    };
 
-    return getOwnerDetailOrders;
+    return detailOrder;
   };
 
   //User 주문 내역 상세 조회
-  getUserDetailOrders = async (userId, id) => {
-    const getUserOrders = await this.prisma.order.findUnique({
-      where: { id, customerId: userId },
+  getUserDetailOrder = async (userId, orderId) => {
+    let getUserOrders = await this.prisma.order.findUnique({
+      where: { id: +orderId, customerId: +userId },
       include: {
         store: true,
         orderItem: {
@@ -213,25 +179,24 @@ class OrderRepository extends BaseRepository {
       },
     });
 
-    if (!getUserDetailOrders) {
-      return getUserDetailOrders;
+    if (!getUserOrders) {
+      return getUserOrders;
     }
 
-    getUserOrders = getUserOrders.map((UserOrder) => {
-      return {
-        orderId: UserOrder.id,
-        createdAt: UserOrder.createdAt,
-        storeName: UserOrder.store.name,
-        orderItems: UserOrder.orderItem.map((item) => ({
-          menu: item.menu.name,
-          quantity: item.quantity,
-          price: item.menu.price,
-        })),
-        totalPrice: UserOrder.totalPrice,
-      };
-    });
+    getUserOrders = {
+      orderId: getUserOrders.id,
+      status: getUserOrders.status,
+      createdAt: getUserOrders.createdAt,
+      storeName: getUserOrders.store.name,
+      orderItems: getUserOrders.orderItem.map((item) => ({
+        menu: item.menu.name,
+        quantity: item.quantity,
+        price: item.menu.price,
+      })),
+      totalPrice: getUserOrders.totalPrice,
+    };
 
-    return getUserDetailOrders;
+    return getUserOrders;
   };
 
   //  주문 상태 변경 API

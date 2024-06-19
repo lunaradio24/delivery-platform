@@ -11,7 +11,7 @@ class AuthController {
     try {
       // 작성 정보 받아오기
       const { email, password, nickname, role, contactNumber, address, image } = req.body;
-
+      console.log(email, password, nickname, role, contactNumber, address, image);
       // user 생성하기
       const user = await this.authService.signUp(email, password, nickname, role, contactNumber, address, image);
 
