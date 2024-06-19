@@ -39,8 +39,8 @@ class MenuService {
       return updateMenu
     }
 
-    deleteMenu = async (menuId, ownerId) => {
-      const deleteMenu = await this.menuRepository.deleteMenu(menuId, ownerId)
+    deleteMenu = async (menuId) => {
+      const deleteMenu = await this.menuRepository.deleteMenu(menuId)
 
       return deleteMenu
     }

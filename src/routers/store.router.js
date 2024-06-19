@@ -2,8 +2,6 @@ import express from 'express';
 import { requireAccessToken } from '../middlewares/require-access-token.middleware.js';
 import { requireRoles } from '../middlewares/require-roles.middleware.js';
 import { storeController } from '../di/dependency-injected-instances.js';
-import { requireRoles } from '../middlewares/require-roles.middleware.js';
-import { requireAccessToken } from '../middlewares/require-access-token.middleware.js';
 
 const storeRouter = express.Router();
 
