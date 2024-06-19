@@ -52,38 +52,37 @@ class UserRepository extends BaseRepository {
         address,
         image,
         contactNumber,
-      }
+      },
     });
   };
 
   // 잔액 추가
-  addWallet = async (Id, totalPrice, { tx }) => {
+  addWallet = async (userId, totalPrice, { tx }) => {
     const orm = tx || this.prisma;
     await orm.user.update({
-      where: { id: Id },
+      where: { id: userId },
       data: { wallet: { increment: totalPrice } },
-      decrement,
-    }); //잔액을 totalPrice만큼 추가
+    });
   };
 
   // 잔액 차감
-  deductionWallet = async (id, totalPrice, { tx }) => {
+  deductWallet = async (userId, totalPrice, { tx }) => {
     const orm = tx || this.prisma;
     await orm.user.update({
-      where: { id: id },
+      where: { id: userId },
       data: { wallet: { decrement: totalPrice } },
     });
-  }; //잔액을 totalPrice만큼 차감
+  };
 
   //스토어 id 파싱
-  findeStoreId = async (userId) => {
-    const findeStoreId = await this.prisma.user.findUnique({
+  findStoreId = async (userId) => {
+    const user = await this.prisma.user.findUnique({
       where: { id: +userId },
       include: {
         store: true,
       },
     });
-    return findeStoreId;
+    return user.store.id;
   };
 }
 
