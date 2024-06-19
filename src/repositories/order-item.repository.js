@@ -3,5 +3,12 @@ export class OrderItemRepository {
     this.prisma = prisma;
   }
 
-  // method 작성하시면 됩니다.
+  findMenuIdsByOrderId = async (orderId, { tx }) => {
+    const orm = tx || this.prisma;
+    const orderItemIds = await orm.orderItem.findMany({
+      where: { orderId },
+      select: { menuId: true },
+    });
+    return orderItemIds;
+  };
 }
