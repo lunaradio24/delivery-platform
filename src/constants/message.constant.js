@@ -60,4 +60,26 @@ export const MESSAGES = {
     },
     NOT_FOUND: '일치하는 사용자가 없습니다.',
   },
+  ORDER: {
+    NODATA: '주문이 존재하지 않습니다',
+    CREATED: {
+      SUCCEED: '주문이 접수되었습니다.',
+      NOORDER: '메뉴는 1개 이상 주문해주세요.',
+    },
+    CANCEL: {
+      SUCCEED: '주문 취소 요청 되었습니다.',
+      CANCEL_SAME: '이미 취소된 주문입니다.',
+    },
+    LIST: {
+      SUCCEED: '주문내역 조회에 성공하였습니다.',
+    },
+    DETAIL: {
+      SUCCEED: '주문내역 상세 조회에 성공하였습니다.',
+    },
+    STATUS_UPDATE: {
+      SUCCEED: '주문 상태가 변경되었습니다.',
+      STATUS_SAME: '현재 상태와 동일합니다.',
+    },
+    NO_WALLET: '잔액이 부족합니다.',
+  },
 };
