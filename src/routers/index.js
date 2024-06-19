@@ -18,7 +18,7 @@ apiRouter.use('/auth', authRouter);
 apiRouter.use('/users', requireAccessToken, userRouter);
 apiRouter.use('/stores', storeRouter);
 apiRouter.use('/stores/:storeId/menus', menuRouter);
-apiRouter.use('/carts', requireAccessToken, cartRouter);
+apiRouter.use('/carts', requireAccessToken, requireRoles(['CUSTOMER']), cartRouter);
 apiRouter.use('/orders', requireAccessToken, orderRouter);
 apiRouter.use('/reviews', reviewRouter);
 apiRouter.use('/likes', requireAccessToken, requireRoles(['CUSTOMER']), likeRouter);
