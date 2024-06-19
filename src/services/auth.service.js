@@ -8,7 +8,7 @@ class AuthService {
     this.userRepository = userRepository;
   }
   /** 회원가입 */
-  signUp = async (email, password, nickname, role, contactNumber, address, image) => {
+  signUp = async ({email, password, nickname, role, contactNumber, address, image}) => {
     // email 중복확인
     const existingEmail = await this.userRepository.getByEmail(email);
     if (existingEmail) {
