@@ -123,10 +123,10 @@ export const MESSAGES = {
     },
   },
   ORDERS: {
-    NODATA: '주문이 존재하지 않습니다',
+    NO_DATA: '주문이 존재하지 않습니다',
     CREATED: {
       SUCCEED: '주문이 접수되었습니다.',
-      NOORDER: '메뉴는 1개 이상 주문해주세요.',
+      NO_ORDER: '메뉴는 1개 이상 주문해주세요.',
     },
     CANCEL: {
       SUCCEED: '주문 취소 요청 되었습니다.',
@@ -140,7 +140,7 @@ export const MESSAGES = {
     },
     STATUS_UPDATE: {
       SUCCEED: '주문 상태가 변경되었습니다.',
-      STATUS_SAME: '현재 상태와 동일합니다.',
+      SAME_STATUS: '현재 상태와 동일합니다.',
     },
     NO_WALLET: '잔액이 부족합니다.',
   },

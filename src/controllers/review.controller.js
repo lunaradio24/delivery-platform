@@ -1,11 +1,10 @@
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
 
-export class ReviewController {
+class ReviewController {
   constructor(reviewService) {
     this.reviewService = reviewService;
   }
-
   // 리뷰 작성
   create = async (req, res, next) => {
     try {
@@ -105,3 +104,5 @@ export class ReviewController {
     }
   };
 }
+
+export default ReviewController;

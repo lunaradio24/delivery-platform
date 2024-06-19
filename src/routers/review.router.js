@@ -1,32 +1,11 @@
 import express from 'express';
-import { prisma } from '../utils/prisma.util.js';
-import { ReviewRepository } from '../repositories/review.repository.js';
-import { OrderRepository } from '../repositories/order.repository.js';
-import { OrderItemRepository } from '../repositories/order-item.repository.js';
-import { StoreRepository } from '../repositories/store.repository.js';
-import { MenuRepository } from '../repositories/menu.repository.js';
-import { ReviewService } from '../services/review.service.js';
-import { ReviewController } from '../controllers/review.controller.js';
+import { reviewController } from '../di/dependency-injected-instances.js';
 import { requireAccessToken } from '../middlewares/require-access-token.middleware.js';
-import { requireRoles } from '../middlewares/requirer-roles.middleware.js';
+import { requireRoles } from '../middlewares/require-roles.middleware.js';
 import { createReviewValidator } from '../middlewares/validators/create-review-validator.middleware.js';
 import { updateReviewValidator } from '../middlewares/validators/update-review-validator.middleware.js';
 
 const reviewRouter = express.Router();
-
-const reviewRepository = new ReviewRepository(prisma);
-const orderRepository = new OrderRepository(prisma);
-const orderItemRepository = new OrderItemRepository(prisma);
-const storeRepository = new StoreRepository(prisma);
-const menuRepository = new MenuRepository(prisma);
-const reviewService = new ReviewService(
-  reviewRepository,
-  orderRepository,
-  orderItemRepository,
-  storeRepository,
-  menuRepository,
-);
-const reviewController = new ReviewController(reviewService);
 
 // 리뷰 작성 API
 reviewRouter.post('/', requireAccessToken, requireRoles(['CUSTOMER']), createReviewValidator, reviewController.create);

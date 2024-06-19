@@ -1,8 +1,7 @@
-export class OrderItemRepository {
+class OrderItemRepository {
   constructor(prisma) {
     this.prisma = prisma;
   }
-
   findMenuIdsByOrderId = async (orderId, { tx }) => {
     const orm = tx || this.prisma;
     const orderItemIds = await orm.orderItem.findMany({
@@ -12,3 +11,5 @@ export class OrderItemRepository {
     return orderItemIds;
   };
 }
+
+export default OrderItemRepository;
