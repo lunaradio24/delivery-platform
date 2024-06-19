@@ -10,7 +10,7 @@ class MenuController {
   createMenu = async (req, res, next) => {
     try {
       const store = req.params;
-      const storeId = parseInt(store.store)
+      const storeId = parseInt(store.storeId)
       const { name, price, image, description } = req.body;
 
       const createMenu = await this.menuService.createMenu(
@@ -34,7 +34,7 @@ class MenuController {
   getMenu = async (req, res, next) => {
     try {
       const store = req.params;
-      const storeId = parseInt(store.store)
+      const storeId = parseInt(store.storeId)
       const getMenu = await this.menuRepository.getMenu(storeId);
 
       return res.status(HTTP_STATUS.OK).json({
