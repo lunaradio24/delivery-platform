@@ -1,4 +1,4 @@
-export class BaseRepository {
+class BaseRepository {
   constructor(prisma) {
     this.prisma = prisma;
   }
@@ -7,3 +7,5 @@ export class BaseRepository {
     return await this.prisma.$transaction;
   };
 }
+
+export default BaseRepository;

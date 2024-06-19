@@ -3,11 +3,10 @@ import { MESSAGES } from '../constants/message.constant.js';
 import { ROLES } from '../constants/auth.constant.js';
 import { ORDER_STATUS } from '../constants/order.constant.js';
 
-export class OrderService {
+class OrderService {
   constructor(orderRepository) {
     this.orderRepository = orderRepository;
   }
-  // orderRepository = new OrderRepository();
 
   //  주문 요청 API
   // 인증 후 주문 > userwallet 잔액 확인하여 메뉴 금액만큼 차감 진행 + tradeHistory 데이터 생성
@@ -27,7 +26,7 @@ export class OrderService {
     }
     // 총 주문금액보다  사용자의 잔액이 낮으면 오류 바환
     if (userWallet < totalPrice) {
-      throw new HttpError.BadRequest(MESSAGES.ORDER.NO_WALLET);
+      throw new HttpError.BadRequest(MESSAGES.ORDERS.NO_WALLET);
     }
 
     const createResume = await this.orderRepository.createOrder(userId, storeId, orderItems, totalPrice, userCartId);
@@ -41,12 +40,12 @@ export class OrderService {
 
     //주문이 없거나, 해당 유저의 주문이 아니라면 오류 반환
     if (!cancelOrder) {
-      throw new HttpError.NotFound(MESSAGES.ORDER.NODATA);
+      throw new HttpError.NotFound(MESSAGES.ORDERS.NO_DATA);
     }
 
     //주문이 있지만 이미 취소 상태라면 오류 반환
     if (cancelOrder.status === ORDER_STATUS[4]) {
-      throw new HttpError.BadRequest(MESSAGES.ORDER.CANCEL.CANCEL_SAME);
+      throw new HttpError.BadRequest(MESSAGES.ORDERS.CANCEL.CANCEL_SAME);
     }
 
     return cancelledOrder; // 취소된 주문 객체 반환
@@ -90,14 +89,16 @@ export class OrderService {
     const statusUpdateOrder = await this.orderRepository.statusUpdateOrder(user, orderId, status);
 
     if (!statusUpdateOrder) {
-      throw new HttpError.NotFound(MESSAGES.ORDER.NODATA);
+      throw new HttpError.NotFound(MESSAGES.ORDERS.NO_DATA);
     }
 
     //주문이 있지만 요청한 상태와 동일하다면 오류 반환
     if (cancelOrder.status === ORDER_STATUS[4]) {
-      throw new HttpError.BadRequest(MESSAGES.ORDER.STATUS_UPDATE.STATUS_SAME);
+      throw new HttpError.BadRequest(MESSAGES.ORDERS.STATUS_UPDATE.SAME_STATUS);
     }
 
     return statusUpdateOrder;
   };
 }
+
+export default OrderService;

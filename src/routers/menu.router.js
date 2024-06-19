@@ -1,14 +1,7 @@
 import express from 'express';
-import { prisma } from '../utils/prisma.util.js';
-import { MenuRepository } from '../repositories/menu.repository.js';
-import { MenuService } from '../services/menu.service.js';
-import { MenuController } from '../controllers/menu.controller.js';
+import { menuController } from '../di/dependency-injected-instances.js';
 
 const menuRouter = express.Router();
-
-const menuRepository = new MenuRepository(prisma);
-const menuService = new MenuService(menuRepository);
-const menuController = new MenuController(menuService);
 
 // 메뉴 생성 API
 

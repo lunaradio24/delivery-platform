@@ -1,11 +1,10 @@
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
 
-export class OrderController {
+class OrderController {
   constructor(orderService) {
     this.orderService = orderService;
   }
-
   //  주문 요청 API
   // 인증 후 주문 > userwallet 잔액 확인하여 메뉴 금액만큼 차감 진행 + tradeHistory 데이터 생성
   // +ordersTable + ordersItems 데이터 생성 + cartItems 데이터 삭제
@@ -14,11 +13,22 @@ export class OrderController {
       const { id: userId, wallet: userWallet } = req.user;
       const { cartId, storeId, orderItems } = req.body;
 
+<<<<<<< HEAD
+=======
+      if (!storeId || !orderItems.menuId || !orderItems.quantity) {
+        // throw new HttpError.BadRequest(MESSAGE.)
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({
+          status: HTTP_STATUS.BAD_REQUEST,
+          message: MESSAGES.ORDERS.NO_ORDER,
+        });
+      }
+
+>>>>>>> dd8136aa3b12121e9c5fff87a4506e2080245c11
       const createdOrder = await this.orderService.createOrder(userId, userWallet, storeId, orderItems, cartId);
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
-        message: MESSAGES.ORDER.CREATED.SUCCEED,
+        message: MESSAGES.ORDERS.CREATED.SUCCEED,
         createdOrder,
       });
     } catch (err) {
@@ -36,7 +46,7 @@ export class OrderController {
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
-        message: MESSAGES.ORDER.CANCEL.SUCCEED,
+        message: MESSAGES.ORDERS.CANCEL.SUCCEED,
         data: { orderId: cancelOrder.id, status: cancelOrder.status, wallet: cancelOrder.wallet },
       });
     } catch (err) {
@@ -55,8 +65,13 @@ export class OrderController {
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
+<<<<<<< HEAD
         message: MESSAGES.ORDER.LIST.SUCCEED,
         getOrders,
+=======
+        message: MESSAGES.ORDERS.LIST.SUCCEED,
+        getOrder,
+>>>>>>> dd8136aa3b12121e9c5fff87a4506e2080245c11
       });
     } catch (err) {
       next(err);
@@ -74,13 +89,13 @@ export class OrderController {
       if (!getDetailOrder) {
         return res.status(HTTP_STATUS.NOT_FOUND).json({
           status: HTTP_STATUS.NOT_FOUND,
-          message: MESSAGES.ORDER.NODATA,
+          message: MESSAGES.ORDERS.NO_DATA,
         });
       }
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
-        message: MESSAGES.ORDER.DETAIL.SUCCEED,
+        message: MESSAGES.ORDERS.DETAIL.SUCCEED,
         getDetailOrder,
       });
     } catch (err) {
@@ -99,7 +114,7 @@ export class OrderController {
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
-        message: MESSAGES.ORDER.STATUS_UPDATE.SUCCEED,
+        message: MESSAGES.ORDERS.STATUS_UPDATE.SUCCEED,
         data: { status: statusUpdateOrder.status },
       });
     } catch (err) {
@@ -107,3 +122,5 @@ export class OrderController {
     }
   };
 }
+
+export default OrderController;

@@ -1,6 +1,5 @@
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
-
 /* nessesary Prisma Table
 : users
   - id
@@ -14,11 +13,10 @@ import { MESSAGES } from '../constants/message.constant.js';
 
 */
 
-export class CartController {
+class CartController {
   constructor(cartService) {
     this.cartService = cartService;
   }
-
   // method 작성하시면 됩니다.
 
   /*
@@ -104,3 +102,5 @@ export class CartController {
     }
   };
 }
+
+export default CartController;
