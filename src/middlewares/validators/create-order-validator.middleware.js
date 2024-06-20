@@ -2,9 +2,6 @@ import Joi from 'joi';
 import { MESSAGES } from '../../constants/message.constant.js';
 
 const schema = Joi.object({
-  cartId: Joi.number().required().messages({
-    'any.required': MESSAGES.ORDERS.CREATED.NO_CART,
-  }),
   storeId: Joi.number().required().messages({
     'any.required': MESSAGES.ORDERS.CREATED.NO_STORE,
   }),

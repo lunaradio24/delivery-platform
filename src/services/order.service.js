@@ -1,20 +1,20 @@
 import { HttpError } from '../errors/http.error.js';
 import { MESSAGES } from '../constants/message.constant.js';
-import { ROLES } from '../constants/auth.constant.js';
 import { ORDER_STATUS } from '../constants/order.constant.js';
 import { ADMIN_ID } from '../constants/user.constant.js';
 
 class OrderService {
-  constructor(orderRepository, menuRepository, userRepository) {
+  constructor(orderRepository, menuRepository, userRepository, transactionLogRepository) {
     this.orderRepository = orderRepository;
     this.menuRepository = menuRepository;
     this.userRepository = userRepository;
+    this.transactionLogRepository = transactionLogRepository;
   }
 
   //  주문 요청 API
   // 인증 후 주문 > userwallet 잔액 확인하여 메뉴 금액만큼 차감 진행 + tradeHistory 데이터 생성
   // +ordersTable + ordersItems 데이터 생성 + cartItems 데이터 삭제
-  createOrder = async (userId, userWallet, storeId, orderItems, cartId) => {
+  createOrder = async (userId, userWallet, storeId, orderItems) => {
     // 메뉴 가격 구하기
     let totalPrice = 0;
     // orderItems 배열에서 각 메뉴의 가격을 조회하여 총 주문 금액 계산
@@ -27,7 +27,7 @@ class OrderService {
       const itemTotal = menu.price * quantity;
       totalPrice += itemTotal;
     }
-    // 총 주문금액보다  사용자의 잔액이 낮으면 오류 바환
+    // 총 주문금액보다  사용자의 잔액이 낮으면 에러
     if (userWallet < totalPrice) {
       throw new HttpError.BadRequest(MESSAGES.ORDERS.NO_WALLET);
     }
@@ -36,16 +36,18 @@ class OrderService {
     const tx = this.orderRepository.createTransaction();
 
     // orders 테이블에 DB 생성
-    const createdOrder = await this.orderRepository.createOrder(userId, storeId, orderItems, totalPrice, cartId, {
+    const createdOrder = await this.orderRepository.createOrder(userId, storeId, orderItems, totalPrice, {
       tx,
     });
 
     // 고객의 잔액 차감
-    await this.userRepository.deductionWallet(userId, totalPrice, { tx });
+    await this.userRepository.deductWallet(userId, totalPrice, { tx });
 
     // admin 잔액 증가
-    const adminId = 1;
-    await this.userRepository.addWallet(adminId, totalPrice, { tx });
+    await this.userRepository.addWallet(ADMIN_ID, totalPrice, { tx });
+
+    // transaction log 기록
+    await this.transactionLogRepository.create(userId, ADMIN_ID, 1000000, 1);
 
     const data = {
       orderId: createdOrder.id,
@@ -56,7 +58,7 @@ class OrderService {
         quantity: item.quantity, // 수량
       })),
       address: createdOrder.customer.address,
-      totalPrice: updatedUser,
+      totalPrice: createdOrder.totalPrice,
       createdAt: createdOrder.createdAt,
     };
 
@@ -104,8 +106,8 @@ class OrderService {
     const id = user.id;
     let getOrder;
     if (user.role === 1) {
-      const getStoreId = await this.userRepository.findeStoreId(id);
-      getOrder = await this.orderRepository.getOwnerOrders(getStoreId.store.id); // owner
+      const storeId = await this.userRepository.findStoreId(id);
+      getOrder = await this.orderRepository.getOwnerOrders(storeId); // owner
     } else if (user.role === 2) {
       getOrder = await this.orderRepository.getUserOrders(id); // user
     }
@@ -119,8 +121,7 @@ class OrderService {
     let getOrder;
 
     if (user.role === 1) {
-      const getStoreId = await this.userRepository.findeStoreId(userId);
-      const storeId = getStoreId.store.id;
+      const storeId = await this.userRepository.findStoreId(userId);
       getOrder = await this.orderRepository.getOwnerDetailOrder(storeId, orderId); // owner
     } else if (user.role === 2) {
       getOrder = await this.orderRepository.getUserDetailOrder(userId, orderId); // user
@@ -133,6 +134,7 @@ class OrderService {
   };
 
   //  주문 상태 변경 API
+
   statusUpdateOrder = async (userId, orderId, status) => {
     const getStoreId = await this.userRepository.findeStoreId(userId);
     const storeId = getStoreId.store.id;
