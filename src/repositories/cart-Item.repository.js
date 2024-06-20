@@ -25,38 +25,44 @@ class CartRepository {
   getMyCartItemById = async (customerId, storeId, menuId) => {
     return await this.prisma.cartItem.findUnique({
       where: {
-        id: storeId,
-        menu_id: menuId,
+        customerId,
+        storeId,
+        menuId,
       },
     });
   };
 
   // 장바구니 아이템 수 추가하는 메서드
-  increaseCartItem = async (customerId, menuId, quantity) => {
+  increaseCartItem = async (customerId, menuId) => {
     return await this.prisma.cartItem.update({
       where: {
-        id: menuId,
+        customerId,
+        menuId,
       },
       data: {
-        quantity,
+        quantity: { increment: 1 },
       },
     });
   };
 
-  decreaseCartItem = async (customerId, menuId, quantity) => {
+  decreaseCartItem = async (customerId, menuId) => {
     return await this.prisma.cartItem.update({
       where: {
-        id: menuId,
+        customerId,
+        menuId,
       },
       data: {
-        quantity,
+        quantity: { decrement: 1 },
       },
     });
   };
 
-  deleteCartItem = async (menuId) => {
+  deleteCartItem = async (customerId, menuId) => {
     return await this.prisma.cartItem.delete({
-      where: { id: menuId },
+      where: {
+        customerId,
+        menuId,
+      },
     });
   };
 }
