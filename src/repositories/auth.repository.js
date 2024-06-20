@@ -19,6 +19,13 @@ class AuthRepository {
     return record;
   }
 
+  // 회원가입 완료시 저장된 인증번호 삭제
+  deleteVerificationByEmail = async (email) => {
+    await this.prisma.email.delete({
+      where: { email },
+    });
+  };
+
   // 토큰 찾기
   findRefreshTokenByUserId = async (userId) => {
     const auth = await this.prisma.auth.findUnique({
