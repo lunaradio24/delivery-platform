@@ -1,12 +1,12 @@
 import BaseRepository from './base.repository.js';
 
 class LikeRepository extends BaseRepository {
-  like = async (storeId, { tx }) => {
+  like = async (storeId, { tx } = {}) => {
     const orm = tx || this.prisma;
     await orm.like.create({ data: { storeId } });
   };
 
-  unlike = async (storeId, { tx }) => {
+  unlike = async (storeId, { tx } = {}) => {
     const orm = tx || this.prisma;
     await orm.like.delete({ where: { storeId } });
   };

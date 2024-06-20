@@ -57,7 +57,7 @@ class UserRepository extends BaseRepository {
   };
 
   // 잔액 추가
-  addWallet = async (userId, totalPrice, { tx }) => {
+  addWallet = async (userId, totalPrice, { tx } = {}) => {
     const orm = tx || this.prisma;
     const addWallet = await orm.user.update({
       where: { id: userId },
@@ -67,7 +67,7 @@ class UserRepository extends BaseRepository {
   };
 
   // 잔액 차감
-  deductWallet = async (userId, totalPrice, { tx }) => {
+  deductWallet = async (userId, totalPrice, { tx } = {}) => {
     const orm = tx || this.prisma;
     await orm.user.update({
       where: { id: userId },

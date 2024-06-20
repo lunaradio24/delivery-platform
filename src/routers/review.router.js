@@ -11,7 +11,7 @@ const reviewRouter = express.Router();
 reviewRouter.post('/', requireAccessToken, requireRoles(['CUSTOMER']), createReviewValidator, reviewController.create);
 
 // 리뷰 목록 조회 API
-reviewRouter.get('/', reviewController.readList);
+reviewRouter.get('/stores/:storeId', reviewController.readList);
 
 // 내가 작성한 리뷰 목록 조회 API
 reviewRouter.get('/my', requireAccessToken, requireRoles(['CUSTOMER']), reviewController.readMyList);

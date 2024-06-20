@@ -1,50 +1,68 @@
 import BaseRepository from './base.repository.js';
 
 class ReviewRepository extends BaseRepository {
-  create = async (userId, storeId, orderId, rating, content, image, { tx }) => {
+  create = async (userId, storeId, orderId, rating, content, image, { tx } = {}) => {
     const orm = tx || this.prisma;
     const createdReview = await orm.review.create({
-      data: { customerId: userId, storeId, orderId, rating, content, image },
+      data: {
+        customerId: userId,
+        storeId: Number(storeId),
+        orderId: Number(orderId),
+        rating: Number(rating),
+        content,
+        image,
+      },
     });
 
     return createdReview;
   };
 
   findByStoreIdAndMenuId = async (storeId, menuId, orderOption) => {
-    await this.prisma.review.findMany({
-      where: { storeId, menuId },
+    return await this.prisma.review.findMany({
+      where: {
+        storeId: Number(storeId),
+        menuId: menuId ? Number(menuId) : undefined,
+      },
       orderBy: orderOption,
     });
   };
 
   findByReviewId = async (reviewId) => {
-    await this.prisma.review.findUnique({
-      where: { id: reviewId },
-      include: { store: true },
+    return await this.prisma.review.findUnique({
+      where: { id: Number(reviewId) },
+      include: {
+        store: {
+          select: { name: true, image: true, averageRating: true, totalReviews: true },
+        },
+      },
     });
   };
 
   findByOrderId = async (orderId) => {
-    await this.prisma.review.findUnique({ where: { orderId } });
+    return await this.prisma.review.findUnique({ where: { orderId: Number(orderId) } });
   };
 
   findByUserId = async (userId) => {
-    await this.prisma.review.findMany({ where: { customerId: userId } });
+    return await this.prisma.review.findMany({ where: { customerId: userId } });
   };
 
-  update = async (reviewId, rating, content, image, { tx }) => {
+  update = async (reviewId, rating, content, image, { tx } = {}) => {
     const orm = tx || this.prisma;
     const updatedReview = await orm.review.update({
-      where: { id: reviewId },
+      where: { id: Number(reviewId) },
       data: { rating, content, image },
+      select: {
+        rating: rating ? true : false,
+        content: content ? true : false,
+        image: image ? true : false,
+      },
     });
-
     return updatedReview;
   };
 
-  delete = async (reviewId, { tx }) => {
+  delete = async (reviewId, { tx } = {}) => {
     const orm = tx || this.prisma;
-    await orm.review.delete({ where: { id: reviewId } });
+    await orm.review.delete({ where: { id: Number(reviewId) } });
   };
 }
 

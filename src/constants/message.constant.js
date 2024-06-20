@@ -179,6 +179,9 @@ export const MESSAGES = {
       CONTENT: {
         MAX_LENGTH: `리뷰 내용은 최대 ${MAX_REVIEW_LENGTH}자 까지 작성가능합니다.`,
       },
+      REVIEW_ID: {
+        REQUIRED: '리뷰 ID를 입력해주세요',
+      },
       NOT_FOUND: '해당 리뷰가 존재하지 않습니다.',
       NO_ACCESS_RIGHT: '접근 권한이 없습니다.',
     },

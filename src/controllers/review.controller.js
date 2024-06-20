@@ -25,7 +25,8 @@ class ReviewController {
   // 리뷰 목록 조회
   readList = async (req, res, next) => {
     try {
-      const { storeId, menuId, orderBy, sort } = req.query;
+      const { storeId } = req.params;
+      const { menuId, orderBy, sort } = req.query;
       const reviewList = await this.reviewService.readList(storeId, menuId, orderBy, sort);
 
       return res.status(HTTP_STATUS.OK).json({

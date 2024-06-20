@@ -69,6 +69,7 @@ class MenuRepository {
     const updatedMenu = await this.prisma.menu.update({
       where: { id: Number(menuId) },
       data: { averageRating, totalReviews },
+      select: { averageRating: true },
     });
     return updatedMenu.averageRating;
   };
