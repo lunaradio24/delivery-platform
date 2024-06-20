@@ -29,6 +29,8 @@ model User {
   contactNumber String   @map("contact_number")
   address       String?
   image         String?       @map("image")
+  verificationNumber String?
+  isVerified    Boolean   @default(false)
   createdAt     DateTime      @default(now()) @map("created_at")
   updatedAt     DateTime      @updatedAt @map("updated_at")
 

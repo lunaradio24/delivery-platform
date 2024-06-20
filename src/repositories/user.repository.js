@@ -22,7 +22,7 @@ export class UserRepository {
     return user;
   };
 
-  create = async ({ email, password, nickname, role, contactNumber, address, image }) => {
+  create = async ({ email, password, nickname, role, contactNumber, address, image, verificationNumber }) => {
     // user 생성하기
     const user = await this.prisma.user.create({
       data: {
@@ -33,11 +33,24 @@ export class UserRepository {
         contactNumber,
         address,
         image,
+        verificationNumber,
+        isVerified: false,
       },
     });
     // password 제외하기
     const { password: _password, ...withoutPasswordUser } = user;
     return withoutPasswordUser;
+  };
+
+  // 인증 후 상태 변경
+  verifyEmail = async (userId) => {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        isVerified: true,
+        verificationNumber: null,
+      },
+    });
   };
 
   // userId로 user 찾기
