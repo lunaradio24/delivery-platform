@@ -62,20 +62,43 @@ class CartController {
 
   /* 
 
-  cart 수정 API
+  cart 수량 증가 API
 
   */
-  updateCartItem = async (req, res, next) => {
+  increaseCartItem = async (req, res, next) => {
     try {
       const { customerId } = req.user;
       const { menuId, quantity } = req.body;
 
-      const updatedCartItem = await this.cartService.updateCartItem(customerId, storeId, menuId, quantity);
+      const increasedCartItem = await this.cartService.increaseCartItem(customerId, storeId, menuId, quantity);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
         message: MESSAGES.CARTS.UPDATE.SUCCEED,
-        data: updatedCartItem,
+        data: increasedCartItem,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /* 
+  
+  cart 수량 감소 API
+
+  */
+
+  decreaseCartItem = async (req, res, next) => {
+    try {
+      const { customerId } = req.user;
+      const { menuId, quantity } = req.body;
+
+      const decreasedCartItem = await this.cartService.decreaseCartItem(customerId, storeId, menuId, quantity);
+
+      return res.status(HTTP_STATUS.OK).json({
+        status: HTTP_STATUS.OK,
+        message: MESSAGES.CARTS.UPDATE.SUCCEED,
+        data: decreasedCartItem,
       });
     } catch (error) {
       next(error);
