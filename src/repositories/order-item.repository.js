@@ -10,6 +10,13 @@ class OrderItemRepository {
     });
     return orderItems.map((item) => item.menuId);
   };
+
+  createOrderItem = async (orderId, menuId, price, quantity, { tx }) => {
+    const orm = tx || this.prisma;
+    await orm.orderItem.create({
+      data: { orderId, menuId, price, quantity },
+    });
+  };
 }
 
 export default OrderItemRepository;

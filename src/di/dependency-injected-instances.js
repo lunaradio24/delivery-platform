@@ -52,7 +52,13 @@ export const userService = new UserService(userRepository);
 export const storeService = new StoreService(storeRepository);
 export const menuService = new MenuService(menuRepository);
 export const cartService = new CartService(cartRepository);
-export const orderService = new OrderService(orderRepository, menuRepository, userRepository, transactionLogRepository);
+export const orderService = new OrderService(
+  orderRepository,
+  orderItemRepository,
+  menuRepository,
+  userRepository,
+  transactionLogRepository,
+);
 export const reviewService = new ReviewService(
   reviewRepository,
   orderRepository,

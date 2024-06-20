@@ -30,7 +30,7 @@ model User {
   address         String?
   image           String?       @map("image")
   socialId        Int?          @unique @map("social_id")
-  provider        Int?          
+  provider        Int           @default(0)
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
 
@@ -130,6 +130,7 @@ model OrderItem {
   id        Int      @id @default(autoincrement())
   orderId   Int      @map("order_id")
   menuId    Int      @map("menu_id")
+  price     Int
   quantity  Int
   createdAt DateTime @default(now()) @map("created_at")
 

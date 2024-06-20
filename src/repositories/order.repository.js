@@ -4,19 +4,13 @@ import BaseRepository from './base.repository.js';
 
 class OrderRepository extends BaseRepository {
   //  주문 요청 API
-  createOrder = async (userId, storeId, orderItems, totalPrice, { tx }) => {
+  createOrder = async (userId, storeId, totalPrice, { tx }) => {
     const orm = tx || this.prisma;
     const createdOrder = await orm.order.create({
       //Order 데이터 생성
       data: {
         storeId: +storeId,
         customerId: userId,
-        orderItem: {
-          create: orderItems.map((item) => ({
-            menuId: item.menuId, // 메뉴 ID
-            quantity: item.quantity, // 수량
-          })),
-        },
         totalPrice: totalPrice,
       },
       include: {
@@ -44,7 +38,7 @@ class OrderRepository extends BaseRepository {
     return createdOrder;
   };
 
-  // 주문 
+  // 주문
   cancelOrder = async (orderId, { tx }) => {
     const orm = tx || this.prisma;
     // const cancelOrder = await this.prisma.$transaction(async (tx) => { return cancelOrder;})
@@ -65,7 +59,7 @@ class OrderRepository extends BaseRepository {
     //   where: { id: adminId },
     //   data: { wallet: { decrement: cancelUpdateOrder.totalPrice } },
     // });
-    
+
     // transaction log 생성
     // await tx.transactionLog.create({
     //   data: {
@@ -225,28 +219,28 @@ class OrderRepository extends BaseRepository {
     const updatedOrder = await orm.order.update({
       where: { id: +orderId },
       data: { status: status },
-      
-//       // 배달 완료 시 사장 잔액 업데이트
-//         await tx.user.update({
-//           where: { id: user.id },
-//           data: { wallet: { increment: checkOrder.totalPrice } }, //고객의 잔액을 totalPrice만큼 증가
-//         });
 
-//         // admin 잔액 차감
-//         await tx.user.update({
-//           where: { id: ADMIN_ID },
-//           data: { wallet: { decrement: checkOrder.totalPrice } },
-//         });
+      //       // 배달 완료 시 사장 잔액 업데이트
+      //         await tx.user.update({
+      //           where: { id: user.id },
+      //           data: { wallet: { increment: checkOrder.totalPrice } }, //고객의 잔액을 totalPrice만큼 증가
+      //         });
 
-//         // transaction log 생성
-//         await tx.transactionLog.create({
-//           data: {
-//             senderId: ADMIN_ID,
-//             receiverId: user.id,
-//             amount: checkOrder.totalPrice,
-//             type: 3,
-//           },
-//         });
+      //         // admin 잔액 차감
+      //         await tx.user.update({
+      //           where: { id: ADMIN_ID },
+      //           data: { wallet: { decrement: checkOrder.totalPrice } },
+      //         });
+
+      //         // transaction log 생성
+      //         await tx.transactionLog.create({
+      //           data: {
+      //             senderId: ADMIN_ID,
+      //             receiverId: user.id,
+      //             amount: checkOrder.totalPrice,
+      //             type: 3,
+      //           },
+      //         });
     });
 
     // 3 or 4로 변경 시 금액이 수정되긴 하지만, 다른 상태로 바꾸고 다시 3 or 4로 수정할 경우 금액이 다시 증가함

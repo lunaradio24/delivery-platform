@@ -18,7 +18,7 @@ class UserRepository extends BaseRepository {
     return user;
   };
 
-  create = async ({ email, password, nickname, role, contactNumber, address, image, verificationNumber }) => {
+  create = async ({ email, password, nickname, role, contactNumber, address, image }) => {
     // user 생성하기
     const user = await this.prisma.user.create({
       data: {
@@ -29,8 +29,6 @@ class UserRepository extends BaseRepository {
         contactNumber,
         address,
         image,
-        verificationNumber,
-        isVerified: false,
       },
     });
     // password 제외하기
