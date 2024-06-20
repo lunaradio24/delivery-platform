@@ -1,7 +1,6 @@
 import { HttpError } from '../errors/http.error.js';
 import { MESSAGES } from '../constants/message.constant.js';
 import { hash, compareWithHashed, generateAccessToken, generateRefreshToken } from '../utils/auth.util.js';
-import crypto from 'crypto';
 import { sendVerificationEmail } from '../utils/email.util.js';
 
 class AuthService {
@@ -26,11 +25,8 @@ class AuthService {
     // 비밀번호 암호화
     const hashedPassword = await hash(password);
 
-    // 인증번호 생성하기
-    const verificationNumber = crypto.randomBytes(4).toString('hex');
-
     // 인증번호 전송하기
-    await sendVerificationEmail(email, verificationNumber);
+    const verificationNumber = await sendVerificationEmail(email);
 
     // user 생성하기
     const user = await this.userRepository.create({
