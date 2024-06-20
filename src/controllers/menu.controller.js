@@ -95,6 +95,9 @@ class MenuController {
   menuImageUpload = async (req, res, next) => {
     try {
       const imageUrl = req.file.location
+      const { menuId } = req.params.menuId
+
+      const menuImageUpload = await this.userService.userImageUpload(imageUrl, menuId)
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,

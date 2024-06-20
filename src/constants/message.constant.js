@@ -90,7 +90,8 @@ export const MESSAGES = {
       SUCCEED: '가게 정보 삭제에 성공했습니다.',
     },
     IMAGE: {
-      SUCCEED: '이미지 업로드에 성공했습니다.'
+      SUCCEED: '이미지 업로드에 성공했습니다.',
+      NOT_FOUND: '가게를 먼저 생성해주세요.'
     },
   },
   MENUS: {

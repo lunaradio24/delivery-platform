@@ -19,6 +19,6 @@ menuRouter.patch('/:menuId', requireAccessToken, requireRoles(['OWNER']), menuCo
 menuRouter.delete('/:menuId', requireAccessToken, requireRoles(['OWNER']), menuController.deleteMenu)
 
 // 이미지 업로드 API
-menuRouter.patch('/:menuId/image', menuImage.single('image'), menuController.menuImageUpload)
+menuRouter.patch('/:menuId/image', requireAccessToken, menuImage.single('image'), menuController.menuImageUpload)
 
 export { menuRouter };

@@ -23,6 +23,16 @@ class UserRepository {
     });
   };
 
+  userImageUpload = async (userId, imageUrl) => {
+      const userImageUpload = this.prisma.user.update({
+        where: { id: userId },
+        data:{
+          image: imageUrl
+        }
+      })
+      return userImageUpload
+  }
+
   // 고객 잔액 차감 메소드
   // await tx.user.update({
   //   where: { id: userId },
