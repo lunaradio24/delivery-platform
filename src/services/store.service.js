@@ -79,7 +79,7 @@ class StoreService {
     return deletedStore.id;
   };
 
-  userImageUpload = async (storeId, imageUrl) => {
+  storeImageUpload = async (storeId, imageUrl) => {
     const existingStore = await this.storeRepository.findById(storeId);
     if (!existingStore){
       throw new HttpError.NotFound(MESSAGES.STORES.IMAGE.NOT_FOUND);

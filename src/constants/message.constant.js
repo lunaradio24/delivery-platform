@@ -117,7 +117,8 @@ export const MESSAGES = {
       SUCCEED: '메뉴 삭제에 성공했습니다.',
     },
     IMAGE: {
-      SUCCEED: '메뉴 이미지 업로드에 성공했습니다.'
+      SUCCEED: '메뉴 이미지 업로드에 성공했습니다.',
+      NOT_FOUND: '먼저 메뉴를 등록해주세요.'
     }
   },
   CARTS: {

@@ -61,7 +61,7 @@ class UserController {
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
         message: MESSAGES.USERS.IMAGE_ME.SUCCEED,
-        userImageUpload
+        data: userImageUpload
       })
     }catch(error){
       next(error)

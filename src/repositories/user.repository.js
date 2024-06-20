@@ -65,15 +65,6 @@ class UserRepository extends BaseRepository {
     });
     return addWallet;
   };
-  userImageUpload = async (userId, imageUrl) => {
-      const userImageUpload = this.prisma.user.update({
-        where: { id: userId },
-        data:{
-          image: imageUrl
-        }
-      })
-      return userImageUpload
-  }
 
 
   // 잔액 차감
@@ -95,6 +86,17 @@ class UserRepository extends BaseRepository {
     });
     return user;
   };
+
+    
+  userImageUpload = async (userId, imageUrl) => {
+    const userImageUpload = this.prisma.user.update({
+      where: { id: +userId },
+      data:{
+        image: imageUrl
+      }
+    })
+    return userImageUpload
+}
 }
 
 export default UserRepository;

@@ -90,7 +90,7 @@ class MenuController {
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
         message: MESSAGES.MENUS.IMAGE.SUCCEED,
-        imageUrl
+        data: menuImageUpload
       })
     }catch(error){
       next(error)

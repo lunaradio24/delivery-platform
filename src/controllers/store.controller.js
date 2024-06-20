@@ -121,7 +121,7 @@ class StoreController {
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
         message: MESSAGES.STORES.IMAGE.SUCCEED,
-        imageUrl
+        data: storeImageUpload
       })
     }catch(error){
       next(error)

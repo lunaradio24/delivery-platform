@@ -73,6 +73,16 @@ class MenuRepository {
     });
     return updatedMenu.averageRating;
   };
+
+  menuImageUpload = async (menuId, imageUrl) => {
+    const menuImageUpload = this.prisma.menu.update({
+      where: { id: +menuId },
+      data:{
+        image: imageUrl
+      }
+    })
+    return menuImageUpload
+}
 }
 
 export default MenuRepository;
