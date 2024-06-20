@@ -18,9 +18,10 @@ class UserRepository extends BaseRepository {
     return user;
   };
 
-  create = async ({ email, password, nickname, role, contactNumber, address, image }) => {
+  create = async ({ email, password, nickname, role, contactNumber, address, image }, { tx }) => {
+    const orm = tx || this.prisma;
     // user 생성하기
-    const user = await this.prisma.user.create({
+    const user = await orm.user.create({
       data: {
         email,
         password,
@@ -31,9 +32,7 @@ class UserRepository extends BaseRepository {
         image,
       },
     });
-    // password 제외하기
-    const { password: _password, ...withoutPasswordUser } = user;
-    return withoutPasswordUser;
+    return user;
   };
 
   // userId로 user 찾기
@@ -73,17 +72,6 @@ class UserRepository extends BaseRepository {
       where: { id: userId },
       data: { wallet: { decrement: totalPrice } },
     });
-  };
-
-  //스토어 id 파싱
-  findStoreId = async (userId) => {
-    const user = await this.prisma.user.findUnique({
-      where: { id: +userId },
-      include: {
-        store: true,
-      },
-    });
-    return user;
   };
 }
 

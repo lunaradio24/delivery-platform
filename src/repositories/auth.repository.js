@@ -3,7 +3,7 @@ class AuthRepository {
     this.prisma = prisma;
   }
   // 인증번호 저장
-  saveVerificationEmail = async (email, verificationCode) => {
+  saveEmailVerificationCode = async (email, verificationCode) => {
     await this.prisma.email.upsert({
       where: { email },
       update: { verificationCode },
@@ -12,25 +12,20 @@ class AuthRepository {
   };
 
   // 인증번호 찾기
-  getVerificationByEmail = async (email) => {
-    const record = await this.prisma.email.findUnique({
-      where: { email },
-    });
+  findEmailVerificationCode = async (email) => {
+    const record = await this.prisma.email.findUnique({ where: { email } });
     return record;
-  }
+  };
 
   // 회원가입 완료시 저장된 인증번호 삭제
-  deleteVerificationByEmail = async (email) => {
-    await this.prisma.email.delete({
-      where: { email },
-    });
+  deleteEmailVerificationCode = async (email, { tx } = {}) => {
+    const orm = tx || this.prisma;
+    await orm.email.delete({ where: { email } });
   };
 
   // 토큰 찾기
   findRefreshTokenByUserId = async (userId) => {
-    const auth = await this.prisma.auth.findUnique({
-      where: { userId },
-    });
+    const auth = await this.prisma.auth.findUnique({ where: { userId } });
     return auth.refreshToken;
   };
 
@@ -38,9 +33,7 @@ class AuthRepository {
   deleteRefreshToken = async (userId) => {
     await this.prisma.auth.update({
       where: { userId },
-      data: {
-        refreshToken: null,
-      },
+      data: { refreshToken: null },
     });
   };
 
@@ -48,13 +41,8 @@ class AuthRepository {
   upsertRefreshToken = async (userId, refreshToken) => {
     await this.prisma.auth.upsert({
       where: { userId },
-      update: {
-        refreshToken,
-      },
-      create: {
-        userId,
-        refreshToken,
-      },
+      update: { refreshToken },
+      create: { userId, refreshToken },
     });
   };
 }

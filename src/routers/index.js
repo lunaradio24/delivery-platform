@@ -13,7 +13,6 @@ import { requireRoles } from '../middlewares/require-roles.middleware.js';
 
 const apiRouter = express.Router();
 
-// TODO: 미들웨어 삽입 필요
 apiRouter.use('/auth', authRouter);
 apiRouter.use('/users', requireAccessToken, userRouter);
 apiRouter.use('/stores', storeRouter);
@@ -22,6 +21,6 @@ apiRouter.use('/carts', requireAccessToken, requireRoles(['CUSTOMER']), cartRout
 apiRouter.use('/orders', requireAccessToken, orderRouter);
 apiRouter.use('/reviews', reviewRouter);
 apiRouter.use('/likes', requireAccessToken, requireRoles(['CUSTOMER']), likeRouter);
-apiRouter.use('/transaction-logs', transactionLogRouter);
+apiRouter.use('/transaction-logs', requireAccessToken, transactionLogRouter);
 
 export { apiRouter };

@@ -10,6 +10,13 @@ class TransactionLogRepository {
     });
     return transactionLog;
   };
+
+  findAll = async () => {
+    const logs = await this.prisma.transactionLog.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+    return logs;
+  };
 }
 
 export default TransactionLogRepository;

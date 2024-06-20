@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendVerificationEmail = async (email) => {
+export const sendEmailVerificationCode = async (email) => {
   // 이메일 인증 번호 생성
   const verificationCode = crypto.randomBytes(3).toString('hex');
   // 이메일 발송 형식
