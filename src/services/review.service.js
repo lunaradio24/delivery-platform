@@ -51,7 +51,7 @@ class ReviewService {
   };
 
   readList = async (storeId, menuId, orderBy, sort) => {
-    // sort 값이 'asc'인 경우 제외하고 'desc' (최신순) 정렬
+    // sort 값이 'asc'인 경우 제외하고 'desc' (내림차순) 정렬
     sort = sort && sort.toLowerCase() === 'asc' ? 'asc' : 'desc';
 
     // orderBy 값이 'timestamp'인 경우 제외하고 'rating' (별점) 기준 정렬

@@ -29,9 +29,10 @@ class StoreRepository {
   };
 
   // 음식점 목록 조회
-  findStoreList = async (categoryId) => {
+  findStoreList = async (category, orderOption) => {
     let data = await this.prisma.store.findMany({
-      where: { category: categoryId ? Number(categoryId) : undefined },
+      where: { category },
+      orderBy: orderOption,
     });
 
     data = data.map((store) => {

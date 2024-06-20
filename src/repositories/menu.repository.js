@@ -11,9 +11,9 @@ class MenuRepository {
   };
 
   // 메뉴 목록 조회
-  getMenu = async (storeId) => {
+  findMenuList = async (storeId) => {
     let data = await this.prisma.menu.findMany({
-      where: { id: Number(storeId) },
+      where: { storeId },
     });
 
     data = data.map((menu) => {
@@ -40,8 +40,14 @@ class MenuRepository {
     return menu;
   };
 
-  // 메뉴 수정
+  findMenuByName = async (storeId, name) => {
+    const menu = await this.prisma.menu.findFirst({
+      where: { storeId, name },
+    });
+    return menu;
+  };
 
+  // 메뉴 수정
   updateMenu = async (menuId, name, price, image, description) => {
     const updateMenu = await this.prisma.menu.update({
       where: { id: Number(menuId) },
