@@ -10,6 +10,7 @@ export const MESSAGES = {
         DUPLICATED: '이미 가입 된 사용자입니다.',
         VERIFIED: '이메일 인증에 성공했습니다.',
         INVALID: '인증번호를 확인해주세요.',
+        SEND: '인증 메일을 발송했습니다.',
       },
       PASSWORD: {
         REQUIRED: '비밀번호를 입력해 주세요.',
