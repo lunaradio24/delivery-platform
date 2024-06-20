@@ -71,7 +71,7 @@ export const MESSAGES = {
   },
   STORES: {
     COMMON: {
-      NOT_FOUND: '해당 가게가 존재하지 않습니다.',
+      NOT_FOUND: '존재하지 않는 가게입니다.',
       NO_ACCESS_RIGHT: '접근 권한이 없습니다.',
     },
     CREATE: {
@@ -208,6 +208,10 @@ export const MESSAGES = {
     },
   },
   LIKES: {
+    COMMON: {
+      NO_STORE_ID: '가게 ID를 입력해주세요.',
+      NO_LIKES: '좋아요 또는 좋아요 취소를 입력해주세요.',
+    },
     LIKE: {
       SUCCEED: '찜 목록에 추가되었습니다.',
       DUPLICATED: '이미 찜 목록에 추가된 가게입니다.',

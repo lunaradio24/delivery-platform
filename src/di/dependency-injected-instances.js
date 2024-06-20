@@ -20,7 +20,7 @@ import MenuService from '../services/menu.service.js';
 import CartService from '../services/cart.service.js';
 import OrderService from '../services/order.service.js';
 import ReviewService from '../services/review.service.js';
-import LikeService from '../controllers/like.controller.js';
+import LikeService from '../services/like.service.js';
 import TransactionLogService from '../services/transaction-log.service.js';
 
 // controller constructors
@@ -68,7 +68,7 @@ export const reviewService = new ReviewService(
   storeRepository,
   menuRepository,
 );
-export const likeService = new LikeService(likeRepository);
+export const likeService = new LikeService(likeRepository, storeRepository);
 export const transactionLogService = new TransactionLogService(transactionLogRepository);
 
 // controller instances
