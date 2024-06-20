@@ -36,17 +36,6 @@ class UserRepository extends BaseRepository {
     return withoutPasswordUser;
   };
 
-  // 인증 후 상태 변경
-  verifyEmail = async (userId) => {
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: {
-        isVerified: true,
-        verificationNumber: null,
-      },
-    });
-  };
-
   // userId로 user 찾기
   findById = async (userId) => {
     return await this.prisma.user.findUnique({

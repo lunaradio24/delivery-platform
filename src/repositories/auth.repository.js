@@ -2,6 +2,22 @@ class AuthRepository {
   constructor(prisma) {
     this.prisma = prisma;
   }
+  // 인증번호 저장
+  saveVerificationEmail = async (email, verificationCode) => {
+    await this.prisma.email.upsert({
+      where: { email },
+      update: { verificationCode },
+      create: { email, verificationCode },
+    });
+  };
+
+  // 인증번호 찾기
+  getVerificationByEmail = async (email) => {
+    const record = await this.prisma.email.findUnique({
+      where: { email },
+    });
+    return record;
+  }
 
   // 토큰 찾기
   findRefreshTokenByUserId = async (userId) => {

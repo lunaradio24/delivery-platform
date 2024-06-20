@@ -47,6 +47,15 @@ model User {
   @@map("users")
 }
 
+model Email {
+  id                Int       @id @default(autoincrement())
+  verificationCode  String
+  email             String    @unique
+  createdAt         DateTime  @default(now())
+
+  @@map("email")
+}
+
 model Store {
   id            Int      @id @default(autoincrement())
   ownerId       Int      @unique @map("owner_id")

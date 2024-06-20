@@ -12,15 +12,15 @@ const transporter = nodemailer.createTransport({
 
 export const sendVerificationEmail = async (email) => {
   // 이메일 인증 번호 생성
-  const verificationNumber = crypto.randomBytes(3).toString('hex');
+  const verificationCode = crypto.randomBytes(3).toString('hex');
   // 이메일 발송 형식
   const mailForm = {
     form: EMAIL_USER,
     to: email,
     subject: '회원가입 이메일 인증번호입니다.',
-    text: `${verificationNumber} 인증번호를 회원가입 창에서 입력해주세요`,
+    text: `${verificationCode} 인증번호를 회원가입 창에서 입력해주세요`,
   };
   // 이메일 발송
   await transporter.sendMail(mailForm);
-  return verificationNumber;
+  return verificationCode;
 };

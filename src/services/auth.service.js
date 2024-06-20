@@ -27,9 +27,6 @@ class AuthService {
     // 비밀번호 암호화
     const hashedPassword = await hash(password);
 
-    // 인증번호 전송하기
-    const verificationNumber = await sendVerificationEmail(email);
-
     // user 생성하기
     const user = await this.userRepository.create({
       email,
@@ -44,21 +41,27 @@ class AuthService {
     // transaction log 생성
     await this.transactionLogRepository.create(ADMIN_ID, user.id, 1000000, 0);
 
-    // password, verificationNumber 제외하기
-    const { password: _p, verificationNumber: _v, ...withoutPasswordUser } = user;
+    // password 제외하기
+    const { password: _, ...withoutPasswordUser } = user;
 
     return withoutPasswordUser;
   };
 
+  /** 인증번호 발송 */
+  sendEmail = async (email) => {
+    const verificationCode = await sendVerificationEmail(email);
+    await this.authRepository.saveVerificationEmail(email, verificationCode);
+  };
+
   /** 인증번호 확인 */
-  verifyEmail = async (email, verificationNumber) => {
-    const user = await this.userRepository.getByEmail(email);
-    if (!user || user.verificationNumber !== verificationNumber) {
+  verifyEmail = async (email, verificationCode) => {
+    const record = await this.authRepository.getVerificationByEmail(email);
+    if (!record || record.verificationCode !== verificationCode) {
       throw new HttpError.Unauthorized(MESSAGES.AUTH.COMMON.EMAIL.INVALID);
     }
 
     // email 인증하기
-    await this.userRepository.verifyEmail(user.id);
+    await this.authRepository.getVerificationByEmail(email);
   };
 
   /** 로그인 */
