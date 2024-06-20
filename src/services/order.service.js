@@ -4,12 +4,22 @@ import { ORDER_STATUS } from '../constants/order.constant.js';
 import { ADMIN_ID } from '../constants/user.constant.js';
 
 class OrderService {
-  constructor(orderRepository, orderItemRepository, menuRepository, userRepository, transactionLogRepository) {
+  constructor(
+    orderRepository,
+    orderItemRepository,
+    menuRepository,
+    userRepository,
+    transactionLogRepository,
+    storeRepository,
+    cartRepository,
+  ) {
     this.orderRepository = orderRepository;
+    this.storeRepository = storeRepository;
     this.orderItemRepository = orderItemRepository;
     this.menuRepository = menuRepository;
     this.userRepository = userRepository;
     this.transactionLogRepository = transactionLogRepository;
+    this.cartRepository = cartRepository;
   }
 
   getTotalPrice = async (orderItems) => {
@@ -17,10 +27,10 @@ class OrderService {
     // orderItems 배열에서 각 메뉴의 가격을 조회하여 총 주문 금액 계산
     for (const item of orderItems) {
       const quantity = item.quantity;
-      const price = item.price;
-
+      const menuId = item.menuId;
+      const menu = await this.menuRepository.findMenuByMenuId(menuId);
       // 각 아이템의 가격과 수량을 곱하여 총 가격을 계산
-      const itemTotal = price * quantity;
+      const itemTotal = menu.price * quantity;
       totalPrice += itemTotal;
     }
     return totalPrice;
@@ -64,7 +74,9 @@ class OrderService {
 
       // order items 테이블에 DB 생성
       for (const item of orderItems) {
-        await this.orderItemRepository.createOrderItem(createdOrder.id, item.menuId, item.price, item.quantity, { tx });
+        const menuId = item.menuId;
+        const menu = await this.menuRepository.findMenuByMenuId(menuId);
+        await this.orderItemRepository.createOrderItem(createdOrder.id, item.menuId, menu.price, item.quantity, { tx });
       }
 
       // 고객의 잔액 차감
@@ -77,6 +89,11 @@ class OrderService {
       await this.transactionLogRepository.create(userId, ADMIN_ID, totalPrice, 1, { tx });
 
       // 장바구니에서 주문한 메뉴 삭제
+      for (const item of orderItems) {
+        const menuId = item.menuId;
+        console.log(userId, menuId);
+        await this.cartRepository.deleteCartItem(userId, menuId, { tx });
+      }
 
       return createdOrder;
     });
@@ -112,12 +129,12 @@ class OrderService {
     }
 
     // Transaction 생성
-    const [cancelledOrder, addedWallet] = this.orderRepository.createTransaction(async (tx) => {
+    const [cancelledOrder, addedWallet] = await this.orderRepository.createTransaction(async (tx) => {
       // 주문 상태 변경
       const cancelledOrder = await this.orderRepository.cancelOrder(orderId, { tx });
 
       // admin 잔액 차감
-      const deductedWallet = await this.userRepository.deductionWallet(ADMIN_ID, checkOrder.totalPrice, { tx });
+      const deductedWallet = await this.userRepository.deductWallet(ADMIN_ID, checkOrder.totalPrice, { tx });
 
       // 고객잔액 증가
       const addedWallet = await this.userRepository.addWallet(userId, checkOrder.totalPrice, { tx });
@@ -128,6 +145,7 @@ class OrderService {
       return [cancelledOrder, addedWallet];
     });
 
+    console.log(addedWallet);
     const data = {
       orderId: cancelledOrder.id,
       status: cancelledOrder.status,
@@ -139,13 +157,15 @@ class OrderService {
 
   //  주문 내역 목록 조회 API
   getOrders = async (user) => {
-    const id = user.id;
+    const userId = user.id;
     let getOrder;
+
     if (user.role === 1) {
-      const storeId = await this.userRepository.findStoreId(id);
+      const getStoreId = await this.userRepository.findStoreId(userId);
+      const storeId = getStoreId.store.id;
       getOrder = await this.orderRepository.getOwnerOrders(storeId); // owner
     } else if (user.role === 2) {
-      getOrder = await this.orderRepository.getUserOrders(id); // user
+      getOrder = await this.orderRepository.getUserOrders(userId); // user
     }
 
     return getOrder;
@@ -157,9 +177,11 @@ class OrderService {
     let getOrder;
 
     if (user.role === 1) {
-      const storeId = await this.userRepository.findStoreId(userId);
+      const getStoreId = await this.userRepository.findStoreId(userId);
+      const storeId = getStoreId.store.id;
       getOrder = await this.orderRepository.getOwnerDetailOrder(storeId, orderId); // owner
     } else if (user.role === 2) {
+      console.log(userId, orderId);
       getOrder = await this.orderRepository.getUserDetailOrder(userId, orderId); // user
     }
 
@@ -189,6 +211,10 @@ class OrderService {
     if (checkOrder.status === 3) {
       throw new HttpError.BadRequest(MESSAGES.ORDERS.STATUS_UPDATE.FORBIDDEN);
     }
+    // 이미 취소된 주문이면 상태 변경 불가
+    if (checkOrder.status === 4) {
+      throw new HttpError.BadRequest(MESSAGES.ORDERS.CANCEL.CANCEL_SAME);
+    }
 
     // Transaction 생성
     const updatedOrderStatus = this.orderRepository.createTransaction(async (tx) => {
@@ -197,16 +223,16 @@ class OrderService {
 
       // 배달 완료 시 admin 잔액 차감, 사장 잔액 증가
       if (status === 3) {
-        await this.userRepository.deductionWallet(ADMIN_ID, checkOrder.totalPrice, { tx }); //admin 잔액차감
+        await this.userRepository.deductWallet(ADMIN_ID, checkOrder.totalPrice, { tx }); //admin 잔액차감
         await this.userRepository.addWallet(ownerId, checkOrder.totalPrice, { tx }); //사장 잔액증가
         await this.transactionLogRepository.create(ADMIN_ID, ownerId, checkOrder.totalPrice, 3, { tx }); // transaction log 기록
-        // 가게의 총 매출액 증가
+        await this.storeRepository.storeAddWallet(ownerId, checkOrder.totalPrice, { tx }); // 가게의 총 매출액 증가.totalSales;
       }
 
       // 주문 취소 시  admin 잔액 차감 -> 고객 잔액 증가
       if (status === 4) {
         const customerId = checkOrder.customerId;
-        await this.userRepository.deductionWallet(ADMIN_ID, checkOrder.totalPrice, { tx }); // admin 잔액 차감
+        await this.userRepository.deductWallet(ADMIN_ID, checkOrder.totalPrice, { tx }); // admin 잔액 차감
         await this.userRepository.addWallet(customerId, checkOrder.totalPrice, { tx }); // 고객잔액 증가
         await this.transactionLogRepository.create(ADMIN_ID, customerId, checkOrder.totalPrice, 2, { tx }); // transaction log 기록
       }

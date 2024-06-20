@@ -45,8 +45,9 @@ class CartRepository {
     });
   };
 
-  deleteCartItem = async (customerId, menuId) => {
-    return await this.prisma.cartItem.delete({
+  deleteCartItem = async (customerId, menuId, { tx } = {}) => {
+    const orm = tx || this.prisma;
+    return await orm.cartItem.delete({
       where: { customerId_menuId: { customerId, menuId } },
     });
   };

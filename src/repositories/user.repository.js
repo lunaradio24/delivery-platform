@@ -36,17 +36,6 @@ class UserRepository extends BaseRepository {
     return withoutPasswordUser;
   };
 
-  // 인증 후 상태 변경
-  verifyEmail = async (userId) => {
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: {
-        isVerified: true,
-        verificationNumber: null,
-      },
-    });
-  };
-
   // userId로 user 찾기
   findById = async (userId) => {
     return await this.prisma.user.findUnique({
@@ -70,10 +59,11 @@ class UserRepository extends BaseRepository {
   // 잔액 추가
   addWallet = async (userId, totalPrice, { tx } = {}) => {
     const orm = tx || this.prisma;
-    await orm.user.update({
+    const addWallet = await orm.user.update({
       where: { id: userId },
       data: { wallet: { increment: totalPrice } },
     });
+    return addWallet;
   };
 
   // 잔액 차감
@@ -93,7 +83,7 @@ class UserRepository extends BaseRepository {
         store: true,
       },
     });
-    return user.store.id;
+    return user;
   };
 }
 

@@ -3,11 +3,10 @@ import { ADMIN_ID } from '../constants/user.constant.js';
 import BaseRepository from './base.repository.js';
 
 class OrderRepository extends BaseRepository {
-  //  주문 요청 API
+  //  주문 요청
   createOrder = async (userId, storeId, totalPrice, { tx } = {}) => {
     const orm = tx || this.prisma;
     const createdOrder = await orm.order.create({
-      //Order 데이터 생성
       data: {
         storeId: +storeId,
         customerId: userId,
@@ -23,43 +22,18 @@ class OrderRepository extends BaseRepository {
     return createdOrder;
   };
 
-  // 주문
+  // 주문 취소
   cancelOrder = async (orderId, { tx } = {}) => {
     const orm = tx || this.prisma;
-    // const cancelOrder = await this.prisma.$transaction(async (tx) => { return cancelOrder;})
     const cancelUpdateOrder = await orm.order.update({
       where: { id: +orderId },
       data: { status: 4 },
     });
 
-    // // 고객의 잔액 업데이트
-    // await orm.user.update({
-    //   where: { id: userId },
-    //   data: { wallet: { increment: cancelUpdateOrder.totalPrice } }, //고객의 잔액을 totalPrice만큼 증가
-    // });
-
-    // // admin 잔액 차감
-    // const adminId = 1;
-    // await orm.user.update({
-    //   where: { id: adminId },
-    //   data: { wallet: { decrement: cancelUpdateOrder.totalPrice } },
-    // });
-
-    // transaction log 생성
-    // await tx.transactionLog.create({
-    //   data: {
-    //    senderId: ADMIN_ID,
-    //    receiverId: userId,
-    //    amount: cancelledOrder.totalPrice,
-    //    type: 2,
-    //   },
-    // });
-
     return cancelUpdateOrder;
   };
 
-  //  주문 내역 목록 조회 API
-  //Owner 주문내역 전체
+  //  주문 내역 목록 조회 (OWNER)
   getOwnerOrders = async (storeId) => {
     let getOwnerOrders = await this.prisma.order.findMany({
       where: { storeId: storeId },
@@ -92,7 +66,7 @@ class OrderRepository extends BaseRepository {
     return getOwnerOrders;
   };
 
-  //User 주문내역 전체
+  // 주문 내역 목록 조회 (CUSTOMER)
   getUserOrders = async (id) => {
     let getUserOrders = await this.prisma.order.findMany({
       where: { customerId: id },
@@ -121,9 +95,7 @@ class OrderRepository extends BaseRepository {
     return getUserOrders;
   };
 
-  //  주문 내역 상세 조회 API
-
-  //Owner 주문 내역 상세 조회
+  // 주문 내역 상세 조회 (OWNER)
   getOwnerDetailOrder = async (storeId, orderId) => {
     let detailOrder = await this.prisma.order.findUnique({
       where: {
@@ -163,8 +135,8 @@ class OrderRepository extends BaseRepository {
     return detailOrder;
   };
 
-  //User 주문 내역 상세 조회
-  findByOrderId = async (orderId) => {
+  // 주문 내역 상세 조회 (CUSTOMER)
+  getUserDetailOrder = async (userId, orderId) => {
     let getUserOrders = await this.prisma.order.findUnique({
       where: { id: orderId },
       include: {
@@ -198,74 +170,15 @@ class OrderRepository extends BaseRepository {
     return getUserOrders;
   };
 
-  //  주문 상태 변경 API
+  //  주문 상태 변경 API (OWNER)
   statusUpdateOrder = async (orderId, status = {}) => {
     const orm = tx || this.prisma;
-    // const statusUpdate = await this.prisma.$transaction(async (tx) => {})
     const updatedOrder = await orm.order.update({
       where: { id: +orderId },
       data: { status: status },
-
-      //       // 배달 완료 시 사장 잔액 업데이트
-      //         await tx.user.update({
-      //           where: { id: user.id },
-      //           data: { wallet: { increment: checkOrder.totalPrice } }, //고객의 잔액을 totalPrice만큼 증가
-      //         });
-
-      //         // admin 잔액 차감
-      //         await tx.user.update({
-      //           where: { id: ADMIN_ID },
-      //           data: { wallet: { decrement: checkOrder.totalPrice } },
-      //         });
-
-      //         // transaction log 생성
-      //         await tx.transactionLog.create({
-      //           data: {
-      //             senderId: ADMIN_ID,
-      //             receiverId: user.id,
-      //             amount: checkOrder.totalPrice,
-      //             type: 3,
-      //           },
-      //         });
     });
-
-    // 3 or 4로 변경 시 금액이 수정되긴 하지만, 다른 상태로 바꾸고 다시 3 or 4로 수정할 경우 금액이 다시 증가함
-
-    // 리팩토링 필요
-    // if (updateOrder.status === 3) {
-    //   // 배달 완료 시 사장 잔액 업데이트
-    //   await tx.user.update({
-    //     where: { id: userId },
-    //     data: { wallet: { increment: updateOrder.totalPrice } },
-    //   });
-
-    //   // admin 잔액 차감
-    //   const adminId = 1;
-    //   await tx.user.update({
-    //     where: { id: adminId },
-    //     data: { wallet: { decrement: updateOrder.totalPrice } },
-    //   });
-    // }
-
-    // // 리팩토링 필요
-    // if (updateOrder.status === 4) {
-    //   // 주문 취소 시 고객 잔액 업데이트
-    //   await tx.user.update({
-    //     where: { id: updateOrder.customerId },
-    //     data: { wallet: { increment: updateOrder.totalPrice } },
-    //   });
-
-    //   // admin 잔액 차감
-    //   const adminId = 1;
-    //   await tx.user.update({
-    //     where: { id: adminId },
-    //     data: { wallet: { decrement: updateOrder.totalPrice } },
-    //   });
-    // }
-
+    
     return updatedOrder;
-
-    // return statusUpdate;
   };
 
   //메뉴 가격 함수
