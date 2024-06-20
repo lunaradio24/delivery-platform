@@ -44,38 +44,39 @@ class OrderRepository extends BaseRepository {
     return createdOrder;
   };
 
-  cancelOrder = async (userId, orderId) => {
-    const cancelledOrder = await this.prisma.$transaction(async (tx) => {
-      const cancelledOrder = await tx.order.update({
-        where: { id: +orderId },
-        data: { status: 4 },
-      });
-
-      // 고객의 잔액 업데이트
-      await tx.user.update({
-        where: { id: userId },
-        data: { wallet: { increment: cancelledOrder.totalPrice } }, //고객의 잔액을 totalPrice만큼 증가
-      });
-
-      // admin 잔액 차감
-      await tx.user.update({
-        where: { id: ADMIN_ID },
-        data: { wallet: { decrement: cancelledOrder.totalPrice } },
-      });
-      // transaction log 생성
-      await tx.transactionLog.create({
-        data: {
-          senderId: ADMIN_ID,
-          receiverId: userId,
-          amount: cancelledOrder.totalPrice,
-          type: 2,
-        },
-      });
-
-      return cancelledOrder;
+  // 주문 
+  cancelOrder = async (orderId, { tx }) => {
+    const orm = tx || this.prisma;
+    // const cancelOrder = await this.prisma.$transaction(async (tx) => { return cancelOrder;})
+    const cancelUpdateOrder = await orm.order.update({
+      where: { id: +orderId },
+      data: { status: 4 },
     });
 
-    return cancelledOrder;
+    // // 고객의 잔액 업데이트
+    // await orm.user.update({
+    //   where: { id: userId },
+    //   data: { wallet: { increment: cancelUpdateOrder.totalPrice } }, //고객의 잔액을 totalPrice만큼 증가
+    // });
+
+    // // admin 잔액 차감
+    // const adminId = 1;
+    // await orm.user.update({
+    //   where: { id: adminId },
+    //   data: { wallet: { decrement: cancelUpdateOrder.totalPrice } },
+    // });
+    
+    // transaction log 생성
+    // await tx.transactionLog.create({
+    //   data: {
+    //    senderId: ADMIN_ID,
+    //    receiverId: userId,
+    //    amount: cancelledOrder.totalPrice,
+    //    type: 2,
+    //   },
+    // });
+
+    return cancelUpdateOrder;
   };
 
   //  주문 내역 목록 조회 API
@@ -218,53 +219,73 @@ class OrderRepository extends BaseRepository {
   };
 
   //  주문 상태 변경 API
-  statusUpdateOrder = async (user, id, status) => {
-    const statusUpdate = await this.prisma.$transaction(async (tx) => {
-      const checkOrder = await tx.order.findUnique({
-        where: { id: id },
-      });
+  statusUpdateOrder = async (orderId, status, { tx }) => {
+    const orm = tx || this.prisma;
+    // const statusUpdate = await this.prisma.$transaction(async (tx) => {})
+    const updatedOrder = await orm.order.update({
+      where: { id: +orderId },
+      data: { status: status },
+      
+//       // 배달 완료 시 사장 잔액 업데이트
+//         await tx.user.update({
+//           where: { id: user.id },
+//           data: { wallet: { increment: checkOrder.totalPrice } }, //고객의 잔액을 totalPrice만큼 증가
+//         });
 
-      if (!checkOrder) {
-        return checkOrder;
-      }
+//         // admin 잔액 차감
+//         await tx.user.update({
+//           where: { id: ADMIN_ID },
+//           data: { wallet: { decrement: checkOrder.totalPrice } },
+//         });
 
-      if (checkOrder.status === status) {
-        return checkOrder;
-      }
-
-      const updateOrder = await tx.order.update({
-        where: { id: id },
-        data: { status: status },
-      });
-
-      if (updateOrder.status === ORDER_STATUS[3]) {
-        // 배달 완료 시 사장 잔액 업데이트
-        await tx.user.update({
-          where: { id: user.id },
-          data: { wallet: { increment: checkOrder.totalPrice } }, //고객의 잔액을 totalPrice만큼 증가
-        });
-
-        // admin 잔액 차감
-        await tx.user.update({
-          where: { id: ADMIN_ID },
-          data: { wallet: { decrement: checkOrder.totalPrice } },
-        });
-
-        // transaction log 생성
-        await tx.transactionLog.create({
-          data: {
-            senderId: ADMIN_ID,
-            receiverId: user.id,
-            amount: checkOrder.totalPrice,
-            type: 3,
-          },
-        });
-      }
-
-      return updateOrder;
+//         // transaction log 생성
+//         await tx.transactionLog.create({
+//           data: {
+//             senderId: ADMIN_ID,
+//             receiverId: user.id,
+//             amount: checkOrder.totalPrice,
+//             type: 3,
+//           },
+//         });
     });
 
-    return statusUpdate;
+    // 3 or 4로 변경 시 금액이 수정되긴 하지만, 다른 상태로 바꾸고 다시 3 or 4로 수정할 경우 금액이 다시 증가함
+
+    // 리팩토링 필요
+    // if (updateOrder.status === 3) {
+    //   // 배달 완료 시 사장 잔액 업데이트
+    //   await tx.user.update({
+    //     where: { id: userId },
+    //     data: { wallet: { increment: updateOrder.totalPrice } },
+    //   });
+
+    //   // admin 잔액 차감
+    //   const adminId = 1;
+    //   await tx.user.update({
+    //     where: { id: adminId },
+    //     data: { wallet: { decrement: updateOrder.totalPrice } },
+    //   });
+    // }
+
+    // // 리팩토링 필요
+    // if (updateOrder.status === 4) {
+    //   // 주문 취소 시 고객 잔액 업데이트
+    //   await tx.user.update({
+    //     where: { id: updateOrder.customerId },
+    //     data: { wallet: { increment: updateOrder.totalPrice } },
+    //   });
+
+    //   // admin 잔액 차감
+    //   const adminId = 1;
+    //   await tx.user.update({
+    //     where: { id: adminId },
+    //     data: { wallet: { decrement: updateOrder.totalPrice } },
+    //   });
+    // }
+
+    return updatedOrder;
+
+    // return statusUpdate;
   };
 
   //메뉴 가격 함수

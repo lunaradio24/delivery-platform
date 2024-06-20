@@ -6,7 +6,7 @@ import { createOrderValidator } from '../middlewares/validators/create-order-val
 const orderRouter = express.Router();
 
 // 주문 요청 API
-orderRouter.post('/', createOrderValidator, requireRoles(['CUSTOMER']), orderController.createOrder); // create joi 미들웨어 필요
+orderRouter.post('/', createOrderValidator, requireRoles(['CUSTOMER']), orderController.createOrder);
 
 // 주문 취소 API
 orderRouter.patch('/:orderId/cancel', requireRoles(['CUSTOMER']), orderController.cancelOrder); // update joi 미들웨어 필요
@@ -18,6 +18,6 @@ orderRouter.get('/', orderController.getOrders);
 orderRouter.get('/:orderId', orderController.getDetailOrder);
 
 // 주문 상태 변경 API
-orderRouter.patch('/:orderId/status', requireRoles(['OWNER']), orderController.statusUpdateOrder); //update joi 미들웨어 필요
+orderRouter.patch('/:orderId/status', requireRoles(['OWNER']), orderController.statusUpdateOrder);
 
 export { orderRouter };
