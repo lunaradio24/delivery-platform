@@ -29,7 +29,6 @@ class OrderService {
       const quantity = item.quantity;
       const menuId = item.menuId;
       const menu = await this.menuRepository.findMenuByMenuId(menuId);
-      // 각 아이템의 가격과 수량을 곱하여 총 가격을 계산
       const itemTotal = menu.price * quantity;
       totalPrice += itemTotal;
     }
@@ -47,9 +46,7 @@ class OrderService {
     return true;
   };
 
-  //  주문 요청 API
-  // 인증 후 주문 > userwallet 잔액 확인하여 메뉴 금액만큼 차감 진행 + tradeHistory 데이터 생성
-  // +ordersTable + ordersItems 데이터 생성 + cartItems 데이터 삭제
+  // 주문 요청 API
   createOrder = async (userId, userWallet, storeId, orderItems) => {
     // 주문할 메뉴들이 해당 storeId의 가게에 속하는지 검증
     const isValidItems = await this.validateOrderItems(storeId, orderItems);
@@ -62,7 +59,7 @@ class OrderService {
 
     // 총 주문금액보다  사용자의 잔액이 낮으면 에러
     if (userWallet < totalPrice) {
-      throw new HttpError.BadRequest(MESSAGES.ORDERS.NO_WALLET);
+      throw new HttpError.BadRequest(MESSAGES.ORDERS.CREATE.NOT_ENOUGH_MONEY);
     }
 
     // Transaction 생성
@@ -90,9 +87,7 @@ class OrderService {
 
       // 장바구니에서 주문한 메뉴 삭제
       for (const item of orderItems) {
-        const menuId = item.menuId;
-        console.log(userId, menuId);
-        await this.cartRepository.deleteCartItem(userId, menuId, { tx });
+        await this.cartRepository.deleteCartItem(userId, item.menuId, { tx });
       }
 
       return createdOrder;
@@ -115,105 +110,146 @@ class OrderService {
   };
 
   //  주문 취소 API
-  cancelOrder = async (userId, orderId) => {
-    const checkOrder = await this.orderRepository.getUserDetailOrder(userId, orderId);
+  cancelOrder = async (customerId, orderId) => {
+    // 존재하는 주문인지 확인
+    const order = await this.orderRepository.findByOrderId(orderId);
+    if (!order) throw new HttpError.NotFound(MESSAGES.ORDERS.COMMON.NOT_FOUND);
 
-    //주문이 없거나, 해당 유저의 주문이 아니라면 오류 반환
-    if (!checkOrder) {
-      throw new HttpError.NotFound(MESSAGES.ORDERS.COMMON.NOT_FOUND);
+    // 주문자 본인이 맞는지 확인
+    if (customerId !== order.customerId) {
+      throw new HttpError.Forbidden(MESSAGES.ORDERS.COMMON.NO_ACCESS_RIGHT);
     }
 
     //주문이 있지만 이미 취소 상태라면 오류 반환
-    if (checkOrder.status === 4) {
+    if (order.status === 4) {
       throw new HttpError.BadRequest(MESSAGES.ORDERS.CANCEL.CANCEL_SAME);
     }
 
     // Transaction 생성
-    const [cancelledOrder, addedWallet] = await this.orderRepository.createTransaction(async (tx) => {
+    const [cancelledOrder, customer] = await this.orderRepository.createTransaction(async (tx) => {
       // 주문 상태 변경
       const cancelledOrder = await this.orderRepository.cancelOrder(orderId, { tx });
 
       // admin 잔액 차감
-      const deductedWallet = await this.userRepository.deductWallet(ADMIN_ID, checkOrder.totalPrice, { tx });
+      await this.userRepository.deductWallet(ADMIN_ID, order.totalPrice, { tx });
 
-      // 고객잔액 증가
-      const addedWallet = await this.userRepository.addWallet(userId, checkOrder.totalPrice, { tx });
+      // 고객 잔액 증가
+      const customer = await this.userRepository.addWallet(customerId, order.totalPrice, { tx });
 
       // transaction log 기록
-      await this.transactionLogRepository.create(ADMIN_ID, userId, checkOrder.totalPrice, 2, { tx });
+      await this.transactionLogRepository.create(ADMIN_ID, customerId, order.totalPrice, 2, { tx });
 
-      return [cancelledOrder, addedWallet];
+      return [cancelledOrder, customer];
     });
 
-    console.log(addedWallet);
+    // 취소된 주문 객체 반환
     const data = {
       orderId: cancelledOrder.id,
       status: cancelledOrder.status,
-      wallet: addedWallet.wallet,
+      wallet: customer.wallet,
     };
-
-    return data; // 취소된 주문 객체 반환
+    return data;
   };
 
-  //  주문 내역 목록 조회 API
-  getOrders = async (user) => {
-    const userId = user.id;
-    let getOrder;
-
+  // 주문 내역 목록 조회 API
+  getOrderList = async (user) => {
+    // 사장인 경우
     if (user.role === 1) {
-      const getStoreId = await this.userRepository.findStoreId(userId);
-      const storeId = getStoreId.store.id;
-      getOrder = await this.orderRepository.getOwnerOrders(storeId); // owner
-    } else if (user.role === 2) {
-      getOrder = await this.orderRepository.getUserOrders(userId); // user
+      const store = await this.storeRepository.findByOwnerId(user.id);
+      const orders = await this.orderRepository.findListByStoreId(store.id);
+      return orders;
     }
-
-    return getOrder;
+    // 고객인 경우
+    if (user.role === 2) {
+      const orders = await this.orderRepository.findListByCustomerId(user.id);
+      return orders;
+    }
   };
 
   //  주문 내역 상세 조회 API
-  getDetailOrder = async (user, orderId) => {
-    const userId = user.id;
-    let getOrder;
-
-    if (user.role === 1) {
-      const getStoreId = await this.userRepository.findStoreId(userId);
-      const storeId = getStoreId.store.id;
-      getOrder = await this.orderRepository.getOwnerDetailOrder(storeId, orderId); // owner
-    } else if (user.role === 2) {
-      console.log(userId, orderId);
-      getOrder = await this.orderRepository.getUserDetailOrder(userId, orderId); // user
-    }
-
-    if (!getOrder) {
+  getOrderDetail = async (user, orderId) => {
+    // 존재하는 주문인지 확인
+    const order = await this.orderRepository.findByOrderId(orderId);
+    if (!order) {
       throw new HttpError.NotFound(MESSAGES.ORDERS.COMMON.NOT_FOUND);
     }
-    return getOrder;
+
+    // 사장이면
+    if (user.role === 1) {
+      // 본인 가게의 주문인지 확인
+      const store = await this.storeRepository.findByOwnerId(user.id);
+      if (!store || (store && store.id !== order.storeId)) {
+        throw new HttpError.Forbidden(MESSAGES.ORDERS.COMMON.NO_ACCESS_RIGHT);
+      }
+      // 반환 정보
+      return {
+        orderId: order.id,
+        orderedAt: order.createdAt,
+        status: order.status,
+        customer: {
+          nickname: order.customer.nickname,
+          contactNumber: order.customer.contactNumber,
+          address: order.customer.address,
+        },
+        orderItems: order.orderItem.map((item) => ({
+          menu: item.menu.name,
+          quantity: item.quantity,
+          price: item.menu.price,
+        })),
+        totalPrice: order.totalPrice,
+      };
+    }
+
+    // 고객이면
+    if (user.role === 2) {
+      // 주문자 본인이 맞는지 확인
+      if (user.id !== order.customerId) {
+        throw new HttpError.Forbidden(MESSAGES.ORDERS.COMMON.NO_ACCESS_RIGHT);
+      }
+      // 반환정보
+      return {
+        orderId: order.id,
+        orderedAt: order.createdAt,
+        status: order.status,
+        store: {
+          storeName: order.store.name,
+          contactNumber: order.store.contactNumber,
+          address: order.store.address,
+        },
+        orderItems: order.orderItem.map((item) => ({
+          menu: item.menu.name,
+          quantity: item.quantity,
+          price: item.menu.price,
+        })),
+        totalPrice: order.totalPrice,
+      };
+    }
   };
 
   //  주문 상태 변경 API
-  statusUpdateOrder = async (ownerId, orderId, status) => {
-    const getStoreId = await this.userRepository.findStoreId(ownerId);
-    const storeId = getStoreId.store.id;
-    const checkOrder = await this.orderRepository.getOwnerDetailOrder(storeId, orderId);
+  statusUpdateOrder = async (ownerId, orderId, newStatus) => {
+    // 존재하는 주문인지 확인
+    const order = await this.orderRepository.findByOrderId(orderId);
+    if (!order) throw new HttpError.NotFound(MESSAGES.ORDERS.COMMON.NOT_FOUND);
 
-    //주문이 없거나, 해당 스토어의 주문이 아니라면 오류 반환
-    if (!checkOrder) {
-      throw new HttpError.NotFound(MESSAGES.ORDERS.NO_DATA);
-    }
-
-    //주문이 있지만 요청한 상태와 동일하다면 오류 반환
-    if (checkOrder.status === status) {
-      throw new HttpError.BadRequest(MESSAGES.ORDERS.STATUS_UPDATE.SAME_STATUS);
+    // 본인 가게의 주문인지 확인
+    const store = await this.storeRepository.findByOwnerId(ownerId);
+    if (!store || (store && store.id !== order.storeId)) {
+      throw new HttpError.Forbidden(MESSAGES.ORDERS.COMMON.NO_ACCESS_RIGHT);
     }
 
     //이미 배달완료 상태면 주문 상태 변경 불가
-    if (checkOrder.status === 3) {
-      throw new HttpError.BadRequest(MESSAGES.ORDERS.STATUS_UPDATE.FORBIDDEN);
+    if (order.status === 3) {
+      throw new HttpError.Forbidden(MESSAGES.ORDERS.STATUS_UPDATE.FORBIDDEN);
     }
-    // 이미 취소된 주문이면 상태 변경 불가
-    if (checkOrder.status === 4) {
-      throw new HttpError.BadRequest(MESSAGES.ORDERS.CANCEL.CANCEL_SAME);
+    // 이미 취소된 주문이면 주문 상태 변경 불가
+    if (order.status === 4) {
+      throw new HttpError.Forbidden(MESSAGES.ORDERS.CANCEL.FORBIDDEN);
+    }
+
+    // 주문이 있지만 요청한 상태와 동일하다면 오류 반환
+    if (order.status === newStatus) {
+      throw new HttpError.BadRequest(MESSAGES.ORDERS.STATUS_UPDATE.SAME_STATUS);
     }
 
     // Transaction 생성
@@ -221,23 +257,23 @@ class OrderService {
       // 주문 상태 변경
       const statusUpdatedOrder = await this.orderRepository.statusUpdateOrder(orderId, status, { tx });
 
-      // 배달 완료 시 admin 잔액 차감, 사장 잔액 증가
-      if (status === 3) {
-        await this.userRepository.deductWallet(ADMIN_ID, checkOrder.totalPrice, { tx }); //admin 잔액차감
-        await this.userRepository.addWallet(ownerId, checkOrder.totalPrice, { tx }); //사장 잔액증가
-        await this.transactionLogRepository.create(ADMIN_ID, ownerId, checkOrder.totalPrice, 3, { tx }); // transaction log 기록
-        await this.storeRepository.storeAddWallet(ownerId, checkOrder.totalPrice, { tx }); // 가게의 총 매출액 증가.totalSales;
+      // 배달 완료 시
+      if (newStatus === 3) {
+        await this.userRepository.deductWallet(ADMIN_ID, order.totalPrice, { tx }); //admin 잔액차감
+        await this.userRepository.addWallet(ownerId, order.totalPrice, { tx }); //사장 잔액증가
+        await this.transactionLogRepository.create(ADMIN_ID, ownerId, order.totalPrice, 3, { tx }); // transaction log 기록
+        await this.storeRepository.storeAddWallet(ownerId, order.totalPrice, { tx }); // 가게의 총 매출액 증가.totalSales;
       }
 
-      // 주문 취소 시  admin 잔액 차감 -> 고객 잔액 증가
-      if (status === 4) {
-        const customerId = checkOrder.customerId;
-        await this.userRepository.deductWallet(ADMIN_ID, checkOrder.totalPrice, { tx }); // admin 잔액 차감
-        await this.userRepository.addWallet(customerId, checkOrder.totalPrice, { tx }); // 고객잔액 증가
-        await this.transactionLogRepository.create(ADMIN_ID, customerId, checkOrder.totalPrice, 2, { tx }); // transaction log 기록
+      // 주문 취소 시
+      if (newStatus === 4) {
+        const customerId = order.customerId;
+        await this.userRepository.deductWallet(ADMIN_ID, order.totalPrice, { tx }); // admin 잔액 차감
+        await this.userRepository.addWallet(customerId, order.totalPrice, { tx }); // 고객잔액 증가
+        await this.transactionLogRepository.create(ADMIN_ID, customerId, order.totalPrice, 2, { tx }); // transaction log 기록
       }
 
-      return statusUpdatedOrder.status;
+      return statusUpdatedOrder;
     });
 
     return updatedOrderStatus;

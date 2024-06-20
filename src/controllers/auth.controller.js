@@ -41,17 +41,15 @@ export class AuthController {
       const { email } = req.body;
       await this.authService.sendEmail(email);
 
-      
       // 성공 메세지 반환
       res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
         message: MESSAGES.AUTH.COMMON.EMAIL.SEND,
       });
-
     } catch (error) {
-      next (error);
-    };
-  }
+      next(error);
+    }
+  };
 
   /** 인증번호 확인 */
   verifyEmail = async (req, res, next) => {

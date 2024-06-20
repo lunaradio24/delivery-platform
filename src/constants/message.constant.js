@@ -138,9 +138,11 @@ export const MESSAGES = {
     COMMON: {
       NOT_FOUND: '주문이 존재하지 않습니다',
       BAD_REQUEST: '같은 가게의 메뉴들만 주문할 수 있습니다.',
+      NO_ACCESS_RIGHT: '접근 권한이 없습니다.',
     },
-    CREATED: {
+    CREATE: {
       SUCCEED: '주문이 접수되었습니다.',
+      NOT_ENOUGH_MONEY: '잔액이 부족합니다.',
       NO_ORDER: '메뉴는 1개 이상 주문해주세요.',
       NO_CART: '카트가 비어있습니다.',
       NO_STORE: '주문 가게를 입력해주세요.',
@@ -150,7 +152,7 @@ export const MESSAGES = {
     },
     CANCEL: {
       SUCCEED: '주문 취소 요청 되었습니다.',
-      CANCEL_SAME: '이미 취소된 주문입니다.',
+      FORBIDDEN: '이미 취소된 주문입니다.',
     },
     LIST: {
       SUCCEED: '주문내역 조회에 성공하였습니다.',
@@ -163,7 +165,6 @@ export const MESSAGES = {
       SAME_STATUS: '현재 상태와 동일합니다.',
       FORBIDDEN: '이미 배달완료가 된 주문입니다.',
     },
-    NO_WALLET: '잔액이 부족합니다.',
   },
   REVIEWS: {
     COMMON: {
@@ -222,6 +223,11 @@ export const MESSAGES = {
     },
     READ_LIST: {
       SUCCEED: '찜 목록 조회에 성공했습니다.',
+    },
+  },
+  TRANSACTION_LOGS: {
+    READ_LIST: {
+      SUCCEED: '거래 내역 조회에 성공했습니다.',
     },
   },
 };
