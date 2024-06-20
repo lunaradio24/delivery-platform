@@ -11,6 +11,7 @@ export class AuthController {
     try {
       // 작성 정보 받아오기
       const { email, password, passwordConfirm, nickname, role, contactNumber, address, image } = req.body;
+
       // user 생성하기
       const user = await this.authService.signUp({
         email,

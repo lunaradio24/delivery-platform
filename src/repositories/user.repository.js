@@ -1,10 +1,6 @@
-import { prisma } from '../utils/prisma.util.js';
+import BaseRepository from './base.repository.js';
 
-export class UserRepository {
-  constructor(prisma) {
-    this.prisma = prisma;
-  }
-
+class UserRepository extends BaseRepository {
   /** 회원가입 */
   // email 확인하기
   getByEmail = async (email) => {
@@ -69,22 +65,38 @@ export class UserRepository {
         address,
         image,
         contactNumber,
-      }
+      },
     });
   };
 
-  // 고객 잔액 차감 메소드
-  // await tx.user.update({
-  //   where: { id: userId },
-  //   data: { wallet: { decrement: createdOrder.totalPrice } }, //고객의 잔액을 totalPrice만큼 차감
-  // });
+  // 잔액 추가
+  addWallet = async (userId, totalPrice, { tx }) => {
+    const orm = tx || this.prisma;
+    await orm.user.update({
+      where: { id: userId },
+      data: { wallet: { increment: totalPrice } },
+    });
+  };
 
-  // ADMIN 잔액 증가 메소드
-  // const adminId = 1;
-  // await tx.user.update({
-  //   where: { id: adminId },
-  //   data: { wallet: { increment: createdOrder.totalPrice } },
-  // });
+  // 잔액 차감
+  deductWallet = async (userId, totalPrice, { tx }) => {
+    const orm = tx || this.prisma;
+    await orm.user.update({
+      where: { id: userId },
+      data: { wallet: { decrement: totalPrice } },
+    });
+  };
+
+  //스토어 id 파싱
+  findStoreId = async (userId) => {
+    const user = await this.prisma.user.findUnique({
+      where: { id: +userId },
+      include: {
+        store: true,
+      },
+    });
+    return user.store.id;
+  };
 }
 
 export default UserRepository;

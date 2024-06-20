@@ -21,7 +21,7 @@ class StoreRepository {
   };
 
   // 음식점 조회 by 사장 id
-  getStoreByOwnerId = async (ownerId) => {
+  findByOwnerId = async (ownerId) => {
     const store = await this.prisma.store.findUnique({
       where: { ownerId },
     });
@@ -29,9 +29,9 @@ class StoreRepository {
   };
 
   // 음식점 목록 조회
-  getStore = async (categoryId) => {
+  findStoreList = async (categoryId) => {
     let data = await this.prisma.store.findMany({
-      where: { category: categoryId ? +categoryId : undefined },
+      where: { category: categoryId ? Number(categoryId) : undefined },
     });
 
     data = data.map((store) => {
@@ -53,9 +53,9 @@ class StoreRepository {
   };
 
   // 음식점 상세 조회
-  getStoreOne = async (storeId) => {
+  findByStoreId = async (storeId) => {
     let data = await this.prisma.store.findUnique({
-      where: { id: +storeId },
+      where: { id: Number(storeId) },
     });
 
     return data;
@@ -64,16 +64,8 @@ class StoreRepository {
   // 음식점 수정
   updateStore = async (storeId, category, name, image, address, contactNumber, description, openingHours) => {
     const updatedStore = await this.prisma.store.update({
-      where: { id: +storeId },
-      data: {
-        ...(category && { category }),
-        ...(name && { name }),
-        ...(image && { image }),
-        ...(address && { address }),
-        ...(contactNumber && { contactNumber }),
-        ...(description && { description }),
-        ...(openingHours && { openingHours }),
-      },
+      where: { id: Number(storeId) },
+      data: { category, name, image, address, contactNumber, description, openingHours },
     });
     return updatedStore;
   };
@@ -81,22 +73,20 @@ class StoreRepository {
   // 음식점 삭제
   deleteStore = async (storeId) => {
     const deleteStore = await this.prisma.store.delete({
-      where: { id: +storeId },
+      where: { id: Number(storeId) },
     });
 
     return deleteStore;
   };
 
   // 수신한 rating, totalReviews 만 업데이트
-  updateRating = async (storeId, averageRating, totalReviews) => {
-    const updateRating = await this.prisma.store.update({
+  updateRating = async (storeId, averageRating, totalReviews, { tx }) => {
+    const orm = tx || this.prisma;
+    const updatedStore = await orm.store.update({
       where: { id: storeId },
-      data: {
-        ...(averageRating && { averageRating }),
-        ...(totalReviews && { totalReviews }),
-      },
+      data: { averageRating, totalReviews },
     });
-    return { data: updateRating.averageRating };
+    return updatedStore.averageRating;
   };
 }
 

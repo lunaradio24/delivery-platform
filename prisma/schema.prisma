@@ -14,32 +14,35 @@ model Auth {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("auth")
 }
 
 model User {
-  id            Int      @id @default(autoincrement())
-  email         String   @unique
-  password      String
-  nickname      String   @unique
-  role          Int      @default(2)
-  wallet        Int      @default(1000000)
-  contactNumber String   @map("contact_number")
-  address       String?
-  image         String?       @map("image")
-  verificationNumber String?
-  isVerified    Boolean   @default(false)
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt @map("updated_at")
+  id              Int           @id @default(autoincrement())
+  email           String?       @unique
+  password        String?
+  nickname        String        @unique
+  role            Int           @default(2)
+  wallet          Int           @default(1000000)
+  contactNumber   String        @map("contact_number")
+  address         String?
+  image           String?       @map("image")
+  socialId        Int?          @unique @map("social_id")
+  provider        Int?          
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
 
-  refreshToken Auth?
-  store        Store?
-  cart         CartItem[]
-  order        Order[]
-  review       Review[]
-  like         Like[]
+  refreshToken    Auth?
+  store           Store?
+  cart            CartItem[]
+  order           Order[]
+  review          Review[]
+  like            Like[]
+  withdrawal      TransactionLog[]  @relation("sender")
+  deposit         TransactionLog[]  @relation("receiver")
+  notification    Notification[]
 
   @@map("users")
 }
@@ -155,14 +158,41 @@ model Review {
 }
 
 model Like {
+  id         Int        @id @default(autoincrement())
+  customerId Int        @map("customer_id")
+  storeId    Int        @map("store_id")
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @updatedAt @map("updated_at")
+
+  customer   User       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  store      Store      @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@map("likes")
+}
+
+model TransactionLog {
   id         Int      @id @default(autoincrement())
-  customerId Int      @map("customer_id")
-  storeId    Int      @map("store_id")
+  senderId   Int      @map("sender_id")
+  receiverId Int      @map("receiver_id")
+  amount     Int      
+  type       Int 
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  sender     User     @relation("sender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver   User     @relation("receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@map("transaction_logs")
+}
+
+model Notification {
+  id         Int      @id @default(autoincrement())
+  userId     Int      @map("user_id")
+  content    String
+  isRead     Boolean  @map("is_read")
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
 
-  customer User  @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  store    Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("likes")
+  @@map("notifications")
 }

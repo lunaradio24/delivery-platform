@@ -11,9 +11,9 @@ class OrderController {
   createOrder = async (req, res, next) => {
     try {
       const { id: userId, wallet: userWallet } = req.user;
-      const { cartId, storeId, orderItems } = req.body;
+      const { storeId, orderItems } = req.body;
 
-      const createdOrder = await this.orderService.createOrder(userId, userWallet, storeId, orderItems, cartId);
+      const createdOrder = await this.orderService.createOrder(userId, userWallet, storeId, orderItems);
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
@@ -21,7 +21,7 @@ class OrderController {
         data: createdOrder,
       });
     } catch (err) {
-      console.log(err);
+      console.log('에러', err);
       next(err);
     }
   };
@@ -37,7 +37,7 @@ class OrderController {
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
         message: MESSAGES.ORDERS.CANCEL.SUCCEED,
-        data: { orderId: cancelOrder.id, status: cancelOrder.status, wallet: cancelOrder.wallet },
+        data: cancelOrder,
       });
     } catch (err) {
       next(err);
@@ -71,13 +71,6 @@ class OrderController {
 
       const getDetailOrder = await this.orderService.getDetailOrder(user, orderId);
 
-      if (!getDetailOrder) {
-        return res.status(HTTP_STATUS.NOT_FOUND).json({
-          status: HTTP_STATUS.NOT_FOUND,
-          message: MESSAGES.ORDERS.NO_DATA,
-        });
-      }
-
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
         message: MESSAGES.ORDERS.DETAIL.SUCCEED,
@@ -91,16 +84,16 @@ class OrderController {
   //  주문 상태 변경 API
   statusUpdateOrder = async (req, res, next) => {
     try {
-      const user = req.user;
+      const { id: userId } = req.user;
       const { orderId } = req.params;
       const { status } = req.body;
 
-      const statusUpdateOrder = await this.orderService.statusUpdateOrder(user, orderId, status);
+      const statusUpdateOrder = await this.orderService.statusUpdateOrder(userId, orderId, status);
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
         message: MESSAGES.ORDERS.STATUS_UPDATE.SUCCEED,
-        data: { status: statusUpdateOrder.status },
+        data: statusUpdateOrder,
       });
     } catch (err) {
       next(err);
