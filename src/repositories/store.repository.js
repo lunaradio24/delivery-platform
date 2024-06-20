@@ -81,11 +81,15 @@ class StoreRepository {
   };
 
   // 수신한 rating, totalReviews 만 업데이트
-  updateRating = async (storeId, averageRating, totalReviews, { tx }) => {
+  updateRating = async (storeId, updatedRating, updatedTotalReviews, { tx } = {}) => {
     const orm = tx || this.prisma;
     const updatedStore = await orm.store.update({
       where: { id: storeId },
-      data: { averageRating, totalReviews },
+      data: {
+        averageRating: updatedRating,
+        totalReviews: updatedTotalReviews,
+      },
+      select: { averageRating: true },
     });
     return updatedStore.averageRating;
   };

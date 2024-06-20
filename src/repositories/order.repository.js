@@ -4,7 +4,7 @@ import BaseRepository from './base.repository.js';
 
 class OrderRepository extends BaseRepository {
   //  주문 요청 API
-  createOrder = async (userId, storeId, totalPrice, { tx }) => {
+  createOrder = async (userId, storeId, totalPrice, { tx } = {}) => {
     const orm = tx || this.prisma;
     const createdOrder = await orm.order.create({
       //Order 데이터 생성
@@ -24,7 +24,7 @@ class OrderRepository extends BaseRepository {
   };
 
   // 주문
-  cancelOrder = async (orderId, { tx }) => {
+  cancelOrder = async (orderId, { tx } = {}) => {
     const orm = tx || this.prisma;
     // const cancelOrder = await this.prisma.$transaction(async (tx) => { return cancelOrder;})
     const cancelUpdateOrder = await orm.order.update({
@@ -166,7 +166,7 @@ class OrderRepository extends BaseRepository {
   //User 주문 내역 상세 조회
   findByOrderId = async (orderId) => {
     let getUserOrders = await this.prisma.order.findUnique({
-      where: { id: +orderId },
+      where: { id: orderId },
       include: {
         store: true,
         orderItem: {
@@ -182,6 +182,7 @@ class OrderRepository extends BaseRepository {
     }
 
     getUserOrders = {
+      storeId: getUserOrders.store.id,
       orderId: getUserOrders.id,
       status: getUserOrders.status,
       createdAt: getUserOrders.createdAt,
@@ -198,7 +199,7 @@ class OrderRepository extends BaseRepository {
   };
 
   //  주문 상태 변경 API
-  statusUpdateOrder = async (orderId, status, { tx }) => {
+  statusUpdateOrder = async (orderId, status = {}) => {
     const orm = tx || this.prisma;
     // const statusUpdate = await this.prisma.$transaction(async (tx) => {})
     const updatedOrder = await orm.order.update({
