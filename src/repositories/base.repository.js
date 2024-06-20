@@ -3,8 +3,8 @@ class BaseRepository {
     this.prisma = prisma;
   }
 
-  createTransaction = async () => {
-    return await this.prisma.$transaction;
+  createTransaction = async (callback) => {
+    return await this.prisma.$transaction(callback);
   };
 }
 

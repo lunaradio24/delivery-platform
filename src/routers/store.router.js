@@ -9,10 +9,10 @@ const storeRouter = express.Router();
 storeRouter.post('/', requireAccessToken, requireRoles(['OWNER']), storeController.createStore);
 
 // 가게 목록 조회 API
-storeRouter.get('/', storeController.getStore);
+storeRouter.get('/', storeController.getStoreList);
 
 // 가게 상세 조회 API
-storeRouter.get('/:storeId', storeController.getStoreOne);
+storeRouter.get('/:storeId', storeController.getStoreDetail);
 
 // 가게 정보 수정 API
 storeRouter.patch('/:storeId', requireAccessToken, requireRoles(['OWNER']), storeController.updateStore);

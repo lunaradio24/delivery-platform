@@ -35,31 +35,31 @@ class StoreController {
     }
   };
 
-  getStore = async (req, res, next) => {
+  getStoreList = async (req, res, next) => {
     try {
       const { categoryId } = req.query;
-      const getStore = await this.storeRepository.getStore(categoryId);
+      const stores = await this.storeRepository.getStoreList(categoryId);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
         message: MESSAGES.STORES.READ_LIST.SUCCEED,
-        data: getStore,
+        data: stores,
       });
     } catch (error) {
       next(error);
     }
   };
 
-  getStoreOne = async (req, res, next) => {
+  getStoreDetail = async (req, res, next) => {
     try {
       const { storeId } = req.params;
 
-      const getStoreOne = await this.storeRepository.getStoreOne(storeId);
+      const store = await this.storeRepository.getStoreDetail(storeId);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
         message: MESSAGES.STORES.READ_DETAIL.SUCCEED,
-        data: getStoreOne,
+        data: store,
       });
     } catch (error) {
       next(error);

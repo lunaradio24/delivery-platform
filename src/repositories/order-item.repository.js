@@ -4,11 +4,11 @@ class OrderItemRepository {
   }
   findMenuIdsByOrderId = async (orderId, { tx }) => {
     const orm = tx || this.prisma;
-    const orderItemIds = await orm.orderItem.findMany({
+    const orderItems = await orm.orderItem.findMany({
       where: { orderId },
       select: { menuId: true },
     });
-    return orderItemIds;
+    return orderItems.map((item) => item.menuId);
   };
 }
 

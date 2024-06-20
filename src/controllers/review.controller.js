@@ -8,7 +8,7 @@ class ReviewController {
   // 리뷰 작성
   create = async (req, res, next) => {
     try {
-      const { userId } = req.user;
+      const { id: userId } = req.user;
       const { storeId, orderId, rating, content, image } = req.body;
       const createdReview = await this.reviewService.create(userId, storeId, orderId, rating, content, image);
 
@@ -41,7 +41,7 @@ class ReviewController {
   // 내가 작성한 리뷰 목록 조회
   readMyList = async (req, res, next) => {
     try {
-      const { userId } = req.user;
+      const { id: userId } = req.user;
       const myReviews = await this.reviewService.readListByUserId(userId);
 
       return res.status(HTTP_STATUS.OK).json({
@@ -73,7 +73,7 @@ class ReviewController {
   // 리뷰 수정
   update = async (req, res, next) => {
     try {
-      const { userId } = req.user;
+      const { id: userId } = req.user;
       const { reviewId } = req.params;
       const { rating, content, image } = req.body;
       const updatedReview = await this.reviewService.update(userId, reviewId, rating, content, image);
@@ -91,7 +91,7 @@ class ReviewController {
   // 리뷰 삭제
   delete = async (req, res, next) => {
     try {
-      const { userId } = req.user;
+      const { id: userId } = req.user;
       const { reviewId } = req.params;
       await this.reviewService.delete(userId, reviewId);
 

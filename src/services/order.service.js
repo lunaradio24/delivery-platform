@@ -72,7 +72,7 @@ class OrderService {
 
     //주문이 없거나, 해당 유저의 주문이 아니라면 오류 반환
     if (!checkOrder) {
-      throw new HttpError.NotFound(MESSAGES.ORDERS.NO_DATA);
+      throw new HttpError.NotFound(MESSAGES.ORDERS.COMMON.NOT_FOUND);
     }
 
     //주문이 있지만 이미 취소 상태라면 오류 반환
@@ -112,7 +112,7 @@ class OrderService {
     }
 
     if (!getOrder) {
-      throw new HttpError.NotFound(MESSAGES.ORDERS.NO_DATA);
+      throw new HttpError.NotFound(MESSAGES.ORDERS.COMMON.NOT_FOUND);
     }
     return getOrder;
   };
@@ -122,7 +122,7 @@ class OrderService {
     const statusUpdatedOrder = await this.orderRepository.statusUpdateOrder(user, orderId, status);
 
     if (!statusUpdatedOrder) {
-      throw new HttpError.NotFound(MESSAGES.ORDERS.NO_DATA);
+      throw new HttpError.NotFound(MESSAGES.ORDERS.COMMON.NOT_FOUND);
     }
 
     //주문이 있지만 요청한 상태와 동일하다면 오류 반환

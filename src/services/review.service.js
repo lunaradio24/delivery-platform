@@ -17,7 +17,7 @@ class ReviewService {
 
     // 존재하는 주문인지, 해당 주문이 이 가게의 주문이 맞는지 확인
     const order = await this.orderRepository.findByOrderId(orderId);
-    if (!order || (order && store.id !== order.storeId)) {
+    if (!order || (order && store.id !== storeId)) {
       throw new HttpError.NotFound(MESSAGES.ORDERS.COMMON.NOT_FOUND);
     }
 
@@ -26,27 +26,28 @@ class ReviewService {
     if (postedReview) throw new HttpError.Conflict(MESSAGES.REVIEWS.CREATE.DUPLICATED);
 
     // Transaction 생성
-    const tx = await this.reviewRepository.createTransaction();
+    await this.reviewRepository.createTransaction(async (tx) => {
+      // 리뷰 생성
+      const createdReview = await this.reviewRepository.create(userId, storeId, orderId, rating, content, image, {
+        tx,
+      });
 
-    // 리뷰 생성
-    const createdReview = await this.reviewRepository.create(userId, storeId, orderId, rating, content, image, { tx });
+      // 가게 평균 별점, 총 리뷰 수 수정
+      const updatedTotalReviews = store.totalReviews + 1;
+      const updatedStoreRating = (store.averageRating * store.totalReviews + rating) / updatedTotalReviews;
+      await this.storeRepository.updateRating(storeId, updatedStoreRating, updatedTotalReviews, { tx });
 
-    // 가게 평균 별점, 총 리뷰 수 수정
-    const updatedTotalReviews = store.totalReviews + 1;
-    const updatedStoreRating = (store.averageRating * store.totalReviews + rating) / updatedTotalReviews;
-    await this.storeRepository.updateRating(storeId, updatedStoreRating, updatedTotalReviews, { tx });
-
-    // 메뉴 평균 별점, 총 리뷰 수 수정
-    const orderItemIds = await this.orderItemRepository.findMenuIdsByOrderId(orderId);
-    for (const menuId of orderItemIds) {
-      const menu = await this.menuRepository.findMenuByMenuId(menuId);
-      const updatedTotalReviews = menu.totalReviews + 1;
-      const updatedMenuRating = (menu.averageRating * menu.totalReviews + rating) / updatedTotalReviews;
-      await this.menuRepository.updateRating(menuId, updatedMenuRating, updatedTotalReviews, { tx });
-    }
-
-    // Review Controller에 반환
-    return createdReview;
+      // 메뉴 평균 별점, 총 리뷰 수 수정
+      const orderItemIds = await this.orderItemRepository.findMenuIdsByOrderId(orderId, { tx });
+      for (const menuId of orderItemIds) {
+        const menu = await this.menuRepository.findMenuByMenuId(menuId);
+        const updatedTotalReviews = menu.totalReviews + 1;
+        const updatedMenuRating = (menu.averageRating * menu.totalReviews + rating) / updatedTotalReviews;
+        await this.menuRepository.updateRating(menuId, updatedMenuRating, updatedTotalReviews, { tx });
+      }
+      // Review Controller에 반환
+      return createdReview;
+    });
   };
 
   readList = async (storeId, menuId, orderBy, sort) => {
@@ -104,7 +105,7 @@ class ReviewService {
       await this.storeRepository.updateRating(review.storeId, updatedStoreRating, { tx });
 
       // 메뉴 평균 별점 수정
-      const orderItemIds = await this.orderItemRepository.findMenuIdsByOrderId(review.orderId);
+      const orderItemIds = await this.orderItemRepository.findMenuIdsByOrderId(review.orderId, { tx });
       for (const menuId of orderItemIds) {
         const menu = await this.menuRepository.findMenuByMenuId(menuId);
         const updatedMenuRating = (menu.averageRating * menu.totalReviews + rating) / (menu.totalReviews + 1);
@@ -138,7 +139,7 @@ class ReviewService {
     await this.storeRepository.updateRating(review.storeId, updatedStoreRating, updatedTotalReviews, { tx });
 
     // 메뉴 평균 별점, 총 리뷰 수 수정
-    const orderItemIds = await this.orderItemRepository.findMenuIdsByOrderId(review.orderId);
+    const orderItemIds = await this.orderItemRepository.findMenuIdsByOrderId(review.orderId, { tx });
     for (const menuId of orderItemIds) {
       const menu = await this.menuRepository.findMenuByMenuId(menuId);
       const updatedTotalReviews = menu.totalReviews - 1;
