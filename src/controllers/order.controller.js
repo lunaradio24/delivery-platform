@@ -37,7 +37,7 @@ class OrderController {
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
         message: MESSAGES.ORDERS.CANCEL.SUCCEED,
-        data: { orderId: cancelOrder.id, status: cancelOrder.status, wallet: cancelOrder.wallet },
+        data: cancelOrder,
       });
     } catch (err) {
       next(err);
@@ -84,16 +84,16 @@ class OrderController {
   //  주문 상태 변경 API
   statusUpdateOrder = async (req, res, next) => {
     try {
-      const user = req.user;
+      const { id: userId } = req.user;
       const { orderId } = req.params;
       const { status } = req.body;
 
-      const statusUpdateOrder = await this.orderService.statusUpdateOrder(user, orderId, status);
+      const statusUpdateOrder = await this.orderService.statusUpdateOrder(userId, orderId, status);
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
         message: MESSAGES.ORDERS.STATUS_UPDATE.SUCCEED,
-        data: { status: statusUpdateOrder.status },
+        data: statusUpdateOrder,
       });
     } catch (err) {
       next(err);

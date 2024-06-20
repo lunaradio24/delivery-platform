@@ -49,7 +49,6 @@ class OrderService {
     // transaction log 기록
     await this.transactionLogRepository.create(userId, ADMIN_ID, 1000000, 1);
 
-    // 수정 필요
     const data = {
       orderId: createdOrder.id,
       storeName: createdOrder.store.name,
@@ -80,9 +79,26 @@ class OrderService {
       throw new HttpError.BadRequest(MESSAGES.ORDERS.CANCEL.CANCEL_SAME);
     }
 
-    const cancelOrder = await this.orderRepository.cancelOrder(userId, orderId);
+    // Transaction 생성
+    const tx = this.orderRepository.createTransaction();
 
-    return cancelOrder; // 취소된 주문 객체 반환
+    // 주문 상태 변경
+    const cancelOrder = await this.orderRepository.cancelOrder(orderId, { tx });
+
+    // admin 잔액 차감
+    const adminId = 1;
+    let deductionWallet = await this.userRepository.deductionWallet(adminId, checkOrder.totalPrice, { tx });
+
+    // 고객잔액 증가
+    let addWallet = await this.userRepository.addWallet(userId, checkOrder.totalPrice, { tx });
+
+    const data = {
+      orderId: cancelOrder.id,
+      status: cancelOrder.status,
+      wallet: addWallet.wallet,
+    };
+
+    return data; // 취소된 주문 객체 반환
   };
 
   //  주문 내역 목록 조회 API
@@ -118,19 +134,43 @@ class OrderService {
   };
 
   //  주문 상태 변경 API
-  statusUpdateOrder = async (user, orderId, status) => {
-    const statusUpdatedOrder = await this.orderRepository.statusUpdateOrder(user, orderId, status);
 
-    if (!statusUpdatedOrder) {
+  statusUpdateOrder = async (userId, orderId, status) => {
+    const getStoreId = await this.userRepository.findeStoreId(userId);
+    const storeId = getStoreId.store.id;
+    const checkOrder = await this.orderRepository.getOwnerDetailOrder(storeId, orderId);
+
+    //주문이 없거나, 해당 스토어의 주문이 아니라면 오류 반환
+    if (!checkOrder) {
       throw new HttpError.NotFound(MESSAGES.ORDERS.NO_DATA);
     }
 
     //주문이 있지만 요청한 상태와 동일하다면 오류 반환
-    if (statusUpdatedOrder.status === ORDER_STATUS[4]) {
+    if (checkOrder.status === status) {
       throw new HttpError.BadRequest(MESSAGES.ORDERS.STATUS_UPDATE.SAME_STATUS);
     }
 
-    return statusUpdatedOrder;
+    // Transaction 생성
+    const tx = this.orderRepository.createTransaction();
+
+    // 주문 상태 변경
+    const statusUpdateOrder = await this.orderRepository.statusUpdateOrder(orderId, status, { tx });
+
+    // 배달 완료 시 admin 잔액 차감, 사장 잔액 증가
+    if (status === 3) {
+      const adminId = 1;
+      await this.userRepository.deductionWallet(adminId, checkOrder.totalPrice, { tx }); //admin 잔액차감
+      await this.userRepository.addWallet(userId, checkOrder.totalPrice, { tx }); //사장 잔액증가
+    }
+
+    // 주문 취소 시  admin 잔액 차감, 고객 잔액 증가
+    if (updateOrder.status === 4) {
+      const adminId = 1;
+      await this.userRepository.deductionWallet(adminId, checkOrder.totalPrice, { tx }); // admin 잔액 차감
+      await this.userRepository.addWallet(userId, checkOrder.totalPrice, { tx }); // 고객잔액 증가
+    }
+
+    return statusUpdateOrder.status;
   };
 }
 
