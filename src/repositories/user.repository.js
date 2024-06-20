@@ -65,6 +65,7 @@ class UserRepository extends BaseRepository {
     return addWallet;
   };
 
+
   // 잔액 차감
   deductWallet = async (userId, totalPrice, { tx } = {}) => {
     const orm = tx || this.prisma;
@@ -73,6 +74,16 @@ class UserRepository extends BaseRepository {
       data: { wallet: { decrement: totalPrice } },
     });
   };
+  
+  userImageUpload = async (userId, imageUrl) => {
+    const userImageUpload = this.prisma.user.update({
+      where: { id: +userId },
+      data:{
+        image: imageUrl
+      }
+    })
+    return userImageUpload
+}
 }
 
 export default UserRepository;

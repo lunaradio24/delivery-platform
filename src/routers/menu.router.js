@@ -2,6 +2,7 @@ import express from 'express';
 import { menuController } from '../di/dependency-injected-instances.js';
 import { requireAccessToken } from '../middlewares/require-access-token.middleware.js';
 import { requireRoles } from '../middlewares/require-roles.middleware.js';
+import { menuImage } from '../middlewares/upload-image.middleware.js';
 
 const menuRouter = express.Router({ mergeParams: true });
 
@@ -16,5 +17,8 @@ menuRouter.patch('/:menuId', requireAccessToken, requireRoles(['OWNER']), menuCo
 
 // 메뉴 삭제 API
 menuRouter.delete('/:menuId', requireAccessToken, requireRoles(['OWNER']), menuController.deleteMenu);
+
+// 이미지 업로드 API
+menuRouter.patch('/:menuId/image', requireAccessToken, menuImage.single('image'), menuController.menuImageUpload)
 
 export { menuRouter };

@@ -2,6 +2,7 @@ import express from 'express';
 import { requireAccessToken } from '../middlewares/require-access-token.middleware.js';
 import { requireRoles } from '../middlewares/require-roles.middleware.js';
 import { storeController } from '../di/dependency-injected-instances.js';
+import { storeImage } from '../middlewares/upload-image.middleware.js';
 
 const storeRouter = express.Router();
 
@@ -19,5 +20,8 @@ storeRouter.patch('/:storeId', requireAccessToken, requireRoles(['OWNER']), stor
 
 // 가게 정보 삭제 API
 storeRouter.delete('/:storeId', requireAccessToken, requireRoles(['OWNER']), storeController.deleteStore);
+
+// 이미지 업로드 API
+storeRouter.patch('/:storeId/image', requireAccessToken, storeImage.single('image'), storeController.storeImageUpload)
 
 export { storeRouter };

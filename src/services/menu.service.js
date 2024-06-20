@@ -63,6 +63,17 @@ class MenuService {
 
     return deleteMenu;
   };
+
+  menuImageUpload = async (menuId, imageUrl) => {
+    const existingMenu = await this.menuRepository.findById(menuId);
+    if (!existingMenu){
+      throw new HttpError.NotFound(MESSAGES.MENUS.IMAGE.NOT_FOUND);
+    }
+
+    const updateImageUpload = await this.menuRepository.uploadImage(menuId, imageUrl)
+
+    return updateImageUpload
+  }
 }
 
 export default MenuService;
