@@ -74,6 +74,16 @@ class UserRepository extends BaseRepository {
       data: { wallet: { decrement: totalPrice } },
     });
   };
+  
+  userImageUpload = async (userId, imageUrl) => {
+    const userImageUpload = this.prisma.user.update({
+      where: { id: +userId },
+      data:{
+        image: imageUrl
+      }
+    })
+    return userImageUpload
+}
 }
 
 export default UserRepository;
