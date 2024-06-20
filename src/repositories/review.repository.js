@@ -18,7 +18,10 @@ class ReviewRepository extends BaseRepository {
   };
 
   findByReviewId = async (reviewId) => {
-    await this.prisma.review.findUnique({ where: { id: reviewId } });
+    await this.prisma.review.findUnique({
+      where: { id: reviewId },
+      include: { store: true },
+    });
   };
 
   findByOrderId = async (orderId) => {

@@ -47,12 +47,12 @@ export const likeRepository = new LikeRepository(prisma);
 export const transactionLogRepository = new TransactionLogRepository(prisma);
 
 // service instances
-export const authService = new AuthService(authRepository, userRepository);
+export const authService = new AuthService(authRepository, userRepository, transactionLogRepository);
 export const userService = new UserService(userRepository);
 export const storeService = new StoreService(storeRepository);
 export const menuService = new MenuService(menuRepository);
 export const cartService = new CartService(cartRepository);
-export const orderService = new OrderService(orderRepository, menuRepository, userRepository);
+export const orderService = new OrderService(orderRepository, menuRepository, userRepository, transactionLogRepository);
 export const reviewService = new ReviewService(
   reviewRepository,
   orderRepository,

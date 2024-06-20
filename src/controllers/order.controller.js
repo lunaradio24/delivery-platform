@@ -23,7 +23,7 @@ class OrderController {
         });
       }
 
-      const createdOrder = await this.orderService.createOrder(userId, userWallet, storeId, orderItems, cartId);
+      const createdOrder = await this.orderService.createOrder(userId, userWallet, storeId, orderItems);
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
@@ -31,7 +31,7 @@ class OrderController {
         data: createdOrder,
       });
     } catch (err) {
-      console.log(err);
+      console.log('에러', err);
       next(err);
     }
   };

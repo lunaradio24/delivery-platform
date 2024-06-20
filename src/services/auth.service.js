@@ -1,14 +1,16 @@
 import { HttpError } from '../errors/http.error.js';
 import { MESSAGES } from '../constants/message.constant.js';
+import { ADMIN_ID } from '../constants/user.constant.js';
 import { hash, compareWithHashed, generateAccessToken, generateRefreshToken } from '../utils/auth.util.js';
 
 class AuthService {
-  constructor(authRepository, userRepository) {
+  constructor(authRepository, userRepository, transactionLogRepository) {
     this.authRepository = authRepository;
     this.userRepository = userRepository;
+    this.transactionLogRepository = transactionLogRepository;
   }
   /** 회원가입 */
-  signUp = async (email, password, nickname, role, contactNumber, address, image) => {
+  signUp = async ({ email, password, nickname, role, contactNumber, address, image }) => {
     // email 중복확인
     const existingEmail = await this.userRepository.getByEmail(email);
     if (existingEmail) {
@@ -34,6 +36,10 @@ class AuthService {
       address,
       image,
     });
+
+    // transaction log 생성
+    await this.transactionLogRepository.create(ADMIN_ID, user.id, 1000000, 0);
+
     // password 제외하기
     const { password: _, ...withoutPasswordUser } = user;
     return withoutPasswordUser;
