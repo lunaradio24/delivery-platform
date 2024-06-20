@@ -5,7 +5,7 @@ import AuthRepository from '../repositories/auth.repository.js';
 import UserRepository from '../repositories/user.repository.js';
 import StoreRepository from '../repositories/store.repository.js';
 import MenuRepository from '../repositories/menu.repository.js';
-import CartRepository from '../repositories/cart.repository.js';
+import CartRepository from '../repositories/cart-Item.repository.js';
 import OrderRepository from '../repositories/order.repository.js';
 import OrderItemRepository from '../repositories/order-item.repository.js';
 import ReviewRepository from '../repositories/review.repository.js';

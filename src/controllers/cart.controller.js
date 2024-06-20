@@ -1,17 +1,5 @@
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
-/* nessesary Prisma Table
-: users
-  - id
-  - address
-
-: stores
-  - id
-
-: menus
-  - id
-
-*/
 
 class CartController {
   constructor(cartService) {
@@ -32,15 +20,17 @@ class CartController {
    res.send(status : 201, { costomer_id, cart }) 
    */
 
-  createCart = async (req, res, next) => {
+  addCartItem = async (req, res, next) => {
     try {
-      const { costomerId } = req.user;
-      const { storeId } = req.header;
+      const { id: customerId } = req.user;
+      const { storeId, menuId } = req.body;
+
+      const addedCartItem = await this.cartService.addCartItem(customerId, storeId, menuId);
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
         message: MESSAGES.CARTS.CREATE.SUCCEED,
-        data,
+        data: addedCartItem,
       });
     } catch (error) {
       next(error);
@@ -54,14 +44,16 @@ class CartController {
 
   */
 
-  readCart = async (req, res, next) => {
+  readMyCart = async (req, res, next) => {
     try {
-      const { costomer_id } = req.user;
+      const { id: customerId } = req.user;
+
+      const myCart = await this.cartService.readMyCart(customerId);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
         message: MESSAGES.CARTS.READ.SUCCEED,
-        data,
+        data: myCart,
       });
     } catch (error) {
       next(error);
@@ -69,16 +61,21 @@ class CartController {
   };
 
   /* 
-  cart 수정 API
-  */
-  updateCart = async (req, res, next) => {
-    try {
-      const { costomer_id } = req.user;
 
-      return res.status(HTTP_STATUS.CREATED).json({
-        status: HTTP_STATUS.CREATED,
+  cart 수정 API
+
+  */
+  updateCartItem = async (req, res, next) => {
+    try {
+      const { customerId } = req.user;
+      const { menuId, quantity } = req.body;
+
+      const updatedCartItem = await this.cartService.updateCartItem(customerId, storeId, menuId, quantity);
+
+      return res.status(HTTP_STATUS.OK).json({
+        status: HTTP_STATUS.OK,
         message: MESSAGES.CARTS.UPDATE.SUCCEED,
-        data,
+        data: updatedCartItem,
       });
     } catch (error) {
       next(error);
@@ -88,14 +85,17 @@ class CartController {
   /* 
   cart 삭제 API
   */
-  deleteCart = async (req, res, next) => {
+  deleteCartItem = async (req, res, next) => {
     try {
-      const { costomer_id } = req.user;
+      const { customerId } = req.user;
+      const { storeId, menuId } = req.body;
 
-      return res.status(HTTP_STATUS.CREATED).json({
-        status: HTTP_STATUS.CREATED,
-        message: MESSAGES.CARTS.UPDATE.SUCCEED,
-        data,
+      const deletedCartItem = await this.cartService.deleteCartItem(customerId, storeId, menuId);
+
+      return res.status(HTTP_STATUS.OK).json({
+        status: HTTP_STATUS.OK,
+        message: MESSAGES.CARTS.DELETE.SUCCEED,
+        data: deletedCartItem,
       });
     } catch (error) {
       next(error);

@@ -112,6 +112,8 @@ export const MESSAGES = {
     },
     CREATE: {
       SUCCEED: '장바구니에 담기를 성공했습니다.',
+      CONFLICTED_STORE: '기존 메뉴의 가게 정보와 일치하지 않습니다.',
+      CONFLICTED_MENU: '이미 담은 메뉴입니다.',
     },
     READ_LIST: {
       SUCCEED: '장바구니 목록 조회에 성공했습니다.',
@@ -121,6 +123,7 @@ export const MESSAGES = {
     },
     DELETE: {
       SUCCEED: '장바구니 아이템 삭제에 성공했습니다.',
+      NOT_FOUND: '해당 아이템이 존재하지 않습니다.',
     },
   },
   ORDERS: {
