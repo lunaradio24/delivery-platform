@@ -92,11 +92,12 @@ export const MESSAGES = {
   },
   MENUS: {
     COMMON: {
-      NOT_FOUND: '해당 메뉴가 존재하지 않습니다.',
+      NOT_FOUND: '존재하지 않는 메뉴입니다.',
       NO_ACCESS_RIGHT: '접근 권한이 없습니다.',
     },
     CREATE: {
       SUCCEED: '메뉴 생성에 성공했습니다.',
+      DUPLICATED: '이미 등록된 메뉴입니다.',
     },
     READ_LIST: {
       SUCCEED: '메뉴 목록 조회에 성공했습니다.',
@@ -115,7 +116,7 @@ export const MESSAGES = {
     },
     CREATE: {
       SUCCEED: '장바구니에 담기를 성공했습니다.',
-      CONFLICTED_STORE: '기존 메뉴의 가게 정보와 일치하지 않습니다.',
+      CONFLICTED_STORE: '장바구니에 담긴 메뉴의 가게와 다른 가게의 메뉴입니다.',
       CONFLICTED_MENU: '이미 담은 메뉴입니다.',
     },
     READ_LIST: {
@@ -125,6 +126,7 @@ export const MESSAGES = {
       SUCCEED: '장바구니 아이템 정보 수정에 성공했습니다.',
       NOT_FOUND: '해당 아이템이 존재하지 않습니다.',
       BAD_REQUEST: '메뉴는 1개 이상 주문해주세요.',
+      NO_DECREASE: '더이상 수량을 줄일 수 없습니다.',
     },
     DELETE: {
       SUCCEED: '장바구니 아이템 삭제에 성공했습니다.',
@@ -134,6 +136,7 @@ export const MESSAGES = {
   ORDERS: {
     COMMON: {
       NOT_FOUND: '주문이 존재하지 않습니다',
+      BAD_REQUEST: '같은 가게의 메뉴들만 주문할 수 있습니다.',
     },
     CREATED: {
       SUCCEED: '주문이 접수되었습니다.',
@@ -157,6 +160,7 @@ export const MESSAGES = {
     STATUS_UPDATE: {
       SUCCEED: '주문 상태가 변경되었습니다.',
       SAME_STATUS: '현재 상태와 동일합니다.',
+      FORBIDDEN: '이미 배달완료가 된 주문입니다.',
     },
     NO_WALLET: '잔액이 부족합니다.',
   },

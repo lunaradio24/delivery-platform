@@ -5,27 +5,14 @@ class CartController {
   constructor(cartService) {
     this.cartService = cartService;
   }
-  // method 작성하시면 됩니다.
 
-  /*
-   carts Create API
-
-   req.header : id (users)
-
-   req.body : 
-    store_id ( 내가 선택한 가게가 default로 입력? )
-    order { menu_id , address(default : users - address) }
-  
-  
-   res.send(status : 201, { costomer_id, cart }) 
-   */
-
+  // 장바구니에 담기
   addCartItem = async (req, res, next) => {
     try {
       const { id: customerId } = req.user;
       const { storeId, menuId } = req.body;
 
-      const addedCartItem = await this.cartService.addCartItem(customerId, storeId, menuId);
+      const addedCartItem = await this.cartService.addCartItem(customerId, Number(storeId), Number(menuId));
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
@@ -37,13 +24,7 @@ class CartController {
     }
   };
 
-  /*
-  cart Get API
-
-  req.header : id
-
-  */
-
+  // 장바구니 조회
   readMyCart = async (req, res, next) => {
     try {
       const { id: customerId } = req.user;
@@ -52,7 +33,7 @@ class CartController {
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
-        message: MESSAGES.CARTS.READ.SUCCEED,
+        message: MESSAGES.CARTS.READ_LIST.SUCCEED,
         data: myCart,
       });
     } catch (error) {
@@ -60,17 +41,13 @@ class CartController {
     }
   };
 
-  /* 
-
-  cart 수량 증가 API
-
-  */
+  // cart 수량 증가 API
   increaseCartItem = async (req, res, next) => {
     try {
-      const { customerId } = req.user;
-      const { menuId, quantity } = req.body;
+      const { id: customerId } = req.user;
+      const { storeId, menuId } = req.body;
 
-      const increasedCartItem = await this.cartService.increaseCartItem(customerId, storeId, menuId, quantity);
+      const increasedCartItem = await this.cartService.increaseCartItem(customerId, storeId, menuId);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
@@ -82,18 +59,13 @@ class CartController {
     }
   };
 
-  /* 
-  
-  cart 수량 감소 API
-
-  */
-
+  // cart 수량 감소 API
   decreaseCartItem = async (req, res, next) => {
     try {
-      const { customerId } = req.user;
-      const { menuId, quantity } = req.body;
+      const { id: customerId } = req.user;
+      const { storeId, menuId } = req.body;
 
-      const decreasedCartItem = await this.cartService.decreaseCartItem(customerId, storeId, menuId, quantity);
+      const decreasedCartItem = await this.cartService.decreaseCartItem(customerId, storeId, menuId);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
@@ -105,15 +77,13 @@ class CartController {
     }
   };
 
-  /* 
-  cart 삭제 API
-  */
+  // cart 삭제 API
   deleteCartItem = async (req, res, next) => {
     try {
-      const { customerId } = req.user;
-      const { storeId, menuId } = req.body;
+      const { id: customerId } = req.user;
+      const { menuId } = req.body;
 
-      const deletedCartItem = await this.cartService.deleteCartItem(customerId, storeId, menuId);
+      const deletedCartItem = await this.cartService.deleteCartItem(customerId, menuId);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,

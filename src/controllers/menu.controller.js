@@ -2,24 +2,17 @@ import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
 
 class MenuController {
-  constructor(menuService, menuRepository) {
+  constructor(menuService) {
     this.menuService = menuService;
-    this.menuRepository = menuRepository
   }
 
   createMenu = async (req, res, next) => {
     try {
-      const store = req.params;
-      const storeId = parseInt(store.storeId)
+      const { id: ownerId } = req.user;
+      const { storeId } = req.params;
       const { name, price, image, description } = req.body;
 
-      const createMenu = await this.menuService.createMenu(
-        storeId,
-        name,
-        price,
-        image,
-        description
-      );
+      const createMenu = await this.menuService.createMenu(ownerId, Number(storeId), name, price, image, description);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
@@ -31,11 +24,10 @@ class MenuController {
     }
   };
 
-  getMenu = async (req, res, next) => {
+  getMenuList = async (req, res, next) => {
     try {
-      const store = req.params;
-      const storeId = parseInt(store.storeId)
-      const getMenu = await this.menuRepository.getMenu(storeId);
+      const { storeId } = req.params;
+      const getMenu = await this.menuService.getMenuList(Number(storeId));
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
@@ -49,20 +41,18 @@ class MenuController {
 
   updateMenu = async (req, res, next) => {
     try {
-      const menu = req.params;
-      const menuId = menu.menuId
-      const {
-        name,
-        price,
-        image,
-        description
-      } = req.body;
+      const { id: ownerId } = req.user;
+      const { storeId, menuId } = req.params;
+      const { name, price, image, description } = req.body;
       const updateMenu = await this.menuService.updateMenu(
-        menuId,
+        ownerId,
+        Number(storeId),
+        Number(menuId),
         name,
         price,
         image,
-        description);
+        description,
+      );
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
@@ -76,11 +66,9 @@ class MenuController {
 
   deleteMenu = async (req, res, next) => {
     try {
-      const menu = req.params;
-      const menuId = menu.menuId
-      console.log(menuId)
-
-      const deleteMenu = await this.menuService.deleteMenu(menuId);
+      const { id: ownerId } = req.user;
+      const { storeId, menuId } = req.params;
+      const deleteMenu = await this.menuService.deleteMenu(ownerId, Number(storeId), Number(menuId));
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,

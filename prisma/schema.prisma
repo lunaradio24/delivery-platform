@@ -106,6 +106,7 @@ model CartItem {
   store    Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
   menu     Menu  @relation(fields: [menuId], references: [id], onDelete: Cascade)
 
+  @@unique([customerId, menuId])
   @@map("cart_items")
 }
 

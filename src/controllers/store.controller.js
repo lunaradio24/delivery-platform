@@ -2,9 +2,8 @@ import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
 
 class StoreController {
-  constructor(storeService, storeRepository) {
+  constructor(storeService) {
     this.storeService = storeService;
-    this.storeRepository = storeRepository;
   }
 
   createStore = async (req, res, next) => {
@@ -37,8 +36,8 @@ class StoreController {
 
   getStoreList = async (req, res, next) => {
     try {
-      const { categoryId } = req.query;
-      const stores = await this.storeRepository.getStoreList(categoryId);
+      const { category, sort, orderBy } = req.query;
+      const stores = await this.storeService.getStoreList(category, sort, orderBy);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
@@ -54,7 +53,7 @@ class StoreController {
     try {
       const { storeId } = req.params;
 
-      const store = await this.storeRepository.getStoreDetail(storeId);
+      const store = await this.storeService.getStoreDetail(storeId);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
@@ -68,9 +67,11 @@ class StoreController {
 
   updateStore = async (req, res, next) => {
     try {
+      const { id: ownerId } = req.user;
       const { storeId } = req.params;
       const { category, name, image, address, contactNumber, description, openingHours } = req.body;
       const updatedStore = await this.storeService.updateStore(
+        ownerId,
         storeId,
         category,
         name,
@@ -93,8 +94,9 @@ class StoreController {
 
   deleteStore = async (req, res, next) => {
     try {
+      const { id: ownerId } = req.user;
       const { storeId } = req.params;
-      const deletedStore = await this.storeService.deleteStore(storeId);
+      const deletedStore = await this.storeService.deleteStore(ownerId, storeId);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,

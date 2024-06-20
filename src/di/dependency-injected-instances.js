@@ -50,7 +50,7 @@ export const transactionLogRepository = new TransactionLogRepository(prisma);
 export const authService = new AuthService(authRepository, userRepository, transactionLogRepository);
 export const userService = new UserService(userRepository);
 export const storeService = new StoreService(storeRepository);
-export const menuService = new MenuService(menuRepository);
+export const menuService = new MenuService(menuRepository, storeRepository);
 export const cartService = new CartService(cartRepository);
 export const orderService = new OrderService(
   orderRepository,
@@ -72,8 +72,8 @@ export const transactionLogService = new TransactionLogService(transactionLogRep
 // controller instances
 export const authController = new AuthController(authService);
 export const userController = new UserController(userService);
-export const storeController = new StoreController(storeService, storeRepository);
-export const menuController = new MenuController(menuService, menuRepository);
+export const storeController = new StoreController(storeService);
+export const menuController = new MenuController(menuService);
 export const cartController = new CartController(cartService);
 export const orderController = new OrderController(orderService);
 export const reviewController = new ReviewController(reviewService);

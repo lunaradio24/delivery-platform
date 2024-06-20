@@ -20,21 +20,6 @@ class OrderRepository extends BaseRepository {
       },
     });
 
-    // 장바구니에서 주문한 메뉴 삭제
-    // await tx.cartItem.deleteMany({
-    //   where: { :  },
-    // });
-
-    // transaction log 생성
-    await orm.transactionLog.create({
-      data: {
-        senderId: userId,
-        receiverId: ADMIN_ID,
-        amount: createdOrder.totalPrice,
-        type: 1,
-      },
-    });
-
     return createdOrder;
   };
 

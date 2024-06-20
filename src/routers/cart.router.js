@@ -10,10 +10,10 @@ cartRouter.post('/my', cartController.addCartItem);
 cartRouter.get('/my', cartController.readMyCart);
 
 // 장바구니 수량 증가 API
-cartRouter.patch('/my', cartController.increaseCartItem);
+cartRouter.patch('/my/increase', cartController.increaseCartItem);
 
 // 장바구니 수량 감소 API
-cartRouter.patch('/my', cartController.decreaseCartItem);
+cartRouter.patch('/my/decrease', cartController.decreaseCartItem);
 
 // 장바구니에서 삭제 API
 cartRouter.delete('/my', cartController.deleteCartItem);
