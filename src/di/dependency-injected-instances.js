@@ -58,6 +58,8 @@ export const orderService = new OrderService(
   menuRepository,
   userRepository,
   transactionLogRepository,
+  storeRepository,
+  cartRepository,
 );
 export const reviewService = new ReviewService(
   reviewRepository,

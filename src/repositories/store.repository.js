@@ -89,6 +89,14 @@ class StoreRepository {
     });
     return updatedStore.averageRating;
   };
-}
 
+  storeAddWallet = async (ownerId, totalPrice, { tx }) => {
+    const orm = tx || this.prisma;
+    const addWallet = await orm.store.update({
+      where: { ownerId: ownerId },
+      data: { totalSales: { increment: totalPrice } },
+    });
+    return addWallet;
+  };
+}
 export default StoreRepository;
