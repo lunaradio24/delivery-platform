@@ -63,6 +63,9 @@ export const MESSAGES = {
     UPDATE_ME: {
       SUCCEED: '내 정보 수정에 성공했습니다.',
     },
+    IMAGE_ME: {
+      SUCCEED: '프로필 이미지 업로드에 성공했습니다.'
+    },
     NOT_FOUND: '일치하는 사용자가 없습니다.',
   },
   STORES: {
@@ -86,6 +89,9 @@ export const MESSAGES = {
     DELETE: {
       SUCCEED: '가게 정보 삭제에 성공했습니다.',
     },
+    IMAGE: {
+      SUCCEED: '이미지 업로드에 성공했습니다.'
+    },
   },
   MENUS: {
     COMMON: {
@@ -104,6 +110,9 @@ export const MESSAGES = {
     DELETE: {
       SUCCEED: '메뉴 삭제에 성공했습니다.',
     },
+    IMAGE: {
+      SUCCEED: '메뉴 이미지 업로드에 성공했습니다.'
+    }
   },
   CARTS: {
     COMMON: {

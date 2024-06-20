@@ -76,7 +76,7 @@ class MenuRepository {
   }
 
   // 메뉴 삭제
-  deleteMenu = async ( menuId) => {
+  deleteMenu = async (menuId) => {
     const deleteMenu = await this.prisma.menu.delete({
       where: { id: +menuId },
     })

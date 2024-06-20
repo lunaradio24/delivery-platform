@@ -13,6 +13,8 @@ class StoreController {
 
       const user = req.user;
       const ownerId = user.id;
+      req.file = image
+      console.log(req.file)
 
       const createdStore = await this.storeService.createStore(
         ownerId,
@@ -24,6 +26,7 @@ class StoreController {
         description,
         openingHours,
       );
+
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
@@ -105,5 +108,20 @@ class StoreController {
       next(error);
     }
   };
+
+  storeImageUpload = async (req, res, next) => {
+    try {
+      const imageUrl = req.file.location
+
+      return res.status(HTTP_STATUS.OK).json({
+        status: HTTP_STATUS.OK,
+        message: MESSAGES.STORES.IMAGE.SUCCEED,
+        imageUrl
+      })
+    }catch(error){
+      next(error)
+    }
+  }
+
 }
 export default StoreController;
