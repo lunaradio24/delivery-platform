@@ -41,6 +41,9 @@ class AuthService {
     // transaction log 생성
     await this.transactionLogRepository.create(ADMIN_ID, user.id, 1000000, 0);
 
+    // 저장된 이메일 인증번호 찾기
+    await this.authRepository.deleteVerificationByEmail(email);
+
     // password 제외하기
     const { password: _, ...withoutPasswordUser } = user;
 
