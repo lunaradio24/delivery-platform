@@ -22,6 +22,6 @@ storeRouter.patch('/:storeId', requireAccessToken, requireRoles(['OWNER']), stor
 storeRouter.delete('/:storeId', requireAccessToken, requireRoles(['OWNER']), storeController.deleteStore);
 
 // 이미지 업로드 API
-storeRouter.patch('/:storeId/image', storeImage.single('image'), storeController.storeImageUpload)
+storeRouter.patch('/:storeId/image', requireAccessToken, storeImage.single('image'), storeController.storeImageUpload)
 
 export { storeRouter };

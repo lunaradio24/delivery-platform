@@ -114,6 +114,9 @@ class StoreController {
   storeImageUpload = async (req, res, next) => {
     try {
       const imageUrl = req.file.location
+      const { storeId } = req.params.storeId
+
+      const storeImageUpload = await this.userService.storeImageUpload(imageUrl, storeId)
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,

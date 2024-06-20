@@ -37,6 +37,17 @@ class UserService {
     const { password: _p, verificationNumber: _v, isVerified: _i, ...withoutPasswordUser } = updatingUser;
     return withoutPasswordUser;
   };
+
+  userImageUpload = async (userId, imageUrl) => {
+    const existingUser = await this.userRepository.findById(userId);
+    if (!existingUser){
+      throw new HttpError.NotFound(MESSAGES.USERS.NOT_FOUND);
+    }
+
+    const updateImageUpload = await this.userRepository.uploadImage(userId, imageUrl)
+
+    return updateImageUpload
+  }
 }
 
 export default UserService;

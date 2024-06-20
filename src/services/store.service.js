@@ -78,6 +78,17 @@ class StoreService {
     const deletedStore = await this.storeRepository.deleteStore(storeId);
     return deletedStore.id;
   };
+
+  userImageUpload = async (storeId, imageUrl) => {
+    const existingStore = await this.storeRepository.findById(storeId);
+    if (!existingStore){
+      throw new HttpError.NotFound(MESSAGES.STORES.IMAGE.NOT_FOUND);
+    }
+
+    const updateImageUpload = await this.storeRepository.uploadImage(storeId, imageUrl)
+
+    return updateImageUpload
+  }
 }
 
 export default StoreService;
