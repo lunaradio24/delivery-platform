@@ -79,6 +79,20 @@ class MenuController {
       next(error);
     }
   };
+
+  menuImageUpload = async (req, res, next) => {
+    try {
+      const imageUrl = req.file.location
+
+      return res.status(HTTP_STATUS.OK).json({
+        status: HTTP_STATUS.OK,
+        message: MESSAGES.MENUS.IMAGE.SUCCEED,
+        imageUrl
+      })
+    }catch(error){
+      next(error)
+    }
+  }
 }
 
 export default MenuController;
