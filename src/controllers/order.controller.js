@@ -43,37 +43,36 @@ class OrderController {
     }
   };
 
-  //  주문 내역 목록 조회 API
-  // getOrderList
-  getOrders = async (req, res, next) => {
+  // 주문 내역 목록 조회 API
+  getOrderList = async (req, res, next) => {
     try {
       const user = req.user;
 
       //in service file,
-      const getOrders = await this.orderService.getOrders(user);
+      const orderList = await this.orderService.getOrderList(user);
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
         message: MESSAGES.ORDERS.LIST.SUCCEED,
-        data: getOrders,
+        data: orderList,
       });
     } catch (err) {
       next(err);
     }
   };
 
-  //  주문 내역 상세 조회 API
-  getDetailOrder = async (req, res, next) => {
+  // 주문 내역 상세 조회 API
+  getOrderDetail = async (req, res, next) => {
     try {
       const user = req.user;
       const { orderId } = req.params;
 
-      const getDetailOrder = await this.orderService.getDetailOrder(user, orderId);
+      const orderDetail = await this.orderService.getOrderDetail(user, orderId);
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
         message: MESSAGES.ORDERS.DETAIL.SUCCEED,
-        data: getDetailOrder,
+        data: orderDetail,
       });
     } catch (err) {
       next(err);

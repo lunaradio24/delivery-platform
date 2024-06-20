@@ -2,7 +2,7 @@ import { HttpError } from '../errors/http.error.js';
 import { MESSAGES } from '../constants/message.constant.js';
 import { ADMIN_ID } from '../constants/user.constant.js';
 import { hash, compareWithHashed, generateAccessToken, generateRefreshToken } from '../utils/auth.util.js';
-import { sendVerificationEmail } from '../utils/email.util.js';
+import { sendEmailVerificationCode } from '../utils/email.util.js';
 
 class AuthService {
   constructor(authRepository, userRepository, transactionLogRepository) {
@@ -27,44 +27,50 @@ class AuthService {
     // 비밀번호 암호화
     const hashedPassword = await hash(password);
 
-    // user 생성하기
-    const user = await this.userRepository.create({
-      email,
-      password: hashedPassword,
-      nickname,
-      role,
-      contactNumber,
-      address,
-      image,
+    // Transaction 생성
+    const createdUser = await this.userRepository.createTransaction(async (tx) => {
+      // user 생성하기
+      const user = await this.userRepository.create(
+        {
+          email,
+          password: hashedPassword,
+          nickname,
+          role,
+          contactNumber,
+          address,
+          image,
+        },
+        { tx },
+      );
+
+      // transaction log 생성
+      await this.transactionLogRepository.create(ADMIN_ID, user.id, 1000000, 0, { tx });
+
+      // 저장된 이메일 인증번호 삭제
+      await this.authRepository.deleteEmailVerificationCode(email, { tx });
+      return user;
     });
 
-    // transaction log 생성
-    await this.transactionLogRepository.create(ADMIN_ID, user.id, 1000000, 0);
-
-    // 저장된 이메일 인증번호 찾기
-    await this.authRepository.deleteVerificationByEmail(email);
-
     // password 제외하기
-    const { password: _, ...withoutPasswordUser } = user;
+    const { password: _, ...userWithoutPassword } = createdUser;
 
-    return withoutPasswordUser;
+    return userWithoutPassword;
   };
 
   /** 인증번호 발송 */
   sendEmail = async (email) => {
-    const verificationCode = await sendVerificationEmail(email);
-    await this.authRepository.saveVerificationEmail(email, verificationCode);
+    const verificationCode = await sendEmailVerificationCode(email);
+    await this.authRepository.saveEmailVerificationCode(email, verificationCode);
+    return;
   };
 
   /** 인증번호 확인 */
   verifyEmail = async (email, verificationCode) => {
-    const record = await this.authRepository.getVerificationByEmail(email);
+    const record = await this.authRepository.findEmailVerificationCode(email);
     if (!record || record.verificationCode !== verificationCode) {
       throw new HttpError.Unauthorized(MESSAGES.AUTH.COMMON.EMAIL.INVALID);
     }
-
-    // email 인증하기
-    await this.authRepository.getVerificationByEmail(email);
+    return true;
   };
 
   /** 로그인 */

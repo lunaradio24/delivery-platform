@@ -5,7 +5,19 @@ class TransactionLogController {
   constructor(transactionLogService) {
     this.transactionLogService = transactionLogService;
   }
-  // method 작성하시면 됩니다.
+
+  getAllLogs = async (req, res, next) => {
+    try {
+      const logs = await this.transactionLogService.getAllLogs();
+      return res.status(HTTP_STATUS.OK).json({
+        status: HTTP_STATUS.OK,
+        message: MESSAGES.TRANSACTION_LOGS.READ_LIST.SUCCEED,
+        data: logs,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default TransactionLogController;

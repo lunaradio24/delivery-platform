@@ -3,25 +3,25 @@ import { MESSAGES } from '../../constants/message.constant.js';
 
 const schema = Joi.object({
   storeId: Joi.number().required().messages({
-    'any.required': MESSAGES.ORDERS.CREATED.NO_STORE,
+    'any.required': MESSAGES.ORDERS.CREATE.NO_STORE,
   }),
   orderItems: Joi.array()
     .items(
       Joi.object({
         menuId: Joi.number().required().messages({
-          'any.required': MESSAGES.ORDERS.CREATED.NO_MENU_ID,
+          'any.required': MESSAGES.ORDERS.CREATE.NO_MENU_ID,
         }),
         quantity: Joi.number().required().messages({
-          'any.required': MESSAGES.ORDERS.CREATED.NO_QUANTITY,
+          'any.required': MESSAGES.ORDERS.CREATE.NO_QUANTITY,
         }),
         price: Joi.number().messages({
-          'any.required': MESSAGES.ORDERS.CREATED.NO_PRICE,
+          'any.required': MESSAGES.ORDERS.CREATE.NO_PRICE,
         }),
       }),
     )
     .required()
     .messages({
-      'any.required': MESSAGES.ORDERS.CREATED.NO_ORDER,
+      'any.required': MESSAGES.ORDERS.CREATE.NO_ORDER,
     }),
 });
 
