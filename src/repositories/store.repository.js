@@ -55,11 +55,10 @@ class StoreRepository {
 
   // 음식점 상세 조회
   findByStoreId = async (storeId) => {
-    let data = await this.prisma.store.findUnique({
+    const store = await this.prisma.store.findUnique({
       where: { id: Number(storeId) },
     });
-
-    return data;
+    return store;
   };
 
   // 음식점 수정
@@ -94,7 +93,18 @@ class StoreRepository {
     return updatedStore.averageRating;
   };
 
-  storeAddWallet = async (ownerId, totalPrice, { tx }) => {
+  updateTotalLikes = async (storeId, isLike, { tx } = {}) => {
+    const updateLikes = isLike ? { increment: 1 } : { decrement: 1 };
+    const orm = tx || this.prisma;
+    const updatedStore = await orm.store.update({
+      where: { id: storeId },
+      data: { totalLikes: updateLikes },
+      select: { totalLikes: true },
+    });
+    return updatedStore.totalLikes;
+  };
+
+  storeAddWallet = async (ownerId, totalPrice, { tx } = {}) => {
     const orm = tx || this.prisma;
     const addWallet = await orm.store.update({
       where: { ownerId: ownerId },

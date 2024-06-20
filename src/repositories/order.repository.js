@@ -26,7 +26,7 @@ class OrderRepository extends BaseRepository {
   cancelOrder = async (orderId, { tx } = {}) => {
     const orm = tx || this.prisma;
     const cancelUpdateOrder = await orm.order.update({
-      where: { id: +orderId },
+      where: { id: Number(orderId) },
       data: { status: 4 },
     });
 
@@ -98,10 +98,7 @@ class OrderRepository extends BaseRepository {
   // 주문 내역 상세 조회 (OWNER)
   getOwnerDetailOrder = async (storeId, orderId) => {
     let detailOrder = await this.prisma.order.findUnique({
-      where: {
-        id: +orderId,
-        storeId: +storeId,
-      },
+      where: { id: Number(orderId), storeId: Number(storeId) },
       include: {
         store: true,
         customer: true,
@@ -171,13 +168,13 @@ class OrderRepository extends BaseRepository {
   };
 
   //  주문 상태 변경 API (OWNER)
-  statusUpdateOrder = async (orderId, status = {}) => {
+  statusUpdateOrder = async (orderId, status, { tx } = {}) => {
     const orm = tx || this.prisma;
     const updatedOrder = await orm.order.update({
-      where: { id: +orderId },
+      where: { id: Number(orderId) },
       data: { status: status },
     });
-    
+
     return updatedOrder;
   };
 

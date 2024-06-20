@@ -1,26 +1,28 @@
 import BaseRepository from './base.repository.js';
 
 class LikeRepository extends BaseRepository {
-  like = async (storeId, { tx } = {}) => {
+  like = async (customerId, storeId, { tx } = {}) => {
     const orm = tx || this.prisma;
-    await orm.like.create({ data: { storeId } });
+    await orm.like.create({ data: { customerId, storeId } });
   };
 
-  unlike = async (storeId, { tx } = {}) => {
+  unlike = async (customerId, storeId, { tx } = {}) => {
     const orm = tx || this.prisma;
-    await orm.like.delete({ where: { storeId } });
+    await orm.like.delete({
+      where: { customerId_storeId: { customerId, storeId } },
+    });
   };
 
-  findLikedStoreByUserIdAndStoreId = async (userId, storeId) => {
+  findLikedStoreByUserIdAndStoreId = async (customerId, storeId) => {
     const likedStore = await this.prisma.like.findUnique({
-      where: { customerId: userId, storeId },
+      where: { customerId_storeId: { customerId, storeId } },
     });
     return likedStore;
   };
 
-  findLikedStoresByUserId = async (userId) => {
+  findLikedStoresByUserId = async (customerId) => {
     const likedStores = await this.prisma.like.findMany({
-      where: { customerId: userId },
+      where: { customerId },
     });
     return likedStores;
   };

@@ -178,6 +178,7 @@ model Like {
   customer   User       @relation(fields: [customerId], references: [id], onDelete: Cascade)
   store      Store      @relation(fields: [storeId], references: [id], onDelete: Cascade)
 
+  @@unique([customerId, storeId])
   @@map("likes")
 }
 

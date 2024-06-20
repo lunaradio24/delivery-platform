@@ -8,13 +8,14 @@ class LikeController {
 
   likeOrUnlike = async (req, res, next) => {
     try {
-      const { userId } = req.user;
+      const { id: customerId } = req.user;
       const { storeId, isLike } = req.body;
-      await likeService.likeOrUnlike(userId, storeId, isLike);
+      const updatedTotalLikes = await this.likeService.likeOrUnlike(customerId, storeId, isLike);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
         message: isLike ? MESSAGES.LIKES.LIKE.SUCCEED : MESSAGES.LIKES.UNLIKE.SUCCEED,
+        data: updatedTotalLikes,
       });
     } catch (error) {
       next(error);
@@ -23,8 +24,8 @@ class LikeController {
 
   readLikedStores = async (req, res, next) => {
     try {
-      const { userId } = req.user;
-      const likedStores = await likeService.readLikedStores(userId);
+      const { id: customerId } = req.user;
+      const likedStores = await this.likeService.readLikedStores(customerId);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
