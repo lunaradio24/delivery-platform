@@ -10,10 +10,7 @@ const authRouter = express.Router();
 authRouter.post('/sign-up', signUpValidator, authController.signUp);
 
 /** Email 인증 API */
-authRouter.post('/email', authController.verifyEmail);
-
-/** Email 인증번호 확인 API*/
-
+authRouter.post('/email-verify', authController.verifyEmail);
 
 /** 로그인 API */
 authRouter.post('/sign-in', signInValidator, authController.signIn);

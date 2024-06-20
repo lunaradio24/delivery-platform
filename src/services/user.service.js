@@ -14,7 +14,7 @@ class UserService {
     }
 
     // password 제외하기
-    const { password: _, ...withoutPasswordUser } = user;
+    const { password: _, verificationNumber: _v, isVerified: _i, ...withoutPasswordUser } = user;
     return withoutPasswordUser;
   };
 
@@ -25,12 +25,17 @@ class UserService {
       throw new HttpError.NotFound(MESSAGES.USERS.NOT_FOUND);
     }
 
-    const updatingUser =  await this.userRepository.update(userId, nickname, address, image, contactNumber);
+    // nickname 중복확인
+    const existingNickname = await this.userRepository.getByNickname(nickname);
+    if (existingNickname) {
+      throw new HttpError.Conflict(MESSAGES.AUTH.COMMON.NICKNAME.DUPLICATED);
+    }
+
+    const updatingUser = await this.userRepository.update(userId, nickname, address, image, contactNumber);
 
     // password 제외하기
-    const { password: _, ...withoutPasswordUser } = updatingUser;
+    const { password: _p, verificationNumber: _v, isVerified: _i, ...withoutPasswordUser } = updatingUser;
     return withoutPasswordUser;
-
   };
 }
 
