@@ -10,8 +10,7 @@ export class AuthController {
   signUp = async (req, res, next) => {
     try {
       // 작성 정보 받아오기
-      const { email, password, nickname, role, contactNumber, address, image } = req.body;
-      console.log(email, password, nickname, role, contactNumber, address, image);
+      const { email, password, passwordConfirm, nickname, role, contactNumber, address, image } = req.body;
 
       // user 생성하기
       const user = await this.authService.signUp({
@@ -35,6 +34,22 @@ export class AuthController {
     }
     return;
   };
+
+  /** 인증번호 확인 */
+  verifyEmail = async (req, res, next) => {
+    try {
+      const { email, verificationNumber } = req.body;
+      await this.authService.verifyEmail(email, verificationNumber);
+
+      // 성공 메세지 반환
+      res.status(HTTP_STATUS.OK).json({
+        status: HTTP_STATUS.OK,
+        message: MESSAGES.AUTH.COMMON.EMAIL.VERIFIED,
+      });
+    } catch (error) {
+      next (error);
+    };
+  }
 
   /** 로그인 */
   signIn = async (req, res, next) => {
