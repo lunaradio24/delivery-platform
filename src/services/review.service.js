@@ -22,8 +22,8 @@ class ReviewService {
     }
 
     // 이미 리뷰가 작성된 주문인지 확인
-    const postedReview = await this.reviewRepository.findByOrderId(orderId);
-    if (postedReview) throw new HttpError.Conflict(MESSAGES.REVIEWS.CREATE.DUPLICATED);
+    const existingReview = await this.reviewRepository.findByOrderId(orderId);
+    if (existingReview) throw new HttpError.Conflict(MESSAGES.REVIEWS.CREATE.DUPLICATED);
 
     // Transaction 생성
     await this.reviewRepository.createTransaction(async (tx) => {
@@ -40,7 +40,7 @@ class ReviewService {
       // 메뉴 평균 별점, 총 리뷰 수 수정
       const orderItemIds = await this.orderItemRepository.findMenuIdsByOrderId(orderId, { tx });
       for (const menuId of orderItemIds) {
-        const menu = await this.menuRepository.findMenuByMenuId(menuId);
+        const menu = await this.menuRepository.findMenuByMenuId(menuId, { tx });
         const updatedTotalReviews = menu.totalReviews + 1;
         const updatedMenuRating = (menu.averageRating * menu.totalReviews + rating) / updatedTotalReviews;
         await this.menuRepository.updateRating(menuId, updatedMenuRating, updatedTotalReviews, { tx });
