@@ -7,7 +7,7 @@ class StoreService {
   }
 
   createStore = async (ownerId, category, name, image, address, contactNumber, description, openingHours) => {
-    const existingStore = await this.storeRepository.getStoreByOwnerId(ownerId);
+    const existingStore = await this.storeRepository.findStoreByOwnerId(ownerId);
     if (existingStore) throw new HttpError.Conflict(MESSAGES.STORES.CREATE.DUPLICATED);
     const createdStore = await this.storeRepository.createStore(
       ownerId,

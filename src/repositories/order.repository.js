@@ -185,9 +185,9 @@ class OrderRepository extends BaseRepository {
   };
 
   //User 주문 내역 상세 조회
-  getUserDetailOrder = async (userId, orderId) => {
+  findByOrderId = async (orderId) => {
     let getUserOrders = await this.prisma.order.findUnique({
-      where: { id: +orderId, customerId: +userId },
+      where: { id: +orderId },
       include: {
         store: true,
         orderItem: {

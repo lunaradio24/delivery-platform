@@ -71,7 +71,7 @@ class OrderService {
 
     //주문이 없거나, 해당 유저의 주문이 아니라면 오류 반환
     if (!checkOrder) {
-      throw new HttpError.NotFound(MESSAGES.ORDERS.NO_DATA);
+      throw new HttpError.NotFound(MESSAGES.ORDERS.COMMON.NOT_FOUND);
     }
 
     //주문이 있지만 이미 취소 상태라면 오류 반환
@@ -128,13 +128,12 @@ class OrderService {
     }
 
     if (!getOrder) {
-      throw new HttpError.NotFound(MESSAGES.ORDERS.NO_DATA);
+      throw new HttpError.NotFound(MESSAGES.ORDERS.COMMON.NOT_FOUND);
     }
     return getOrder;
   };
 
   //  주문 상태 변경 API
-
   statusUpdateOrder = async (userId, orderId, status) => {
     const getStoreId = await this.userRepository.findeStoreId(userId);
     const storeId = getStoreId.store.id;

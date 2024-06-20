@@ -21,7 +21,7 @@ class StoreRepository {
   };
 
   // 음식점 조회 by 사장 id
-  getStoreByOwnerId = async (ownerId) => {
+  findByOwnerId = async (ownerId) => {
     const store = await this.prisma.store.findUnique({
       where: { ownerId },
     });
@@ -29,7 +29,7 @@ class StoreRepository {
   };
 
   // 음식점 목록 조회
-  getStore = async (categoryId) => {
+  findStoreList = async (categoryId) => {
     let data = await this.prisma.store.findMany({
       where: { category: categoryId ? Number(categoryId) : undefined },
     });
@@ -53,7 +53,7 @@ class StoreRepository {
   };
 
   // 음식점 상세 조회
-  getStoreOne = async (storeId) => {
+  findByStoreId = async (storeId) => {
     let data = await this.prisma.store.findUnique({
       where: { id: Number(storeId) },
     });
@@ -80,8 +80,9 @@ class StoreRepository {
   };
 
   // 수신한 rating, totalReviews 만 업데이트
-  updateRating = async (storeId, averageRating, totalReviews) => {
-    const updatedStore = await this.prisma.store.update({
+  updateRating = async (storeId, averageRating, totalReviews, { tx }) => {
+    const orm = tx || this.prisma;
+    const updatedStore = await orm.store.update({
       where: { id: storeId },
       data: { averageRating, totalReviews },
     });
