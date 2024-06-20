@@ -9,10 +9,13 @@ const schema = Joi.object({
     .items(
       Joi.object({
         menuId: Joi.number().required().messages({
-          'any.required': MESSAGES.ORDERS.CREATED.NO_ITEM_ID,
+          'any.required': MESSAGES.ORDERS.CREATED.NO_MENU_ID,
         }),
         quantity: Joi.number().required().messages({
           'any.required': MESSAGES.ORDERS.CREATED.NO_QUANTITY,
+        }),
+        price: Joi.number().required().messages({
+          'any.required': MESSAGES.ORDERS.CREATED.NO_PRICE,
         }),
       }),
     )

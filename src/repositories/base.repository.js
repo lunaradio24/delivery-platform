@@ -4,9 +4,7 @@ class BaseRepository {
   }
 
   createTransaction = async (callback) => {
-    return await this.prisma.$transaction(callback, {
-      timeout: 10000, // 타임아웃을 10초로 설정
-    });
+    return await this.prisma.$transaction(callback);
   };
 }
 

@@ -135,8 +135,9 @@ export const MESSAGES = {
       NO_ORDER: '메뉴는 1개 이상 주문해주세요.',
       NO_CART: '카트가 비어있습니다.',
       NO_STORE: '주문 가게를 입력해주세요.',
-      NO_ITEM_ID: '주문할 메뉴 id를 입력해주세요.',
+      NO_MENU_ID: '주문할 메뉴 id를 입력해주세요.',
       NO_QUANTITY: '주문할 메뉴 수량을 입력해주세요.',
+      NO_PRICE: '주문할 메뉴 가격을 입력해주세요.',
     },
     CANCEL: {
       SUCCEED: '주문 취소 요청 되었습니다.',

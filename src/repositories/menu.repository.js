@@ -32,7 +32,7 @@ class MenuRepository {
   };
 
   // 메뉴 상세 조회
-  findMenuByMenuId = async (menuId, { tx }) => {
+  findMenuByMenuId = async (menuId, { tx } = {}) => {
     const orm = tx || this.prisma;
     const menu = await orm.menu.findUnique({
       where: { id: Number(menuId) },

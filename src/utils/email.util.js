@@ -1,23 +1,26 @@
 import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
+import { EMAIL_USER, EMAIL_PASS } from '../constants/env.constant.js';
 import crypto from 'crypto';
 
 const transporter = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: EMAIL_USER,
+    pass: EMAIL_PASS,
   },
 });
 
 export const sendVerificationEmail = async (email) => {
+  // 이메일 인증 번호 생성
   const verificationNumber = crypto.randomBytes(3).toString('hex');
+  // 이메일 발송 형식
   const mailForm = {
-    form: process.env.EMAIL_USER,
+    form: EMAIL_USER,
     to: email,
     subject: '회원가입 이메일 인증번호입니다.',
     text: `${verificationNumber} 인증번호를 회원가입 창에서 입력해주세요`,
   };
+  // 이메일 발송
   await transporter.sendMail(mailForm);
   return verificationNumber;
 };
