@@ -33,6 +33,7 @@ import OrderController from '../controllers/order.controller.js';
 import ReviewController from '../controllers/review.controller.js';
 import LikeController from '../controllers/like.controller.js';
 import TransactionLogController from '../controllers/transaction-log.controller.js';
+import ImageController from '../controllers/image.controller.js';
 
 // repository instances
 export const authRepository = new AuthRepository(prisma);
@@ -81,3 +82,4 @@ export const orderController = new OrderController(orderService);
 export const reviewController = new ReviewController(reviewService);
 export const likeController = new LikeController(likeService);
 export const transactionLogController = new TransactionLogController(transactionLogService);
+export const imageController = new ImageController();

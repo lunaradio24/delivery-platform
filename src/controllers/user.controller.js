@@ -51,22 +51,6 @@ class UserController {
     }
   };
 
-  userImageUpload = async (req, res, next) => {
-    try {
-      const imageUrl = req.file.location
-      const userId = req.user.id
-
-      const userImageUpload = await this.userService.userImageUpload(imageUrl, userId)
-
-      return res.status(HTTP_STATUS.OK).json({
-        status: HTTP_STATUS.OK,
-        message: MESSAGES.USERS.IMAGE_ME.SUCCEED,
-        data: userImageUpload
-      })
-    }catch(error){
-      next(error)
-    }
-  }
 }
 
 export default UserController;
