@@ -1,5 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
+import passport from 'passport';
+import { strategies } from './passportsindex.js';
 import { SERVER_PORT } from './constants/env.constant.js';
 import { HTTP_STATUS } from './constants/http-status.constant.js';
 import { apiRouter } from './routers/index.js';
@@ -15,7 +17,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/health-check', (req, res) => {
   return res.status(HTTP_STATUS.OK).send('I am healthy!');
 });
-
+app.use(passport.initialize()); // 소셜 로그인 미들웨어: req 객체에 passport 설정을 심음
+strategies();
 app.use('/api', apiRouter);
 app.use(errorHandler);
 

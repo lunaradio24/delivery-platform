@@ -68,7 +68,7 @@ export const MESSAGES = {
       AT_LEAST: '수정할 내용을 한 가지 이상 작성해주세요',
     },
     IMAGE_ME: {
-      SUCCEED: '프로필 이미지 업로드에 성공했습니다.'
+      SUCCEED: '프로필 이미지 업로드에 성공했습니다.',
     },
     NOT_FOUND: '일치하는 사용자가 없습니다.',
   },
@@ -95,13 +95,14 @@ export const MESSAGES = {
     },
     IMAGE: {
       SUCCEED: '이미지 업로드에 성공했습니다.',
-      NOT_FOUND: '가게를 먼저 생성해주세요.'
+      NOT_FOUND: '가게를 먼저 생성해주세요.',
     },
   },
   MENUS: {
     COMMON: {
       NOT_FOUND: '존재하지 않는 메뉴입니다.',
       NO_ACCESS_RIGHT: '접근 권한이 없습니다.',
+      INVALID: '해당 가게의 메뉴가 아닙니다.',
     },
     CREATE: {
       SUCCEED: '메뉴 생성에 성공했습니다.',
@@ -118,8 +119,8 @@ export const MESSAGES = {
     },
     IMAGE: {
       SUCCEED: '메뉴 이미지 업로드에 성공했습니다.',
-      NOT_FOUND: '먼저 메뉴를 등록해주세요.'
-    }
+      NOT_FOUND: '먼저 메뉴를 등록해주세요.',
+    },
   },
   CARTS: {
     COMMON: {
@@ -241,9 +242,9 @@ export const MESSAGES = {
       SUCCEED: '거래 내역 조회에 성공했습니다.',
     },
   },
-  IMAGES:{
-    UPLOAD:{
-      SUCCEED: '이미지 업로드에 성공했습니다.'
-    }
-  }
+  IMAGES: {
+    UPLOAD: {
+      SUCCEED: '이미지 업로드에 성공했습니다.',
+    },
+  },
 };

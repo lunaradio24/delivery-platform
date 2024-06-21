@@ -47,7 +47,7 @@ class OrderService {
   };
 
   // 주문 요청 API
-  createOrder = async (userId, userWallet, storeId, orderItems) => {
+  createOrder = async (customerId, userWallet, storeId, orderItems) => {
     // 주문할 메뉴들이 해당 storeId의 가게에 속하는지 검증
     const isValidItems = await this.validateOrderItems(storeId, orderItems);
     if (!isValidItems) {
@@ -62,10 +62,14 @@ class OrderService {
       throw new HttpError.BadRequest(MESSAGES.ORDERS.CREATE.NOT_ENOUGH_MONEY);
     }
 
+    // 카트 가져오기
+    const cart = await this.cartRepository.getMyCartByCustomerId(customerId);
+    const menuIdsInCart = cart.map((cartItem) => cartItem.menuId);
+
     // Transaction 생성
     const createdOrder = await this.orderRepository.createTransaction(async (tx) => {
       // orders 테이블에 DB 생성
-      const createdOrder = await this.orderRepository.createOrder(userId, storeId, totalPrice, {
+      const createdOrder = await this.orderRepository.createOrder(customerId, storeId, totalPrice, {
         tx,
       });
 
@@ -77,17 +81,19 @@ class OrderService {
       }
 
       // 고객의 잔액 차감
-      await this.userRepository.deductWallet(userId, totalPrice, { tx });
+      await this.userRepository.deductWallet(customerId, totalPrice, { tx });
 
       // admin 잔액 증가
       await this.userRepository.addWallet(ADMIN_ID, totalPrice, { tx });
 
       // transaction log 기록
-      await this.transactionLogRepository.create(userId, ADMIN_ID, totalPrice, 1, { tx });
+      await this.transactionLogRepository.create(customerId, ADMIN_ID, totalPrice, 1, { tx });
 
       // 장바구니에서 주문한 메뉴 삭제
       for (const item of orderItems) {
-        await this.cartRepository.deleteCartItem(userId, item.menuId, { tx });
+        if (menuIdsInCart.includes(item.menuId)) {
+          await this.cartRepository.deleteCartItem(customerId, item.menuId, { tx });
+        }
       }
 
       return createdOrder;
@@ -96,14 +102,13 @@ class OrderService {
     const data = {
       orderId: createdOrder.id,
       storeName: createdOrder.store.name,
-      userId: createdOrder.customerId,
-      menu: orderItems.map((item) => ({
+      customerId: createdOrder.customerId,
+      orderItems: orderItems.map((item) => ({
         menuId: item.menuId, // 메뉴 ID
         quantity: item.quantity, // 수량
       })),
-      address: createdOrder.customer.address,
       totalPrice: createdOrder.totalPrice,
-      createdAt: createdOrder.createdAt,
+      orderedAt: createdOrder.createdAt,
     };
 
     return data;

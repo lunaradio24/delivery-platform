@@ -2,13 +2,19 @@ import { HttpError } from '../errors/http.error.js';
 import { MESSAGES } from '../constants/message.constant.js';
 
 class CartService {
-  constructor(cartRepository) {
+  constructor(cartRepository, menuRepository) {
     this.cartRepository = cartRepository;
+    this.menuRepository = menuRepository;
   }
 
   //내 카트에 메뉴를 담는 method
-  //새로 addCartItem을 할 때, storeId가 기존에 있던 menu의 storeId와 다르면 에러를 발생시키고 싶음.
   addCartItem = async (customerId, storeId, menuId) => {
+    // menuId에 해당하는 메뉴가 storeId에 해당하는 가게의 메뉴인지 확인
+    const menu = await this.menuRepository.findMenuByMenuId(menuId);
+    if (menu.storeId !== storeId) {
+      throw new HttpError.BadRequest(MESSAGES.MENUS.COMMON.INVALID);
+    }
+
     const existingCartItem = await this.cartRepository.getMyCartItemByMenuId(customerId, menuId);
 
     // 장바구니에 담긴 메뉴의 가게와 담으려는 메뉴의 가게가 다른 경우

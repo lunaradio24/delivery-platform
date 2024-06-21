@@ -122,6 +122,29 @@ export class AuthController {
       next(error);
     }
   };
+
+  /** 네이버 로그인 */
+  // naverLogin = async (req, res, next) => {
+  //   try {
+  //     const { id: userId } = req.user;
+
+  //     // auth session code를 DB에 저장
+  //     await prisma.authCode.create({
+  //       data: {
+  //         userId: userId,
+  //         sessionCode: authSessionCode,
+  //         expiredAt: new Date(Date.now() + 1 * 60 * 1000),
+  //       },
+  //     });
+
+  //     // 로그인에 성공했을 경우 반환 정보
+  //     res.status(HTTP_STATUS.OK).redirect(`/session?code=${authSessionCode}`);
+
+  //     // 에러 처리
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // };
 }
 
 export default AuthController;
