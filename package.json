@@ -12,11 +12,13 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.598.0",
     "@prisma/client": "^5.15.0",
+    "@upstash/redis": "^1.31.6",
     "aws-sdk": "^2.1645.0",
     "bcrypt": "^5.1.1",
     "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "global": "^4.4.0",
     "joi": "^17.13.1",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",

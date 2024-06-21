@@ -3,6 +3,7 @@ import { MESSAGES } from '../constants/message.constant.js';
 import { ADMIN_ID } from '../constants/user.constant.js';
 import { hash, compareWithHashed, generateAccessToken, generateRefreshToken } from '../utils/auth.util.js';
 import { sendEmailVerificationCode } from '../utils/email.util.js';
+import { redis } from '../utils/redis.util.js';
 
 class AuthService {
   constructor(authRepository, userRepository, transactionLogRepository) {
@@ -60,14 +61,14 @@ class AuthService {
   /** 인증번호 발송 */
   sendEmail = async (email) => {
     const verificationCode = await sendEmailVerificationCode(email);
-    await this.authRepository.saveEmailVerificationCode(email, verificationCode);
+    await redis.set(email, verificationCode);
     return;
   };
 
   /** 인증번호 확인 */
   verifyEmail = async (email, verificationCode) => {
-    const record = await this.authRepository.findEmailVerificationCode(email);
-    if (!record || record.verificationCode !== verificationCode) {
+    const savedCode = await redis.get(email);
+    if (!savedCode || savedCode !== verificationCode) {
       throw new HttpError.Unauthorized(MESSAGES.AUTH.COMMON.EMAIL.INVALID);
     }
     return true;
