@@ -11,7 +11,6 @@ class OrderRepository extends BaseRepository {
         totalPrice: totalPrice,
       },
       include: {
-        customer: true,
         store: { select: { name: true, contactNumber: true, address: true } },
         orderItem: {
           select: {
