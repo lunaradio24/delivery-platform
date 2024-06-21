@@ -96,14 +96,13 @@ class OrderService {
     const data = {
       orderId: createdOrder.id,
       storeName: createdOrder.store.name,
-      userId: createdOrder.customerId,
-      menu: orderItems.map((item) => ({
+      customerId: createdOrder.customerId,
+      orderItems: orderItems.map((item) => ({
         menuId: item.menuId, // 메뉴 ID
         quantity: item.quantity, // 수량
       })),
-      address: createdOrder.customer.address,
       totalPrice: createdOrder.totalPrice,
-      createdAt: createdOrder.createdAt,
+      orderedAt: createdOrder.createdAt,
     };
 
     return data;
@@ -233,9 +232,7 @@ class OrderService {
     if (!order) throw new HttpError.NotFound(MESSAGES.ORDERS.COMMON.NOT_FOUND);
 
     // 본인 가게의 주문인지 확인
-
     const store = await this.storeRepository.findByOwnerId(ownerId);
-    console.log(store);
     if (!store || (store && store.id !== order.storeId)) {
       throw new HttpError.Forbidden(MESSAGES.ORDERS.COMMON.NO_ACCESS_RIGHT);
     }
