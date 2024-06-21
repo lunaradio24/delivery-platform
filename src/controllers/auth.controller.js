@@ -54,8 +54,8 @@ export class AuthController {
   /** 인증번호 확인 */
   verifyEmail = async (req, res, next) => {
     try {
-      const { email, verificationNumber } = req.body;
-      await this.authService.verifyEmail(email, verificationNumber);
+      const { email, verificationCode } = req.body;
+      await this.authService.verifyEmail(email, verificationCode);
 
       // 성공 메세지 반환
       res.status(HTTP_STATUS.OK).json({
