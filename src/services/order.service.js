@@ -96,14 +96,13 @@ class OrderService {
     const data = {
       orderId: createdOrder.id,
       storeName: createdOrder.store.name,
-      userId: createdOrder.customerId,
-      menu: orderItems.map((item) => ({
+      customerId: createdOrder.customerId,
+      orderItems: orderItems.map((item) => ({
         menuId: item.menuId, // 메뉴 ID
         quantity: item.quantity, // 수량
       })),
-      address: createdOrder.customer.address,
       totalPrice: createdOrder.totalPrice,
-      createdAt: createdOrder.createdAt,
+      orderedAt: createdOrder.createdAt,
     };
 
     return data;
@@ -122,7 +121,7 @@ class OrderService {
 
     //주문이 있지만 이미 취소 상태라면 오류 반환
     if (order.status === 4) {
-      throw new HttpError.BadRequest(MESSAGES.ORDERS.CANCEL.CANCEL_SAME);
+      throw new HttpError.BadRequest(MESSAGES.ORDERS.CANCEL.FORBIDDEN);
     }
 
     // Transaction 생성
@@ -255,7 +254,7 @@ class OrderService {
     // Transaction 생성
     const updatedOrderStatus = this.orderRepository.createTransaction(async (tx) => {
       // 주문 상태 변경
-      const statusUpdatedOrder = await this.orderRepository.statusUpdateOrder(orderId, status, { tx });
+      const statusUpdatedOrder = await this.orderRepository.statusUpdateOrder(orderId, newStatus, { tx });
 
       // 배달 완료 시
       if (newStatus === 3) {
