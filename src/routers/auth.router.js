@@ -1,4 +1,5 @@
 import express from 'express';
+import passport from 'passport';
 import { signUpValidator } from '../middlewares/validators/sign-up-validator.middleware.js';
 import { signInValidator } from '../middlewares/validators/sign-in-validator.middleware.js';
 import { requireRefreshToken } from '../middlewares/require-refresh-token.middleware.js';
@@ -25,6 +26,14 @@ authRouter.post('/sign-out', requireRefreshToken, authController.signOut);
 authRouter.post('/renew-tokens', requireRefreshToken, authController.renewTokens);
 
 /** 네이버 로그인 API */
+authRouter.get('/naver', passport.authenticate('naver', { session: false })); // 네이버 로그인 페이지로 이동
+authRouter.get(
+  '/naver/callback',
+  passport.authenticate('naver', {
+    session: false,
+    failureRedirect: '/?error=로그인실패', // 로그인에 실패했을 경우 해당 라우터로 이동한다
+  }),
+);
 
 /** 카카오 로그인 API */
 

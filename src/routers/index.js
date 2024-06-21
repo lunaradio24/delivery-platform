@@ -23,6 +23,6 @@ apiRouter.use('/orders', requireAccessToken, orderRouter);
 apiRouter.use('/reviews', reviewRouter);
 apiRouter.use('/likes', requireAccessToken, requireRoles(['CUSTOMER']), likeRouter);
 apiRouter.use('/transaction-logs', requireAccessToken, transactionLogRouter);
-apiRouter.use('/image', imageRouter)
+apiRouter.use('/images', imageRouter);
 
 export { apiRouter };

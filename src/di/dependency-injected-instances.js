@@ -52,7 +52,7 @@ export const authService = new AuthService(authRepository, userRepository, trans
 export const userService = new UserService(userRepository);
 export const storeService = new StoreService(storeRepository);
 export const menuService = new MenuService(menuRepository, storeRepository);
-export const cartService = new CartService(cartRepository);
+export const cartService = new CartService(cartRepository, menuRepository);
 export const orderService = new OrderService(
   orderRepository,
   orderItemRepository,

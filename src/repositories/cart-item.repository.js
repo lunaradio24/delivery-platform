@@ -12,14 +12,8 @@ class CartRepository {
 
   //장바구니 조회 메서드
   getMyCartByCustomerId = async (customerId) => {
-    return await this.prisma.user.findUnique({
-      where: { id: customerId },
-      select: {
-        id: true,
-        nickname: true,
-        address: true,
-        cart: true,
-      },
+    return await this.prisma.cartItem.findMany({
+      where: { customerId: customerId },
     });
   };
 
