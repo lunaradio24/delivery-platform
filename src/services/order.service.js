@@ -93,8 +93,6 @@ class OrderService {
       return createdOrder;
     });
 
-    console.log(createdOrder);
-
     const data = {
       orderId: createdOrder.id,
       storeName: createdOrder.store.name,
