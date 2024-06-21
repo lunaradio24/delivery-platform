@@ -113,14 +113,6 @@ class StoreRepository {
     return addWallet;
   };
 
-  storeImageUpload = async (storeId, imageUrl) => {
-    const storeImageUpload = this.prisma.store.update({
-      where: { id: +storeId },
-      data:{
-        image: imageUrl
-      }
-    })
-    return storeImageUpload
-}
+
 }
 export default StoreRepository;

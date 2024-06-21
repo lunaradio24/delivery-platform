@@ -241,4 +241,9 @@ export const MESSAGES = {
       SUCCEED: '거래 내역 조회에 성공했습니다.',
     },
   },
+  IMAGES:{
+    UPLOAD:{
+      SUCCEED: '이미지 업로드에 성공했습니다.'
+    }
+  }
 };
