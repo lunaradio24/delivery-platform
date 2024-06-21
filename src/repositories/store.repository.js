@@ -23,7 +23,7 @@ class StoreRepository {
   // 음식점 조회 by 사장 id
   findByOwnerId = async (ownerId) => {
     const store = await this.prisma.store.findUnique({
-      where: { ownerId: +ownerId },
+      where: { ownerId: Number(ownerId) },
     });
     return store;
   };
