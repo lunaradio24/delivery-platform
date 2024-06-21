@@ -47,8 +47,8 @@ class AuthService {
       // transaction log 생성
       await this.transactionLogRepository.create(ADMIN_ID, user.id, 1000000, 0, { tx });
 
-      // 저장된 이메일 인증번호 삭제
-      await this.authRepository.deleteEmailVerificationCode(email, { tx });
+      // redis에 저장된 이메일 인증번호 삭제
+      await redis.del(email);
       return user;
     });
 
