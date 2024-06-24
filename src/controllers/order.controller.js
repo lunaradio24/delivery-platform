@@ -53,7 +53,7 @@ class OrderController {
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
-        message: MESSAGES.ORDERS.LIST.SUCCEED,
+        message: MESSAGES.ORDERS.READ_LIST.SUCCEED,
         data: orderList,
       });
     } catch (err) {
@@ -71,7 +71,7 @@ class OrderController {
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
-        message: MESSAGES.ORDERS.DETAIL.SUCCEED,
+        message: MESSAGES.ORDERS.READ_DETAIL.SUCCEED,
         data: orderDetail,
       });
     } catch (err) {
@@ -90,7 +90,7 @@ class OrderController {
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
-        message: MESSAGES.ORDERS.STATUS_UPDATE.SUCCEED,
+        message: MESSAGES.ORDERS.UPDATE_STATUS.SUCCEED,
         data: statusUpdateOrder,
       });
     } catch (err) {

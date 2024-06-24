@@ -8,13 +8,13 @@ import { updateReviewValidator } from '../middlewares/validators/update-review-v
 const reviewRouter = express.Router();
 
 // 리뷰 작성 API
-reviewRouter.post('/', requireAccessToken, requireRoles(['CUSTOMER']), createReviewValidator, reviewController.create);
+reviewRouter.post('/', requireAccessToken, requireRoles(['PERSONAL']), createReviewValidator, reviewController.create);
 
 // 리뷰 목록 조회 API
 reviewRouter.get('/stores/:storeId', reviewController.readList);
 
 // 내가 작성한 리뷰 목록 조회 API
-reviewRouter.get('/my', requireAccessToken, requireRoles(['CUSTOMER']), reviewController.readMyList);
+reviewRouter.get('/my', requireAccessToken, requireRoles(['PERSONAL']), reviewController.readMyList);
 
 // 리뷰 상세 조회 API
 reviewRouter.get('/:reviewId', reviewController.readDetail);
@@ -23,12 +23,12 @@ reviewRouter.get('/:reviewId', reviewController.readDetail);
 reviewRouter.patch(
   '/:reviewId',
   requireAccessToken,
-  requireRoles(['CUSTOMER']),
+  requireRoles(['PERSONAL']),
   updateReviewValidator,
   reviewController.update,
 );
 
 // 리뷰 삭제 API
-reviewRouter.delete('/:reviewId', requireAccessToken, requireRoles(['CUSTOMER']), reviewController.delete);
+reviewRouter.delete('/:reviewId', requireAccessToken, requireRoles(['PERSONAL']), reviewController.delete);
 
 export { reviewRouter };

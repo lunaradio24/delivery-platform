@@ -11,7 +11,7 @@ class MenuRepository {
   };
 
   // 메뉴 목록 조회
-  findMenuList = async (storeId) => {
+  findAllMenusByStoreId = async (storeId) => {
     let data = await this.prisma.menu.findMany({
       where: { storeId },
     });
@@ -29,6 +29,17 @@ class MenuRepository {
     });
 
     return data;
+  };
+
+  // 메뉴 아이디 여러개로 메뉴 목록 조회
+  findMenusByMenuIds = async (menuIds, { tx } = {}) => {
+    const orm = tx || this.prisma;
+    const menus = await orm.menu.findMany({
+      where: {
+        id: { in: menuIds },
+      },
+    });
+    return menus;
   };
 
   // 메뉴 상세 조회
@@ -65,15 +76,15 @@ class MenuRepository {
     return deleteMenu;
   };
 
-  updateRating = async (menuId, averageRating, totalReviews) => {
-    const updatedMenu = await this.prisma.menu.update({
+  updateRating = async (menuId, averageRating, totalReviews, { tx } = {}) => {
+    const orm = tx || this.prisma;
+    const updatedMenu = await orm.menu.update({
       where: { id: Number(menuId) },
       data: { averageRating, totalReviews },
       select: { averageRating: true },
     });
     return updatedMenu.averageRating;
   };
-
 }
 
 export default MenuRepository;

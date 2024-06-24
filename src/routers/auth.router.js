@@ -26,8 +26,8 @@ authRouter.post('/sign-out', requireRefreshToken, authController.signOut);
 authRouter.post('/renew-tokens', requireRefreshToken, authController.renewTokens);
 
 /** 네이버 로그인 API */
-authRouter.get('/naver', passport.authenticate('naver', { session: false })); // 네이버 로그인 페이지로 이동
-authRouter.get(
+authRouter.post('/naver', passport.authenticate('naver', { session: false })); // 네이버 로그인 페이지로 이동
+authRouter.post(
   '/naver/callback',
   passport.authenticate('naver', {
     session: false,

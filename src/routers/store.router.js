@@ -6,7 +6,7 @@ import { storeController } from '../di/dependency-injected-instances.js';
 const storeRouter = express.Router();
 
 // 가게 등록 API
-storeRouter.post('/', requireAccessToken, requireRoles(['OWNER']), storeController.createStore);
+storeRouter.post('/', requireAccessToken, requireRoles(['BUSINESS']), storeController.createStore);
 
 // 가게 목록 조회 API
 storeRouter.get('/', storeController.getStoreList);
@@ -15,11 +15,9 @@ storeRouter.get('/', storeController.getStoreList);
 storeRouter.get('/:storeId', storeController.getStoreDetail);
 
 // 가게 정보 수정 API
-storeRouter.patch('/:storeId', requireAccessToken, requireRoles(['OWNER']), storeController.updateStore);
+storeRouter.patch('/:storeId', requireAccessToken, requireRoles(['BUSINESS']), storeController.updateStore);
 
 // 가게 정보 삭제 API
-storeRouter.delete('/:storeId', requireAccessToken, requireRoles(['OWNER']), storeController.deleteStore);
-
-
+storeRouter.delete('/:storeId', requireAccessToken, requireRoles(['BUSINESS']), storeController.deleteStore);
 
 export { storeRouter };

@@ -1,14 +1,15 @@
 import BaseRepository from './base.repository.js';
+import { ORDER_STATUS } from '../constants/enum.constant.js';
 
 class OrderRepository extends BaseRepository {
   // 주문 요청
-  createOrder = async (userId, storeId, totalPrice, { tx } = {}) => {
+  createOrder = async (customerId, storeId, totalPrice, { tx } = {}) => {
     const orm = tx || this.prisma;
     const createdOrder = await orm.order.create({
       data: {
         storeId: Number(storeId),
-        customerId: userId,
-        totalPrice: totalPrice,
+        customerId,
+        totalPrice,
       },
       include: {
         store: { select: { name: true, contactNumber: true, address: true } },
@@ -30,7 +31,7 @@ class OrderRepository extends BaseRepository {
     const orm = tx || this.prisma;
     const cancelUpdateOrder = await orm.order.update({
       where: { id: Number(orderId) },
-      data: { status: 4 },
+      data: { status: ORDER_STATUS['CANCELLED'] },
     });
 
     return cancelUpdateOrder;
@@ -55,7 +56,7 @@ class OrderRepository extends BaseRepository {
     return orders;
   };
 
-  // 주문 목록 조회 (OWNER)
+  // 주문 목록 조회 (BUSINESS OWNER)
   findListByStoreId = async (storeId) => {
     const orders = await this.prisma.order.findMany({
       where: { storeId },
@@ -92,7 +93,7 @@ class OrderRepository extends BaseRepository {
     return order;
   };
 
-  //  주문 상태 변경 API (OWNER)
+  //  주문 상태 변경 API (BUSINESS OWNER)
   statusUpdateOrder = async (orderId, status, { tx } = {}) => {
     const orm = tx || this.prisma;
     const updatedOrder = await orm.order.update({

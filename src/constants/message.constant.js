@@ -67,9 +67,6 @@ export const MESSAGES = {
       SUCCEED: '내 정보 수정에 성공했습니다.',
       AT_LEAST: '수정할 내용을 한 가지 이상 작성해주세요',
     },
-    IMAGE_ME: {
-      SUCCEED: '프로필 이미지 업로드에 성공했습니다.',
-    },
     NOT_FOUND: '일치하는 사용자가 없습니다.',
   },
   STORES: {
@@ -93,10 +90,6 @@ export const MESSAGES = {
     DELETE: {
       SUCCEED: '가게 정보 삭제에 성공했습니다.',
     },
-    IMAGE: {
-      SUCCEED: '이미지 업로드에 성공했습니다.',
-      NOT_FOUND: '가게를 먼저 생성해주세요.',
-    },
   },
   MENUS: {
     COMMON: {
@@ -116,10 +109,6 @@ export const MESSAGES = {
     },
     DELETE: {
       SUCCEED: '메뉴 삭제에 성공했습니다.',
-    },
-    IMAGE: {
-      SUCCEED: '메뉴 이미지 업로드에 성공했습니다.',
-      NOT_FOUND: '먼저 메뉴를 등록해주세요.',
     },
   },
   CARTS: {
@@ -149,30 +138,33 @@ export const MESSAGES = {
   ORDERS: {
     COMMON: {
       NOT_FOUND: '주문이 존재하지 않습니다',
-      BAD_REQUEST: '같은 가게의 메뉴들만 주문할 수 있습니다.',
       NO_ACCESS_RIGHT: '접근 권한이 없습니다.',
     },
     CREATE: {
       SUCCEED: '주문이 접수되었습니다.',
-      NOT_ENOUGH_MONEY: '잔액이 부족합니다.',
-      NO_ORDER: '메뉴는 1개 이상 주문해주세요.',
-      NO_CART: '카트가 비어있습니다.',
-      NO_STORE: '주문 가게를 입력해주세요.',
-      NO_MENU_ID: '주문할 메뉴 id를 입력해주세요.',
-      NO_QUANTITY: '주문할 메뉴 수량을 입력해주세요.',
-      NO_PRICE: '주문할 메뉴 가격을 입력해주세요.',
+      BAD_REQUEST: {
+        NOT_FROM_SAME_STORE: '같은 가게의 메뉴들만 주문할 수 있습니다.',
+        INCLUDE_INVALID_MENU: '존재하지 않는 메뉴를 포함하고 있습니다.',
+        NOT_ENOUGH_MONEY: '잔액이 부족합니다.',
+        NO_ORDER: '메뉴는 1개 이상 주문해주세요.',
+        NO_CART: '카트가 비어있습니다.',
+        NO_STORE_ID: '주문할 가게 ID를 입력해주세요.',
+        NO_MENU_ID: '주문할 메뉴 ID를 입력해주세요.',
+        NO_QUANTITY: '주문할 메뉴 수량을 입력해주세요.',
+        NO_PRICE: '주문할 메뉴 가격을 입력해주세요.',
+      },
     },
     CANCEL: {
       SUCCEED: '주문 취소 요청 되었습니다.',
       FORBIDDEN: '이미 취소된 주문입니다.',
     },
-    LIST: {
+    READ_LIST: {
       SUCCEED: '주문내역 조회에 성공하였습니다.',
     },
-    DETAIL: {
+    READ_DETAIL: {
       SUCCEED: '주문내역 상세 조회에 성공하였습니다.',
     },
-    STATUS_UPDATE: {
+    UPDATE_STATUS: {
       SUCCEED: '주문 상태가 변경되었습니다.',
       SAME_STATUS: '현재 상태와 동일합니다.',
       FORBIDDEN: '이미 배달완료가 된 주문입니다.',

@@ -12,7 +12,7 @@ class CartController {
       const { id: customerId } = req.user;
       const { storeId, menuId } = req.body;
 
-      const addedCartItem = await this.cartService.addCartItem(customerId, Number(storeId), Number(menuId));
+      const addedCartItem = await this.cartService.addCartItem(customerId, storeId, menuId);
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
@@ -45,9 +45,9 @@ class CartController {
   increaseCartItem = async (req, res, next) => {
     try {
       const { id: customerId } = req.user;
-      const { storeId, menuId } = req.body;
+      const { menuId } = req.body;
 
-      const increasedCartItem = await this.cartService.increaseCartItem(customerId, storeId, menuId);
+      const increasedCartItem = await this.cartService.increaseCartItem(customerId, menuId);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
@@ -63,9 +63,9 @@ class CartController {
   decreaseCartItem = async (req, res, next) => {
     try {
       const { id: customerId } = req.user;
-      const { storeId, menuId } = req.body;
+      const { menuId } = req.body;
 
-      const decreasedCartItem = await this.cartService.decreaseCartItem(customerId, storeId, menuId);
+      const decreasedCartItem = await this.cartService.decreaseCartItem(customerId, menuId);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,

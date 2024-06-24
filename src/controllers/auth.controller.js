@@ -13,7 +13,7 @@ export class AuthController {
       const { email, password, nickname, role, contactNumber, address, image } = req.body;
 
       // user 생성하기
-      const user = await this.authService.signUp({
+      const createdUser = await this.authService.signUp({
         email,
         password,
         nickname,
@@ -24,10 +24,10 @@ export class AuthController {
       });
 
       // 성공 메세지 반환
-      res.status(HTTP_STATUS.OK).json({
+      res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
         message: MESSAGES.AUTH.SIGN_UP.SUCCEED,
-        data: user,
+        data: createdUser,
       });
     } catch (error) {
       next(error);
@@ -128,13 +128,12 @@ export class AuthController {
   //   try {
   //     const { id: userId } = req.user;
 
-  //     // auth session code를 DB에 저장
-  //     await prisma.authCode.create({
-  //       data: {
+  //     // auth session code를 redis에 저장
+  //     await redis.set(userId, {
   //         userId: userId,
   //         sessionCode: authSessionCode,
   //         expiredAt: new Date(Date.now() + 1 * 60 * 1000),
-  //       },
+  //
   //     });
 
   //     // 로그인에 성공했을 경우 반환 정보

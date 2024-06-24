@@ -43,7 +43,7 @@ class CartService {
   };
 
   //장바구니에 담긴 아이템을 수정하는 method
-  increaseCartItem = async (customerId, storeId, menuId) => {
+  increaseCartItem = async (customerId, menuId) => {
     const existingCartItem = await this.cartRepository.getMyCartItemByMenuId(customerId, menuId);
 
     if (!existingCartItem) {
@@ -53,7 +53,7 @@ class CartService {
     return await this.cartRepository.increaseCartItem(customerId, menuId);
   };
 
-  decreaseCartItem = async (customerId, storeId, menuId) => {
+  decreaseCartItem = async (customerId, menuId) => {
     const existingCartItem = await this.cartRepository.getMyCartItemByMenuId(customerId, menuId);
 
     if (!existingCartItem) {
@@ -78,7 +78,7 @@ class CartService {
       throw new HttpError.NotFound(MESSAGES.CARTS.DELETE.NOT_FOUND);
     }
 
-    return await this.cartRepository.deleteCartItem(customerId, menuId);
+    return await this.cartRepository.deleteCartItemByMenuId(customerId, menuId);
   };
 }
 

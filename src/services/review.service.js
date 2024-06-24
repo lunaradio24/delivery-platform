@@ -39,12 +39,13 @@ class ReviewService {
 
       // 메뉴 평균 별점, 총 리뷰 수 수정
       const orderItemIds = await this.orderItemRepository.findMenuIdsByOrderId(orderId, { tx });
-      for (const menuId of orderItemIds) {
-        const menu = await this.menuRepository.findMenuByMenuId(menuId, { tx });
+      const menusToReview = await this.menuRepository.findMenusByMenuIds(orderItemIds, { tx });
+      for (const menu of menusToReview) {
         const updatedTotalReviews = menu.totalReviews + 1;
         const updatedMenuRating = (menu.averageRating * menu.totalReviews + rating) / updatedTotalReviews;
-        await this.menuRepository.updateRating(menuId, updatedMenuRating, updatedTotalReviews, { tx });
+        await this.menuRepository.updateRating(menu.id, updatedMenuRating, updatedTotalReviews, { tx });
       }
+
       // Review Controller에 반환
       return createdReview;
     });
@@ -113,11 +114,11 @@ class ReviewService {
 
         // 메뉴 평균 별점 수정
         const orderItemIds = await this.orderItemRepository.findMenuIdsByOrderId(review.orderId, { tx });
-        for (const menuId of orderItemIds) {
-          const menu = await this.menuRepository.findMenuByMenuId(menuId);
+        const menusToUpdate = await this.menuRepository.findMenusByMenuIds(orderItemIds, { tx });
+        for (const menu of menusToUpdate) {
           const updatedMenuRating =
             (menu.averageRating * menu.totalReviews - oldRating + newRating) / menu.totalReviews;
-          await this.menuRepository.updateRating(menuId, updatedMenuRating, menu.totalReviews, { tx });
+          await this.menuRepository.updateRating(menu.id, updatedMenuRating, menu.totalReviews, { tx });
         }
       }
       return updatedReview;
@@ -150,11 +151,11 @@ class ReviewService {
 
       // 메뉴 평균 별점, 총 리뷰 수 수정
       const orderItemIds = await this.orderItemRepository.findMenuIdsByOrderId(review.orderId, { tx });
-      for (const menuId of orderItemIds) {
-        const menu = await this.menuRepository.findMenuByMenuId(menuId);
+      const menusToUpdate = await this.menuRepository.findMenusByMenuIds(orderItemIds, { tx });
+      for (const menu of menusToUpdate) {
         const updatedTotalReviews = menu.totalReviews - 1;
         const updatedMenuRating = (menu.averageRating * menu.totalReviews - oldRating) / updatedTotalReviews;
-        await this.menuRepository.updateRating(menuId, updatedMenuRating, updatedTotalReviews, { tx });
+        await this.menuRepository.updateRating(menu.id, updatedMenuRating, updatedTotalReviews, { tx });
       }
     });
   };

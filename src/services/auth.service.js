@@ -1,6 +1,7 @@
 import { HttpError } from '../errors/http.error.js';
 import { MESSAGES } from '../constants/message.constant.js';
-import { ADMIN_ID } from '../constants/user.constant.js';
+import { ADMIN_ID, WELCOME_POINTS } from '../constants/auth.constant.js';
+import { TRANSACTION_TYPE } from '../constants/enum.constant.js';
 import { hash, compareWithHashed, generateAccessToken, generateRefreshToken } from '../utils/auth.util.js';
 import { sendEmailVerificationCode } from '../utils/email.util.js';
 import { redis } from '../utils/redis.util.js';
@@ -45,7 +46,7 @@ class AuthService {
       );
 
       // transaction log 생성
-      await this.transactionLogRepository.create(ADMIN_ID, user.id, 1000000, 0, { tx });
+      await this.transactionLogRepository.create(ADMIN_ID, user.id, WELCOME_POINTS, TRANSACTION_TYPE['CHARGE'], { tx });
 
       // redis에 저장된 이메일 인증번호 삭제
       await redis.del(email);
