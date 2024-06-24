@@ -1,6 +1,6 @@
 import { HttpError } from '../errors/http.error.js';
 import { MESSAGES } from '../constants/message.constant.js';
-import { ADMIN_ID, WELCOME_POINTS } from '../constants/auth.constant.js';
+import { ADMIN_ID, WELCOME_POINTS, EMAIL_CODE_EXPIRES_IN } from '../constants/auth.constant.js';
 import { TRANSACTION_TYPE } from '../constants/enum.constant.js';
 import { hash, compareWithHashed, generateAccessToken, generateRefreshToken } from '../utils/auth.util.js';
 import { sendEmailVerificationCode } from '../utils/email.util.js';
@@ -62,7 +62,7 @@ class AuthService {
     const verificationCode = await sendEmailVerificationCode(email);
     await redis.set(email, verificationCode);
     const currentTimeInSeconds = Math.floor(Date.now() / 1000); // 현재 시간을 초 단위의 Unix 타임스탬프로 변환
-    const expirationTime = currentTimeInSeconds + 180; // 만료 시간을 현재 시간에 180초를 더한 값으로 설정
+    const expirationTime = currentTimeInSeconds + EMAIL_CODE_EXPIRES_IN; // 만료 시간을 현재 시간에 더한 값으로 설정
     await redis.expireat(email, expirationTime); // expireat을 사용하여 만료 시간 설정
     return;
   };
