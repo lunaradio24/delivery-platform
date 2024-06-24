@@ -34,15 +34,15 @@ model User {
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 
-  refreshToken Auth?
-  store        Store?
-  cart         CartItem[]
-  order        Order[]
-  review       Review[]
-  like         Like[]
-  withdrawal   TransactionLog[] @relation("sender")
-  deposit      TransactionLog[] @relation("receiver")
-  notification Notification[]
+  refreshToken  Auth?
+  store         Store?
+  cart          CartItem[]
+  order         Order[]
+  review        Review[]
+  like          Like[]
+  withdrawal    TransactionLog[] @relation("sender")
+  deposit       TransactionLog[] @relation("receiver")
+  notification  Notification[]
 
   @@map("users")
 }
@@ -52,7 +52,7 @@ model Store {
   ownerId       Int      @unique @map("owner_id")
   name          String
   address       String
-  contactNumber Int      @map("contact_number")
+  contactNumber String   @map("contact_number")
   category      Int
   openingHours  String   @map("opening_hours")
   image         String?

@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import { MESSAGES } from '../../constants/message.constant.js';
 import { MIN_PASSWORD_LENGTH, PHONE_NUMBER_REG_EXP } from '../../constants/auth.constant.js';
+import { ROLES } from '../../constants/enum.constant.js';
 
 const schema = Joi.object({
   email: Joi.string().email().required().messages({
@@ -19,7 +20,7 @@ const schema = Joi.object({
     'any.required': MESSAGES.AUTH.COMMON.NICKNAME.REQUIRED,
   }),
   address: Joi.string(),
-  role: Joi.number().required().valid(1, 2).messages({
+  role: Joi.number().required().valid(ROLES['BUSINESS'], ROLES['PERSONAL']).messages({
     'any.required': MESSAGES.AUTH.COMMON.ROLE.REQUIRED,
     'any.only': MESSAGES.AUTH.COMMON.ROLE.INVALID_ROLE,
   }),

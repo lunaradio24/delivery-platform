@@ -6,10 +6,10 @@ import { createOrderValidator } from '../middlewares/validators/create-order-val
 const orderRouter = express.Router();
 
 // 주문 요청 API
-orderRouter.post('/', createOrderValidator, requireRoles(['CUSTOMER']), orderController.createOrder);
+orderRouter.post('/', createOrderValidator, requireRoles(['PERSONAL']), orderController.createOrder);
 
 // 주문 취소 API
-orderRouter.patch('/:orderId/cancel', requireRoles(['CUSTOMER']), orderController.cancelOrder); // update joi 미들웨어 필요
+orderRouter.patch('/:orderId/cancel', requireRoles(['PERSONAL']), orderController.cancelOrder); // update joi 미들웨어 필요
 
 // 주문 내역 목록 조회 API
 orderRouter.get('/', orderController.getOrderList);
@@ -18,6 +18,6 @@ orderRouter.get('/', orderController.getOrderList);
 orderRouter.get('/:orderId', orderController.getOrderDetail);
 
 // 주문 상태 변경 API
-orderRouter.patch('/:orderId/status', requireRoles(['OWNER']), orderController.statusUpdateOrder);
+orderRouter.patch('/:orderId/status', requireRoles(['BUSINESS']), orderController.statusUpdateOrder);
 
 export { orderRouter };

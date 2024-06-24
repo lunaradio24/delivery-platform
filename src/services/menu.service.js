@@ -24,7 +24,7 @@ class MenuService {
   };
 
   getMenuList = async (storeId) => {
-    const menuList = await this.menuRepository.findMenuList(storeId);
+    const menuList = await this.menuRepository.findAllMenusByStoreId(storeId);
     return menuList;
   };
 
@@ -63,8 +63,6 @@ class MenuService {
 
     return deleteMenu;
   };
-
-
 }
 
 export default MenuService;

@@ -12,10 +12,10 @@ class OrderItemRepository {
     return orderItemIds;
   };
 
-  createOrderItem = async (orderId, menuId, price, quantity, { tx } = {}) => {
+  createOrderItems = async (orderItemData, { tx } = {}) => {
     const orm = tx || this.prisma;
-    await orm.orderItem.create({
-      data: { orderId, menuId, price, quantity },
+    await orm.orderItem.createMany({
+      data: orderItemData,
     });
   };
 }

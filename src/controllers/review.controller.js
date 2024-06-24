@@ -27,12 +27,12 @@ class ReviewController {
     try {
       const { storeId } = req.params;
       const { menuId, orderBy, sort } = req.query;
-      const reviewList = await this.reviewService.readList(storeId, menuId, orderBy, sort);
+      const reviews = await this.reviewService.readList(storeId, menuId, orderBy, sort);
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
         message: MESSAGES.REVIEWS.READ_LIST.SUCCEED,
-        data: reviewList,
+        data: reviews,
       });
     } catch (error) {
       next(error);
