@@ -14,9 +14,6 @@ const schema = Joi.object({
         quantity: Joi.number().required().messages({
           'any.required': MESSAGES.ORDERS.CREATE.BAD_REQUEST.NO_QUANTITY,
         }),
-        price: Joi.number().messages({
-          'any.required': MESSAGES.ORDERS.CREATE.BAD_REQUEST.NO_PRICE,
-        }),
       }),
     )
     .required()
