@@ -48,8 +48,6 @@ class AuthService {
       // transaction log 생성
       await this.transactionLogRepository.create(ADMIN_ID, user.id, WELCOME_POINTS, TRANSACTION_TYPE['CHARGE'], { tx });
 
-      // redis에 저장된 이메일 인증번호 삭제
-      await redis.del(email);
       return user;
     });
 
@@ -63,6 +61,9 @@ class AuthService {
   sendEmail = async (email) => {
     const verificationCode = await sendEmailVerificationCode(email);
     await redis.set(email, verificationCode);
+    const currentTimeInSeconds = Math.floor(Date.now() / 1000); // 현재 시간을 초 단위의 Unix 타임스탬프로 변환
+    const expirationTime = currentTimeInSeconds + 180; // 만료 시간을 현재 시간에 180초를 더한 값으로 설정
+    await redis.expireat(email, expirationTime); // expireat을 사용하여 만료 시간 설정
     return;
   };
 
@@ -72,6 +73,8 @@ class AuthService {
     if (!savedCode || savedCode !== verificationCode) {
       throw new HttpError.Unauthorized(MESSAGES.AUTH.COMMON.EMAIL.INVALID);
     }
+    // redis에 저장된 이메일 인증번호 삭제
+    await redis.del(email);
     return true;
   };
 
